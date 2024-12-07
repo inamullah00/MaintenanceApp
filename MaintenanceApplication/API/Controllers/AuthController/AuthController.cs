@@ -42,5 +42,49 @@ namespace API.Controllers.AuthController
             }
         }
 
+
+        [HttpPost]
+        [Route("Login")]
+        public async Task<IActionResult> Login(LoginRequestDto request)
+        {
+            try
+            {
+                var result = await _registerationService.LoginAsync(request);
+
+                if (!result.Success)
+                {
+                    return BadRequest(result.Message);
+                }
+
+                return Ok(new { Token = result.Token, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+        [HttpPost]
+        [Route("Logout")]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                var result = await _registerationService.LogoutAsync();
+                if (!result.Success)
+                {
+                    return BadRequest("Logout failed.");
+                }
+
+                return Ok(new { Message = "User logged out successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
     }
 }

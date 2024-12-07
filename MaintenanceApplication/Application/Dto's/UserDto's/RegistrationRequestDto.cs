@@ -33,7 +33,7 @@ namespace Application.Dto_s.UserDto_s
         public float? Rating { get; set; }
         public string? Bio { get; set; }
         public DateTime? ApprovedDate { get; set; }
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
         public string? Skills { get; set; }
         public decimal? HourlyRate { get; set; }

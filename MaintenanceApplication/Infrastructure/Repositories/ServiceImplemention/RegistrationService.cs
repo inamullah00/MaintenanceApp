@@ -4,9 +4,13 @@ using Azure.Core;
 using Domain.Entity.UserEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -16,19 +20,49 @@ namespace Infrastructure.Repositories.ServiceImplemention
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager)
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IConfiguration _configuration;
+
+        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager , SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
+            _configuration = configuration;
         }
-        public Task<(bool Success, string Message)> LoginAsync()
+        public async Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto request)
         {
-            throw new NotImplementedException();
+            // Find user by email
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if (user == null)
+            {
+                return (false, "Invalid email or password.", null);
+            }
+
+            // Check if the password is correct
+            var passwordValid = await _userManager.CheckPasswordAsync(user, request.Password);
+            if (!passwordValid)
+            {
+                return (false, "Invalid email or password.", null);
+            }
+
+            // Ensure the user is verified, active, or meets specific conditions (optional)
+            //if (!user.IsVerified)
+            //{
+            //    return (false, "Account is not verified.", null);
+            //}
+
+            // Generate a JWT token
+            var token = await GenerateJwtTokenAsync(user);
+
+            return (true, "Login successful.", token);
         }
 
-        public Task<(bool Success, string Message)> LogoutAsync()
+        public async Task<(bool Success, string Message)> LogoutAsync()
         {
-            throw new NotImplementedException();
+            await _signInManager.SignOutAsync();
+
+            return (true, "User logged out successfully.");
         }
 
         public async Task<(bool Success, string Message)> RegisterAsync(RegistrationRequestDto request)
@@ -104,5 +138,34 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
             throw new NotImplementedException();
         }
+
+
+        private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
+        {
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.NameIdentifier, user.Id),
+        new Claim(ClaimTypes.Name, user.UserName),
+        new Claim(ClaimTypes.Email, user.Email)
+    };
+
+            // Add user roles as claims
+            var roles = await _userManager.GetRolesAsync(user);
+            claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role)));
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["Jwt:Issuer"],
+                audience: _configuration["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
     }
 }

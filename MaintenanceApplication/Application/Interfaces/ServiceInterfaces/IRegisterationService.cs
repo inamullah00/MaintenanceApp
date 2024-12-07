@@ -11,7 +11,7 @@ namespace Application.Interfaces.ServiceInterfaces
     {
 
        public Task<(bool Success, string Message)> RegisterAsync(RegistrationRequestDto request);
-       public Task<(bool Success, string Message)> LoginAsync();
+       public Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto requestDto);
        public Task<(bool Success, string Message)> LogoutAsync();
        public Task<(bool Success, string Message)> UserApprovalAsync();
        public Task<(bool Success, string Message)> UserDetailsAsync();

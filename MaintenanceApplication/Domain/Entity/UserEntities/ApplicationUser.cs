@@ -30,7 +30,7 @@ namespace Domain.Entity.UserEntities
         public float? Rating { get; set; }  // Freelancer's average rating
         public string? Bio { get; set; }  // Short bio for freelancer
         public DateTime? ApprovedDate { get; set; } // When the freelancer was approved by the admin
-        public DateTime RegistrationDate { get; set; }
+        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
         // Optional Fields
         public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
