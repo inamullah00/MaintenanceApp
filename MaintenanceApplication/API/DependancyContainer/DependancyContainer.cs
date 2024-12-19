@@ -1,5 +1,11 @@
-﻿using Application.Interfaces.ServiceInterfaces;
-
+﻿using Application.Interfaces.ReposoitoryInterfaces;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
+using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
+using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
+using Infrastructure.Repositories.RepositoryImplementions;
+using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplementation;
 using Infrastructure.Repositories.ServiceImplemention;
 using Microsoft.OpenApi.Models;
 
@@ -7,11 +13,14 @@ namespace API.DependancyContainer
 {
     public static class DependancyContainer
     {
-        public static IServiceCollection RegistrationServices(this IServiceCollection services)
+       
+        public static IServiceCollection RegistrationServices(this IServiceCollection services , IConfiguration configuration)
         {
 
             services.AddScoped<IRegisterationService, RegistrationService>();
-
+            services.AddScoped<IClientService, OfferedServices>();
+            services.AddScoped<IOfferedServiceCategory,OfferedServiceCategory>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(options =>
@@ -42,6 +51,9 @@ namespace API.DependancyContainer
         }
     });
             });
+            services.AddScoped<IOfferedServiceRepository ,OfferedServiceRepository>();
+            services.AddScoped<IOfferedServiceCategoryRepository ,OfferedServiceCategoryRepository>();
+
 
             return services;
         }

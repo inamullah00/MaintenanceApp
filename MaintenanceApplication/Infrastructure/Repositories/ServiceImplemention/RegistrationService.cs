@@ -1,18 +1,32 @@
 ﻿using Application.Dto_s.UserDto_s;
-using Application.Interfaces.ServiceInterfaces;
+
+using AutoMapper.Internal;
 using Azure.Core;
 using Domain.Entity.UserEntities;
+using MailKit.Security;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using MailKit.Net.Smtp;
+using MimeKit;
+
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
+using System.Security.Policy;
+using System.Text.Encodings.Web;
+using Microsoft.Extensions.Caching.Memory;
+using Application.Interfaces.ReposoitoryInterfaces;
+using Microsoft.EntityFrameworkCore;
+using Infrastructure.Data;
+using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
@@ -22,13 +36,23 @@ namespace Infrastructure.Repositories.ServiceImplemention
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IConfiguration _configuration;
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly IMemoryCache _Cache;
 
-        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager , SignInManager<ApplicationUser> signInManager, IConfiguration configuration)
+        private readonly ApplicationDbContext _dbContext;
+
+        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager ,
+            SignInManager<ApplicationUser> signInManager, IConfiguration configuration, 
+            IHttpContextAccessor httpContextAccessor, 
+            IMemoryCache cache  , ApplicationDbContext dbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor;
+            _Cache = cache;
+            _dbContext = dbContext;
         }
         public async Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto request)
         {
@@ -120,7 +144,21 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 }
             }
 
+
+            // Send a registration email
+            try
+            {
+                var subject = "Welcome to Our Platform!";
+                var body = $"Hi {request.FirstName},<br><br>Thank you for registering! We're excited to have you onboard.";
+                await SendEmailAsync(request.Email, subject, body);
+            }
+            catch (Exception ex)
+            {
+                // Log the error (if a logger is available) and inform the caller
+                return (true, $"User registered successfully, but email sending failed: {ex.Message}");
+            }
             return (true, "User registered successfully.");
+
 
         }
 
@@ -129,9 +167,36 @@ namespace Infrastructure.Repositories.ServiceImplemention
             throw new NotImplementedException();
         }
 
-        public Task<(bool Success, string Message)> UserDetailsAsync()
+        public async Task<(bool Success,ApplicationUser? User, string Message)> UserDetailsAsync(Guid Id)
         {
-            throw new NotImplementedException();
+            var user= await _userManager.FindByIdAsync(Id.ToString());
+            if (user == null)
+            {
+                return (false, null, "User Not Found");
+            }
+      
+            return (true, user, "User found.");
+        }
+
+        public async Task<(bool Success, List<AllUsersResponseDto>? Users, string Message)> UsersAsync()
+        {
+            // Project the users into the DTO
+            var users = _userManager.Users
+                .Select(u => new AllUsersResponseDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    Email = u.Email
+                })
+                .ToList();
+
+            // Check if any users were found
+            if (!users.Any())
+            {
+                return (false, null, "No users found.");
+            }
+
+            return (true, users, $"{users.Count} user(s) found.");
         }
 
         public Task<(bool Success, string Message)> UserProfileAsync()
@@ -140,14 +205,131 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
+        public async Task<(bool Success, string Otp, string Message)> ForgotPasswordAsync(string emailOrPhone)
+        {
+
+            // Check if email exists in the system
+            var user = await _userManager.FindByEmailAsync(emailOrPhone);
+            if (user == null)
+            {
+                return(false,"0", "User with this email does not exist.");
+            }
+
+            // Generate a numeric OTP
+            var otp = GenerateNumericOtp(6); // Generate a 6-digit OTP
+
+            // Store OTP in the database
+            var userOtp = new UserOtp
+            {
+                Id = Guid.NewGuid(),
+                Otp = otp,
+                CreatedAt = DateTime.UtcNow,
+                ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+                IsUsed = false
+            };
+
+           //await _genericRepository.OtpAsync<UserOtp,Guid>(userOtp);
+
+
+            // Send the OTP to the user
+            try
+            {
+                await SendEmailAsync(
+                    emailOrPhone,
+                    "Your OTP Code",
+                    $"Your OTP for verification is: <b>{otp}</b>. This code is valid for 5 minutes."
+                );
+
+                return (true, otp, "OTP sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty, $"Failed to send OTP: {ex.Message}");
+            }
+
+        }
+
+
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email , string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return (false, "User not found.");
+            }
+
+
+            // Step 2: Reset the user's password
+            var resetResult = await _userManager.RemovePasswordAsync(user);
+            if (!resetResult.Succeeded)
+            {
+                var errors = string.Join(", ", resetResult.Errors.Select(e => e.Description));
+                return (false, $"Failed to reset password. {errors}");
+            }
+
+            resetResult = await _userManager.AddPasswordAsync(user, newPassword);
+            if (!resetResult.Succeeded)
+            {
+                var errors = string.Join(", ", resetResult.Errors.Select(e => e.Description));
+                return (false, $"Failed to set new password. {errors}");
+            }
+
+            return (true, "Password reset successful.");
+        }
+
+        public async Task<(bool Success, string Message)> BlockUserAsync(string email, bool isBlocked)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return (false, "User not found.");
+            }
+
+            user.LockoutEnd = isBlocked
+                ? DateTimeOffset.MaxValue // Indefinitely block the user
+                : null;                   // Unblock the user
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return (false, $"Failed to update user status. {errors}");
+            }
+
+            return (true, isBlocked ? "User has been blocked." : "User has been unblocked.");
+        }
+
+        public async Task<(bool Success, string Message)> ValidateOtpAsync(string otp)
+        {          
+            //// Retrieve the OTP from the database
+            // var userOtp = await _genericRepository.GetOtpAsync<UserOtp,Guid>(otp);
+
+            //if (userOtp == null)
+            //{
+            //    return (false, "Invalid or expired OTP.");
+            //}
+
+            //// Mark the OTP as used
+            //userOtp.IsUsed = true;
+            //await _dbContext.SaveChangesAsync();
+
+            return (true, "OTP validated successfully.");
+
+        }
+
+
+
+
+        #region Token
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
         {
             var claims = new List<Claim>
-    {
-        new Claim(ClaimTypes.NameIdentifier, user.Id),
-        new Claim(ClaimTypes.Name, user.UserName),
-        new Claim(ClaimTypes.Email, user.Email)
-    };
+            {
+                new Claim(ClaimTypes.NameIdentifier, user.Id),
+                new Claim(ClaimTypes.Name, user.UserName),
+                new Claim(ClaimTypes.Email, user.Email)
+            };
 
             // Add user roles as claims
             var roles = await _userManager.GetRolesAsync(user);
@@ -167,5 +349,77 @@ namespace Infrastructure.Repositories.ServiceImplemention
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        #endregion
+
+        #region Mail
+        public async Task SendEmailAsync(string ToEmail, string Subject , string Body )
+        {
+            var email = new MimeMessage();
+
+            email.Sender =MailboxAddress.Parse(_configuration.GetSection("MailSettings:Mail").Value);
+            email.To.Add(MailboxAddress.Parse(ToEmail));
+            email.Subject = Subject;    
+
+
+            var builder = new BodyBuilder();
+            //if(Attachments != null)
+            //{
+            //    byte[] fileBytes;
+            //    foreach(var file in Attachments)
+            //    {
+            //        if (file.Length > 0)
+            //        {
+            //            using (var ms = new MemoryStream())
+            //            {
+            //                file.CopyTo(ms);
+            //                fileBytes = ms.ToArray();
+            //            }
+            //            builder.Attachments.Add(file.Name,fileBytes,MimeKit.ContentType.Parse(file.ContentType));
+            //        }
+            //    }
+            //}
+
+            builder.HtmlBody = Body;
+            email.Body = builder.ToMessageBody();
+            using var smtp = new SmtpClient();
+
+
+            var host = _configuration.GetSection("MailSettings:Host").Value;
+            var port = int.Parse(_configuration.GetSection("MailSettings:Port").Value);
+            var emailAddress = _configuration.GetSection("MailSettings:Mail").Value;
+            var emailPassword = _configuration.GetSection("MailSettings:Password").Value;
+
+            // Connect to SMTP server
+            await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+
+            // Authenticate
+            await smtp.AuthenticateAsync(emailAddress, emailPassword);
+
+            // Send email
+            await smtp.SendAsync(email);
+
+            // Disconnect
+            await smtp.DisconnectAsync(true);
+    
+        }
+        #endregion
+
+        #region Generate-Otp
+
+        private string GenerateNumericOtp(int length)
+        {
+            var random = new Random();
+            var otp = new StringBuilder();
+
+            for (int i = 0; i < length; i++)
+            {
+                otp.Append(random.Next(0, 10)); // Append a random digit (0-9)
+            }
+
+            return otp.ToString();
+        }
+
+
+        #endregion
     }
 }

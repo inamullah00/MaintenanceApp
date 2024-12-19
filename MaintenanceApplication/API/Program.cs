@@ -21,8 +21,12 @@ builder.Services.AddControllers()
  });
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-builder.Services.RegistrationServices();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
+});
+
+builder.Services.RegistrationServices(builder.Configuration);
 
 // Identity Setup
 
@@ -58,6 +62,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 
 
 // Header Autherization 
+
+builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
+{
+    options.TokenLifespan = TimeSpan.FromHours(2); // Example: tokens valid for 2 hours
+});
+
+// Memory Cache
+
+builder.Services.AddMemoryCache();
+
 
 var app = builder.Build();
 
