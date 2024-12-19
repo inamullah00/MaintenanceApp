@@ -1,4 +1,5 @@
-﻿using Domain.Entity.UserEntities;
+﻿
+using Domain.Entity.UserEntities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -22,6 +23,9 @@ namespace Infrastructure.Data
 
         // DbSets for all your models
         public DbSet<ApplicationUser> Users { get; set; }
+        public DbSet<UserOtp> UserOtps { get; set; }
+        public DbSet<OfferedService> OfferedServices { get; set; }
+        public DbSet<OfferedServiceCategory> OfferedServiceCategories { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)

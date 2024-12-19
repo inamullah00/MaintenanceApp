@@ -17,17 +17,13 @@ namespace Application.Dto_s.UserDto_s
         public string? LastName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
-
         public string? PhoneNumber { get; set; }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public Role? Role { get; set; }
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UserStatus? Status { get; set; }
-
         public string? Location { get; set; }
         public string? Address { get; set; }
-
-
 
         public string? ExpertiseArea { get; set; }
         public float? Rating { get; set; }
@@ -38,7 +34,6 @@ namespace Application.Dto_s.UserDto_s
         public string? Skills { get; set; }
         public decimal? HourlyRate { get; set; }
         public bool? IsVerified { get; set; }
-
 
     }
 }

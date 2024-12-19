@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class MaintenanceAppInitialize : Migration
+    public partial class Dbinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -64,6 +64,33 @@ namespace Infrastructure.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OfferedServiceCategories",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferedServiceCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UserOtps",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Otp = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiresAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserOtps", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -172,14 +199,53 @@ namespace Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "OfferedServices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    VideoUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    ImageUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VoiceUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    PreferredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Building = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Apartment = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Floor = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Street = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SetAsCurrentHomeAddress = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OfferedServices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OfferedServices_AspNetUsers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OfferedServices_OfferedServiceCategories_CategoryID",
+                        column: x => x.CategoryID,
+                        principalTable: "OfferedServiceCategories",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "3218db74-cae6-4192-a11c-795797f5bfc2", null, "Client", "CLIENT" },
-                    { "ab5337ff-ec0c-43ae-821b-0224a55bcba7", null, "Admin", "ADMIN" },
-                    { "b75afd8f-33c9-43bc-8675-610ab971c4a1", null, "Freelancer", "FREELANCER" }
+                    { "706c8ea2-a4a0-49b1-b0d0-c84267e628f5", null, "Client", "CLIENT" },
+                    { "cd3846d2-c8d8-41a7-a483-18e8cd18a289", null, "Freelancer", "FREELANCER" },
+                    { "d8bc1a07-b3f6-40e2-a936-972f69d8c35e", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -220,6 +286,16 @@ namespace Infrastructure.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OfferedServices_CategoryID",
+                table: "OfferedServices",
+                column: "CategoryID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OfferedServices_ClientId",
+                table: "OfferedServices",
+                column: "ClientId");
         }
 
         /// <inheritdoc />
@@ -241,10 +317,19 @@ namespace Infrastructure.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "OfferedServices");
+
+            migrationBuilder.DropTable(
+                name: "UserOtps");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "OfferedServiceCategories");
         }
     }
 }

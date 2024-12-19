@@ -1,8 +1,10 @@
-﻿using Domain.Enums;
+﻿using Domain.Common;
+using Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +40,32 @@ namespace Domain.Entity.UserEntities
         public bool? IsVerified { get; set; }  // Whether the freelancer is verified by the admin
 
    
+    }
+
+
+
+    public class UserOtp
+    {
+
+        public Guid Id { get; set; }
+        public UserOtp()
+        {
+            // Automatically calculate the expiration time (5 minutes from creation)
+            ExpiresAt = CreatedAt.AddMinutes(5);
+        }
+
+        [Required]
+        [MaxLength(6)]
+        public string Otp { get; set; } // The OTP code
+
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // When the OTP was created
+
+        [Required]
+        public DateTime ExpiresAt { get; set; } // When the OTP will expire
+
+        [Required]
+        public bool IsUsed { get; set; } // Whether the OTP has been used
     }
 }
 
