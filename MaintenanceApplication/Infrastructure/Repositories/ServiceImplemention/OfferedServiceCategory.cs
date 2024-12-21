@@ -1,4 +1,5 @@
 ﻿using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
+using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
@@ -15,19 +16,19 @@ namespace Infrastructure.Repositories.ServiceImplemention
 {
     public class OfferedServiceCategory : IOfferedServiceCategory
     {
-        private readonly IOfferedServiceCategoryRepository _serviceCategoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OfferedServiceCategory(IOfferedServiceCategoryRepository serviceCategoryRepository,  IMapper mapper)
+        public OfferedServiceCategory(IUnitOfWork unitOfWork,  IMapper mapper)
         {
-            _serviceCategoryRepository = serviceCategoryRepository;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         public async Task<(bool Success,OfferedServiceCategoryResponseDto? Servicecategory, string Message)> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto)
         {
             var ServiceCategory = _mapper.Map<Domain.Entity.UserEntities.OfferedServiceCategory>(requestDto);
-           var Category = await _serviceCategoryRepository.CreateAsync(ServiceCategory);
+           var Category = await _unitOfWork.OfferedServiceCategoryRepository.CreateAsync(ServiceCategory);
 
             if (Category ==null)
             {
@@ -40,7 +41,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         public async Task<(bool Success, string Message)> DeleteServiceCategoryAsync(Guid categoryId)
         {
             
-            var res = await _serviceCategoryRepository.RemoveAsync(categoryId);
+            var res = await _unitOfWork.OfferedServiceCategoryRepository.RemoveAsync(categoryId);
 
             if (!res)
             {
@@ -51,7 +52,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
         public async Task<(bool Success, List<OfferedServiceCategoryResponseDto>? Categories)> GetAllServiceCategoriesAsync()
         {
-           var offeredServiceCategory= await _serviceCategoryRepository.GetAllAsync();
+           var offeredServiceCategory= await _unitOfWork.OfferedServiceCategoryRepository.GetAllAsync();
 
             var res = _mapper.Map<List<OfferedServiceCategoryResponseDto>>(offeredServiceCategory);
             return (true, res);
@@ -60,7 +61,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
         public async Task<(bool Success, OfferedServiceCategoryResponseDto? Category)> GetServiceCategoryByIdAsync(Guid categoryId)
         {
-            var offeredServiceCategory = await _serviceCategoryRepository.GetByIdAsync(categoryId);
+            var offeredServiceCategory = await _unitOfWork.OfferedServiceCategoryRepository.GetByIdAsync(categoryId);
 
             var res = _mapper.Map<OfferedServiceCategoryResponseDto>(offeredServiceCategory);
             return (true, res);
@@ -73,7 +74,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             var entity = _mapper.Map<Domain.Entity.UserEntities.OfferedServiceCategory>(requestDto);
 
             // Perform the update operation
-            var (isUpdated, updatedEntity) = await _serviceCategoryRepository.UpdateAsync(entity, id);
+            var (isUpdated, updatedEntity) = await _unitOfWork.OfferedServiceCategoryRepository.UpdateAsync(entity, id);
 
             // Check if the update operation was successful
             if (!isUpdated || updatedEntity == null)

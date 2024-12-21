@@ -31,12 +31,9 @@ namespace Domain.Entity.UserEntities
         [MaxLength(200)]
         public string Location { get; set; } 
 
-        [MaxLength(500)]
-        public string VideoUrl { get; set; }
+        public List<string> VideoUrls { get; set; }
         public List<string> ImageUrls { get; set; } = new(); // Store file paths/URLs
-
-        [MaxLength(500)]
-        public string VoiceUrl { get; set; } 
+        public List<string> AudioUrls { get; set; } 
 
         public DateTime? PreferredTime { get; set; } 
 

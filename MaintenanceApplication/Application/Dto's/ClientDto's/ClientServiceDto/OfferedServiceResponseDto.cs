@@ -22,11 +22,11 @@ namespace Application.Dto_s.ClientDto_s
 
         public string Location { get; set; } // Service location details
 
-        public string VideoUrl { get; set; } // URL of the video showcasing the service
+        public List<string> VideoUrls { get; set; }
+        public List<string> AudioUrls { get; set; }
 
         public List<string> ImageUrls { get; set; } = new(); // Store file paths/URLs
 
-        public string VoiceUrl { get; set; } // URL of the voice recording
 
         public DateTime? PreferredTime { get; set; } // Client's preferred time for service delivery
 
