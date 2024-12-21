@@ -209,9 +209,9 @@ namespace Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    VideoUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    VideoUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VoiceUrl = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    AudioUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PreferredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Building = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apartment = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -243,9 +243,9 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "706c8ea2-a4a0-49b1-b0d0-c84267e628f5", null, "Client", "CLIENT" },
-                    { "cd3846d2-c8d8-41a7-a483-18e8cd18a289", null, "Freelancer", "FREELANCER" },
-                    { "d8bc1a07-b3f6-40e2-a936-972f69d8c35e", null, "Admin", "ADMIN" }
+                    { "89159b7c-d5e9-4abe-8fb9-ec458b45fd15", null, "Freelancer", "FREELANCER" },
+                    { "95e8b086-09b8-4fec-a26a-076eb6f9e22a", null, "Client", "CLIENT" },
+                    { "f906a5c6-a23e-4756-bf97-efacafabe7c0", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20241218163534_Db init")]
+    [Migration("20241221111530_Db init")]
     partial class Dbinit
     {
         /// <inheritdoc />
@@ -32,6 +32,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Apartment")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AudioUrls")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -85,15 +89,9 @@ namespace Infrastructure.Migrations
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("VideoUrl")
+                    b.Property<string>("VideoUrls")
                         .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
-                    b.Property<string>("VoiceUrl")
-                        .IsRequired()
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -174,19 +172,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d8bc1a07-b3f6-40e2-a936-972f69d8c35e",
+                            Id = "f906a5c6-a23e-4756-bf97-efacafabe7c0",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "cd3846d2-c8d8-41a7-a483-18e8cd18a289",
+                            Id = "89159b7c-d5e9-4abe-8fb9-ec458b45fd15",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "706c8ea2-a4a0-49b1-b0d0-c84267e628f5",
+                            Id = "95e8b086-09b8-4fec-a26a-076eb6f9e22a",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });

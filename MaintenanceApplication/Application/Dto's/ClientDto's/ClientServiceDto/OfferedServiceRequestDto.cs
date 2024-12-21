@@ -30,12 +30,12 @@ namespace Application.Dto_s.ClientDto_s
         public string Location { get; set; } // Optional location details
 
         [MaxLength(500)]
-        public string VideoUrl { get; set; } // URL for the video related to the service
+        public List<IFormFile> VideoFiles { get; set; } // URL for the video related to the service
 
         public List<IFormFile> ImageFiles { get; set; }
 
-        [MaxLength(500)]
-        public string VoiceUrl { get; set; } // URL for the voice recording related to the service
+
+        public List<IFormFile> AudioFiles { get; set; } // URL for the voice recording related to the service
 
         public DateTime? PreferredTime { get; set; } // Preferred time for the service to be delivered
 

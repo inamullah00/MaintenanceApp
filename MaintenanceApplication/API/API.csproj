@@ -25,6 +25,9 @@
     <Folder Include="Configuration\" />
     <Folder Include="Extensions\" />
     <Folder Include="Middlewares\" />
+    <Folder Include="wwwroot\UploadedAudios\" />
+    <Folder Include="wwwroot\UploadedFiles\" />
+    <Folder Include="wwwroot\UploadedVideos\" />
   </ItemGroup>
 
   <ItemGroup>

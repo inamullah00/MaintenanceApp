@@ -1,4 +1,5 @@
-﻿using Application.Interfaces.ReposoitoryInterfaces;
+﻿using Application.Interfaces.IUnitOFWork;
+using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
@@ -6,6 +7,7 @@ using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using Infrastructure.Repositories.RepositoryImplementions;
 using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplementation;
+using Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplementation;
 using Infrastructure.Repositories.ServiceImplemention;
 using Microsoft.OpenApi.Models;
 
@@ -51,9 +53,9 @@ namespace API.DependancyContainer
         }
     });
             });
-            services.AddScoped<IOfferedServiceRepository ,OfferedServiceRepository>();
-            services.AddScoped<IOfferedServiceCategoryRepository ,OfferedServiceCategoryRepository>();
+  
 
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

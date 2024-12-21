@@ -1,10 +1,12 @@
 ﻿using Application.Dto_s.ClientDto_s;
+using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
 using Ardalis.Specification;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,12 +17,14 @@ namespace Infrastructure.Repositories.ServiceImplemention
 {
     public class OfferedServices : IClientService
     {
-        private readonly IOfferedServiceRepository _offeredServiceRepository;
+     
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public OfferedServices(IOfferedServiceRepository  offeredServiceRepository, IMapper mapper)
+        public OfferedServices(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _offeredServiceRepository = offeredServiceRepository;
+
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
@@ -28,49 +32,48 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
             var service = _mapper.Map<OfferedService>(request);
 
-            if (request.ImageFiles == null || !request.ImageFiles.Any())
+        
+
+            // Call the ImageUpload method to handle file uploads
+            var (uploadSuccess, uploadedImageUrls, uploadMessage) = await ImageUploadAsync(request.ImageFiles);
+
+            if (!uploadSuccess)
             {
-                return (false, "No images uploaded.");
+                return (false, uploadMessage);
             }
-
-            // Define a directory to save the uploaded files
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
-
-            // Ensure the directory exists
-            if (!Directory.Exists(uploadPath))
-            {
-                Directory.CreateDirectory(uploadPath);
-            }
-
-            var uploadedImageUrls = new List<string>();
-
-            foreach (var imageFile in request.ImageFiles)
-            {
-                // Generate a unique file name
-                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
-                var fullPath = Path.Combine(uploadPath, fileName);
-
-                // Save the file to the server
-                using (var stream = new FileStream(fullPath, FileMode.Create))
-                {
-                    await imageFile.CopyToAsync(stream);
-                }
-
-                // Add the file path to the list
-                uploadedImageUrls.Add($"/UploadedFiles/{fileName}"); // Save relative path
-            }
-
-            // Store the file URLs in the entity
+            // Store the uploaded image URLs in the entity
             service.ImageUrls = uploadedImageUrls;
 
-            var entity = await _offeredServiceRepository.CreateAsync(service);
+            // Call the VideoUploadAsync method
+            var (VideouploadSuccess, uploadedVideoUrls, VideouploadMessage) = await VideoUploadAsync(request.VideoFiles);
 
-            if (entity==null) 
+            if (!uploadSuccess)
+            {
+                return (false, uploadMessage);
+            }
+
+            // Store the uploaded video URLs in the entity
+            service.VideoUrls = uploadedVideoUrls;
+
+
+
+            var (AudioUploadSuccess, UploadedAudioUrls, AudioUploadMessage) = await AudioUploadAsync(request.AudioFiles);
+            if (!AudioUploadSuccess)
+            {
+                return (false, AudioUploadMessage);
+            }
+
+            service.AudioUrls = UploadedAudioUrls;
+
+            var entity = await _unitOfWork.OfferedServiceRepository.CreateAsync(service);
+
+            if (entity == null)
             {
                 return (false, "An Error Occured While Adding Service");
             }
-      
+
             return (true, "Service Added Successfully!");
+
         }
 
         public async Task<(bool Success, string Message)> DeleteServiceAsync(Guid serviceId)
@@ -82,7 +85,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             }
 
             // Fetch the service from the repository by Id
-            var service = await _offeredServiceRepository.GetByIdAsync(serviceId);
+            var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
 
             // Check if the service exists
             if (service == null)
@@ -91,7 +94,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             }
 
             // Delete the service using the repository
-            var isDeleted = await _offeredServiceRepository.RemoveAsync(service);
+            var isDeleted = await _unitOfWork.OfferedServiceRepository.RemoveAsync(service);
 
             // If deletion fails, return an error message
             if (!isDeleted)
@@ -105,7 +108,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
         public async Task<(bool Success, OfferedServiceResponseDto? Service, string Message)> GetServiceAsync(Guid serviceId)
         {
-           var service =  await _offeredServiceRepository.GetByIdAsync(serviceId);
+           var service =  await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
             
             if (service == null)
             {
@@ -121,7 +124,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         public async Task<(bool Success, List<OfferedServiceResponseDto>? Services, string Message)> GetServicesAsync()
         {
 
-            var services = await _offeredServiceRepository.GetAllAsync();
+            var services = await _unitOfWork.OfferedServiceRepository.GetAllAsync();
 
             var res = _mapper.Map<List<OfferedServiceResponseDto>>(services);
 
@@ -141,5 +144,173 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             return (false, "");
         }
+
+
+
+
+        #region Image Upload
+
+        private async Task<(bool Success, List<string> ImageUrls, string Message)> ImageUploadAsync(IEnumerable<IFormFile> imageFiles)
+        {
+
+            if (imageFiles == null || !imageFiles.Any())
+            {
+                return (false, new List<string>(), "No images uploaded.");
+            }
+
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            var uploadedImageUrls = new List<string>();
+
+            try
+            {
+                foreach (var imageFile in imageFiles)
+                {
+                    // Generate a unique file name
+                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
+                    var fullPath = Path.Combine(uploadPath, fileName);
+
+                    // Save the file to the server
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await imageFile.CopyToAsync(stream);
+                    }
+
+                    // Add the file path to the list
+                    uploadedImageUrls.Add($"/UploadedFiles/{fileName}");
+                }
+
+                return (true, uploadedImageUrls, "Files uploaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, new List<string>(), $"An error occurred during file upload: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+
+
+        #region Video Upload
+
+        private async Task<(bool Success, List<string> VideoUrls, string Message)> VideoUploadAsync(IEnumerable<IFormFile> videoFiles)
+        {
+
+
+            if (videoFiles == null || !videoFiles.Any())
+            {
+                return (false, new List<string>(), "No Video uploaded.");
+            }
+
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedVideos");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            var uploadedVideoUrls = new List<string>();
+
+            try
+            {
+                foreach (var videoFile in videoFiles)
+                {
+                    // Generate a unique file name
+                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(videoFile.FileName)}";
+                    var fullPath = Path.Combine(uploadPath, fileName);
+
+                    // Save the file to the server
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await videoFile.CopyToAsync(stream);
+                    }
+
+                    // Add the file path to the list
+                    uploadedVideoUrls.Add($"/UploadedVideos/{fileName}");
+                }
+
+                return (true, uploadedVideoUrls, "Videos uploaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, new List<string>(), $"An error occurred during video upload: {ex.Message}");
+            }
+        }
+
+        #endregion
+
+
+        #region Upload Audio
+
+        private async Task<(bool Success, List<string> VideoUrls, string Message)> AudioUploadAsync(IEnumerable<IFormFile> AudioFiles)
+        {
+            if (AudioFiles == null || !AudioFiles.Any())
+            {
+                return (false, new List<string>(), "No Audio uploaded.");
+            }
+
+            var allowedContentTypes = new List<string> { "audio/mpeg", "audio/wav" };
+
+
+            var UploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/UploadedAudios");
+
+            if (!Directory.Exists(UploadPath))
+            {
+                Directory.CreateDirectory(UploadPath);
+            }
+
+            var UploadedAudioUrls = new List<string>();
+
+         
+            try
+            {
+                foreach (var audioFile in AudioFiles)
+                {
+
+                    // Validate ContentType (MIME Type)
+                    if (!allowedContentTypes.Contains(audioFile.ContentType.ToLower()))
+                    {
+                        return (false, new List<string>(), "Invalid Audio File. Only .mp3 and .wav are allowed.");
+                    }
+
+
+                    //generate Unique File Name
+
+                    var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(audioFile.FileName)}";
+                    var fullPath = Path.Combine(UploadPath, fileName);
+
+
+                    using (var fileStream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        await audioFile.CopyToAsync(fileStream);
+
+                        UploadedAudioUrls.Add($"/UploadedAudios/{fileName}");
+                    }
+
+
+
+                }
+
+                return (true, UploadedAudioUrls, "Files uploaded successfully.");
+
+            }
+            catch (Exception ex)
+            {
+                return (false, new List<string>(), $"An error occurred during file upload: {ex.Message}");
+            }
+        }
+
+        #endregion
+
     }
 }

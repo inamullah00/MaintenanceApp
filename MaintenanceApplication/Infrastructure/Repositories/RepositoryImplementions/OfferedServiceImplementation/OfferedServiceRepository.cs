@@ -83,9 +83,9 @@ namespace Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImpl
             service.Title = entity.Title; // Set Title
             service.Description = entity.Description; // Set Description
             service.Location = entity.Location; // Set Location
-            service.VideoUrl = entity.VideoUrl; // Set VideoUrl
+            service.VideoUrls = entity.VideoUrls; // Set VideoUrl
             service.ImageUrls = entity.ImageUrls; // Set ImageUrls
-            service.VoiceUrl = entity.VoiceUrl; // Set VoiceUrl
+            service.AudioUrls = entity.AudioUrls; // Set VoiceUrl
             service.PreferredTime = entity.PreferredTime; // Set PreferredTime
             service.Building = entity.Building; // Set Building
             service.Apartment = entity.Apartment; // Set Apartment
