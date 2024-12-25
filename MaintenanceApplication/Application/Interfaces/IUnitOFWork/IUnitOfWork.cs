@@ -2,6 +2,7 @@
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace Application.Interfaces.IUnitOFWork
     {
         public IOfferedServiceCategoryRepository OfferedServiceCategoryRepository { get; }
         public IOfferedServiceRepository OfferedServiceRepository { get; }
+        public IFreelancerRepository FreelancerRepository  { get; }
         Task<int> SaveChangesAsync();
     }
 }

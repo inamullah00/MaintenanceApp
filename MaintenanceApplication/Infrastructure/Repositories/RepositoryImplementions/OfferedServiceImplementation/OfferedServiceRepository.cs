@@ -1,7 +1,7 @@
 ﻿using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Ardalis.Specification;
-using Domain.Entity.UserEntities;
 using Infrastructure.Data;
+using Maintenance.Domain.Entity.Client;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -65,9 +66,6 @@ namespace API.Controllers.ClientController
 
         #endregion
 
-
-
-
         #region Add-Service
         [HttpPost("Service")]
         public async Task<IActionResult> AddService([FromForm] OfferedServiceRequestDto serviceRequestDto)
@@ -92,7 +90,6 @@ namespace API.Controllers.ClientController
         }
 
         #endregion
-
 
         #region Update-Service
         [HttpPut("Service/{Id:guid}")]
@@ -143,6 +140,5 @@ namespace API.Controllers.ClientController
         }
 
         #endregion
-
     }
 }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
 
-namespace Infrastructure.Migrations
+namespace Maintenance.Infrastructure.Migrations
 {
     /// <inheritdoc />
     public partial class Dbinit : Migration
@@ -67,11 +67,27 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Bids",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bids", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OfferedServiceCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -206,9 +222,9 @@ namespace Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CategoryID = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Description = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    Location = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     VideoUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ImageUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     AudioUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -243,9 +259,9 @@ namespace Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "89159b7c-d5e9-4abe-8fb9-ec458b45fd15", null, "Freelancer", "FREELANCER" },
-                    { "95e8b086-09b8-4fec-a26a-076eb6f9e22a", null, "Client", "CLIENT" },
-                    { "f906a5c6-a23e-4756-bf97-efacafabe7c0", null, "Admin", "ADMIN" }
+                    { "04fb4298-c23b-4ce2-aa81-a29d75a78e0a", null, "Client", "CLIENT" },
+                    { "abe0b628-2b10-4afd-ad0e-5d211323e528", null, "Freelancer", "FREELANCER" },
+                    { "c2bade94-a6a0-4ef1-91aa-7df2928e93b6", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -315,6 +331,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "Bids");
 
             migrationBuilder.DropTable(
                 name: "OfferedServices");

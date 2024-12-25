@@ -3,6 +3,8 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Infrastructure.Data;
 using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplementation;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
+using Maintenance.Infrastructure.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,6 +20,7 @@ namespace Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplemen
         public IOfferedServiceCategoryRepository OfferedServiceCategoryRepository { get; private set; }
 
         public IOfferedServiceRepository OfferedServiceRepository { get; private set; }
+        public IFreelancerRepository FreelancerRepository { get; private set; }
 
 
         public UnitOfWork(ApplicationDbContext dbContext)
@@ -25,6 +28,7 @@ namespace Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplemen
             _dbContext = dbContext;
             OfferedServiceCategoryRepository = new OfferedServiceCategoryRepository(dbContext);
             OfferedServiceRepository = new OfferedServiceRepository(dbContext);
+            FreelancerRepository = new FreelancerRepository(dbContext);
         }
 
         public void Dispose()

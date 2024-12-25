@@ -1,4 +1,5 @@
 ﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entity.UserEntities
+namespace Maintenance.Domain.Entity.Client
 {
     public class OfferedService
     {
@@ -21,26 +22,17 @@ namespace Domain.Entity.UserEntities
         public Guid CategoryID { get; set; }
 
         [Required]
-        [MaxLength(100)]
         public string Title { get; set; }
 
         [Required]
-        [MaxLength(1000)]
         public string Description { get; set; }
-
-        [MaxLength(200)]
-        public string Location { get; set; } 
+        public string Location { get; set; }
 
         public List<string> VideoUrls { get; set; }
-        public List<string> ImageUrls { get; set; } = new(); // Store file paths/URLs
-        public List<string> AudioUrls { get; set; } 
+        public List<string> ImageUrls { get; set; } = new();
+        public List<string> AudioUrls { get; set; }
 
-        public DateTime? PreferredTime { get; set; } 
-
-
-
-        // Additional Information
-
+        public DateTime? PreferredTime { get; set; }
 
         public string Building { get; set; }
         public string Apartment { get; set; }
@@ -50,21 +42,20 @@ namespace Domain.Entity.UserEntities
         public bool SetAsCurrentHomeAddress { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
-        public DateTime? UpdatedAt { get; set; } 
+        public DateTime? UpdatedAt { get; set; }
 
         // Navigation Properties
         [ForeignKey("CategoryID")]
         public OfferedServiceCategory Category { get; set; }
 
         [ForeignKey("ClientId")]
-        public ApplicationUser Client { get; set; } 
+        public ApplicationUser Client { get; set; }
     }
 
     public class OfferedServiceCategory
     {
         public Guid Id { get; set; }
         [Required]
-        [MaxLength(100)]
         public string CategoryName { get; set; }
     }
 }

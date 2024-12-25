@@ -3,6 +3,9 @@ using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Application.Dto_s.UserDto_s;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Domain.Entity.Client;
+using Maintenance.Domain.Entity.Freelancer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,6 +29,14 @@ namespace Application.Mapper
             CreateMap<OfferedServiceCategory, OfferedServiceCategoryResponseDto>().ReverseMap();
             CreateMap<OfferedServiceCategoryRequestDto, OfferedServiceCategory>().ReverseMap();
             CreateMap<OfferedServiceCategoryUpdateDto, OfferedServiceCategory>().ReverseMap();
+
+
+            CreateMap<Bid, BidResponseDto>().ReverseMap();
+            CreateMap<BidRequestDto, Bid>().ReverseMap();
+            CreateMap<BidUpdateDto, Bid>().ReverseMap();
+            CreateMap<Bid,ApproveBidRequestDto>().ReverseMap();   
+
+
         }
     }
 }
