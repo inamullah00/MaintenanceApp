@@ -5,7 +5,6 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.Offere
 using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
 using AutoMapper;
 using Domain.Common;
-using Domain.Entity.UserEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,7 +26,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
         public async Task<(bool Success,OfferedServiceCategoryResponseDto? Servicecategory, string Message)> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto)
         {
-            var ServiceCategory = _mapper.Map<Domain.Entity.UserEntities.OfferedServiceCategory>(requestDto);
+            var ServiceCategory = _mapper.Map<Maintenance.Domain.Entity.Client.OfferedServiceCategory>(requestDto);
            var Category = await _unitOfWork.OfferedServiceCategoryRepository.CreateAsync(ServiceCategory);
 
             if (Category ==null)
@@ -71,7 +70,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
 
             // Map the update DTO to the domain entity
-            var entity = _mapper.Map<Domain.Entity.UserEntities.OfferedServiceCategory>(requestDto);
+            var entity = _mapper.Map<Maintenance.Domain.Entity.Client.OfferedServiceCategory>(requestDto);
 
             // Perform the update operation
             var (isUpdated, updatedEntity) = await _unitOfWork.OfferedServiceCategoryRepository.UpdateAsync(entity, id);

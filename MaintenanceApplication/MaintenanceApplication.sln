@@ -7,13 +7,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Src", "Src", "{E9423D5C-039
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D822B949-6FBF-426B-812A-AA507CB95AB1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\Application.csproj", "{4B43B99C-2D65-4C31-83AF-8C1BA61DDAB8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Application", "Application\Maintenance.Application.csproj", "{4B43B99C-2D65-4C31-83AF-8C1BA61DDAB8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csproj", "{F5977C1D-6EA9-45F6-9013-F18A8BFE064A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Domain", "Domain\Maintenance.Domain.csproj", "{F5977C1D-6EA9-45F6-9013-F18A8BFE064A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{02982939-71C2-4A6D-A902-1F33ABD8B8DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Infrastructure", "Infrastructure\Maintenance.Infrastructure.csproj", "{02982939-71C2-4A6D-A902-1F33ABD8B8DB}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "API", "API\API.csproj", "{C6922DA4-8CB2-49B8-A888-DA5313734EA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.API", "API\Maintenance.API.csproj", "{C6922DA4-8CB2-49B8-A888-DA5313734EA1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

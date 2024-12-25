@@ -5,7 +5,7 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
 using Ardalis.Specification;
 using AutoMapper;
-using Domain.Entity.UserEntities;
+using Maintenance.Domain.Entity.Client;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;

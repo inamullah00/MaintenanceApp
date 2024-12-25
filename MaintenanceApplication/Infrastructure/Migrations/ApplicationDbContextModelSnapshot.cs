@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,32 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entity.UserEntities.OfferedService", b =>
+            modelBuilder.Entity("Domain.Entity.UserEntities.UserOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Otp")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserOtps");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedService", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -52,8 +77,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(1000)
-                        .HasColumnType("nvarchar(1000)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Floor")
                         .IsRequired()
@@ -65,8 +89,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Location")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("PreferredTime")
                         .HasColumnType("datetime2");
@@ -80,8 +103,7 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -99,7 +121,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("OfferedServices");
                 });
 
-            modelBuilder.Entity("Domain.Entity.UserEntities.OfferedServiceCategory", b =>
+            modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedServiceCategory", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -107,37 +129,39 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("CategoryName")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.ToTable("OfferedServiceCategories");
                 });
 
-            modelBuilder.Entity("Domain.Entity.UserEntities.UserOtp", b =>
+            modelBuilder.Entity("Maintenance.Domain.Entity.Freelancer.Bid", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<decimal>("BidAmount")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Otp")
+                    b.Property<string>("FreelancerId")
                         .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("OfferedServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserOtps");
+                    b.ToTable("Bids");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -169,19 +193,19 @@ namespace Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f906a5c6-a23e-4756-bf97-efacafabe7c0",
+                            Id = "c2bade94-a6a0-4ef1-91aa-7df2928e93b6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "89159b7c-d5e9-4abe-8fb9-ec458b45fd15",
+                            Id = "abe0b628-2b10-4afd-ad0e-5d211323e528",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "95e8b086-09b8-4fec-a26a-076eb6f9e22a",
+                            Id = "04fb4298-c23b-4ce2-aa81-a29d75a78e0a",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -413,9 +437,9 @@ namespace Infrastructure.Migrations
                     b.HasDiscriminator().HasValue("ApplicationUser");
                 });
 
-            modelBuilder.Entity("Domain.Entity.UserEntities.OfferedService", b =>
+            modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedService", b =>
                 {
-                    b.HasOne("Domain.Entity.UserEntities.OfferedServiceCategory", "Category")
+                    b.HasOne("Maintenance.Domain.Entity.Client.OfferedServiceCategory", "Category")
                         .WithMany()
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)

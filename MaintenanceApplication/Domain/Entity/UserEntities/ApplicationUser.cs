@@ -21,16 +21,13 @@ namespace Domain.Entity.UserEntities
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UserStatus? Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
        
-
-
-        // Client Fields (some fields are optional depending on requirements)
-        public string? Location { get; set; }  // Client's service location
-        public string? Address { get; set; }  // Client's address (optional)
+        public string? Location { get; set; } 
+        public string? Address { get; set; }  
 
         // Freelancer Fields
         public string? ExpertiseArea { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
-        public float? Rating { get; set; }  // Freelancer's average rating
-        public string? Bio { get; set; }  // Short bio for freelancer
+        public float? Rating { get; set; }  
+        public string? Bio { get; set; }  
         public DateTime? ApprovedDate { get; set; } // When the freelancer was approved by the admin
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 

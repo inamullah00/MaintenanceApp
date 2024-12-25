@@ -1,5 +1,7 @@
 ﻿
 using Domain.Entity.UserEntities;
+using Maintenance.Domain.Entity.Client;
+using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +28,7 @@ namespace Infrastructure.Data
         public DbSet<UserOtp> UserOtps { get; set; }
         public DbSet<OfferedService> OfferedServices { get; set; }
         public DbSet<OfferedServiceCategory> OfferedServiceCategories { get; set; }
+        public DbSet<Bid> Bids { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
