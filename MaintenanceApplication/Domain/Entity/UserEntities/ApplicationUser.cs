@@ -1,5 +1,8 @@
 ﻿using Domain.Common;
 using Domain.Enums;
+using Maintenance.Domain.Entity.Client;
+using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
@@ -34,9 +37,18 @@ namespace Domain.Entity.UserEntities
         // Optional Fields
         public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
         public decimal? HourlyRate { get; set; }  // Freelancer's hourly or project rate
-        public bool? IsVerified { get; set; }  // Whether the freelancer is verified by the admin
+        public bool? IsVerified { get; set; }  // Whether the freelancer is verified by the admi
+        public bool IsSuspended { get; set; }
 
-   
+
+        // Navigation Properties
+        public ICollection<Order> ClientOrders { get; set; } // Orders placed by the client
+        public ICollection<Order> FreelancerOrders { get; set; } // Orders completed by the freelancer
+        public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
+        //public ICollection<Notification> Notifications { get; set; } // Notifications for the user
+        //public ICollection<Dispute> Disputes { get; set; } // Disputes raised by the user
+        //public ICollection<PerformanceReport> PerformanceReports { get; set; } // Performance reports for the freelancer
+        public ICollection<OfferedService> OfferedServices { get; set; } // Services offered by the freelancer
     }
 
 

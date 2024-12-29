@@ -44,7 +44,7 @@ namespace Application.Dto_s.ClientDto_s
         public string Floor { get; set; }
         public string Street { get; set; }
 
-        public Guid ClientId { get; set; } // ID of the freelancer offering the service
+        public string ClientId { get; set; } // ID of the freelancer offering the service
 
         // Navigation Properties
         [ForeignKey("CategoryID")]

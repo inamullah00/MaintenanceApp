@@ -18,11 +18,15 @@ namespace Maintenance.Domain.Entity.Freelancer
         public string FreelancerId { get; set; }
         public DateTime CreatedAt { get; set; }
 
+
+
+        // Navigation properties to related entities
+
         [ForeignKey(nameof(OfferedServiceId))]
-        OfferedService OfferedService { get; set; }
+        public OfferedService OfferedService { get; set; }
 
         [ForeignKey(nameof(FreelancerId))]
-        ApplicationUser Freelancer { get; set; }
+      public  ApplicationUser Freelancer { get; set; }
     }
 
 }

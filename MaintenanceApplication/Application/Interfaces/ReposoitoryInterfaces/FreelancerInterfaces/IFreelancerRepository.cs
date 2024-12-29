@@ -21,10 +21,10 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<(bool, Bid?)> ApproveBidAsync(Bid entity, Guid id, CancellationToken cancellationToken = default);
 
         Task<bool> RemoveAsync(Bid offeredService, CancellationToken cancellationToken = default);
-        Task<Bid> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<BidResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
-        Task<IEnumerable<Bid>> GetListAsync(CancellationToken cancellationToken = default);
+        Task<List<BidResponseDto>> GetListAsync(CancellationToken cancellationToken = default);
 
         Task<Bid> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);

@@ -1,4 +1,6 @@
-﻿using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+﻿using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
+using Application.Dto_s.ClientDto_s;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Infrastructure.Data;
 using Maintenance.Domain.Entity.Client;
 using Microsoft.EntityFrameworkCore;
@@ -36,25 +38,55 @@ namespace Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImpl
             throw new NotImplementedException();
         }
 
-        public Task<OfferedServiceCategory> FindAsync(Expression<Func<OfferedServiceCategory, bool>> predicate, CancellationToken cancellationToken = default)
+     
+        public async Task<List<OfferedServiceCategoryResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            throw new NotImplementedException();
+            return await (from category in _dbContext.OfferedServiceCategories
+                          join service in _dbContext.OfferedServices
+                          on category.Id equals service.CategoryID
+                          select new OfferedServiceCategoryResponseDto
+                          {
+                              Id = category.Id,
+                              CategoryName = category.CategoryName,
+                              IsActive = category.IsActive,
+                              OfferedServices = category.OfferedServices.Select(s => new OfferedServiceResponseDto
+                              {
+                                  Id = s.Id,
+                                  ClientId = s.ClientId,
+                                  Title = s.Title,
+                                  Description = s.Description,
+                                  Location = s.Location,
+                                  CreatedAt = s.CreatedAt,
+                                  UpdatedAt = s.UpdatedAt
+                              }).ToList()
+                          }).ToListAsync(cancellationToken);
+
         }
 
-        public async Task<List<OfferedServiceCategory>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<OfferedServiceCategoryResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-           return await _dbContext.OfferedServiceCategories.ToListAsync();
+            return await(from category in _dbContext.OfferedServiceCategories
+                         join service in _dbContext.OfferedServices
+                         on category.Id equals service.CategoryID
+                         select new OfferedServiceCategoryResponseDto
+                         {
+                             Id = category.Id,
+                             CategoryName = category.CategoryName,
+                             IsActive = category.IsActive,
+                             OfferedServices = category.OfferedServices.Select(s => new OfferedServiceResponseDto
+                             {
+                                 Id = s.Id,
+                                 ClientId = s.ClientId,
+                                 Title = s.Title,
+                                 Description = s.Description,
+                                 Location = s.Location,
+                                 CreatedAt = s.CreatedAt,
+                                 UpdatedAt = s.UpdatedAt
+                             }).ToList()
+                         }).FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<OfferedServiceCategory> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<List<OfferedServiceCategory>> GetListAsync(CancellationToken cancellationToken = default)
-        {
-            throw new NotImplementedException();
-        }
+      
 
         public Task<bool> RemoveAsync(Guid id, CancellationToken cancellationToken = default)
         {

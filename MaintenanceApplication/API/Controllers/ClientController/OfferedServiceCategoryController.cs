@@ -25,11 +25,22 @@ namespace API.Controllers.ClientController
             try
             {
                 var result = await _offeredServiceCategory.GetAllServiceCategoriesAsync();
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Services = result.Categories
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -51,12 +62,22 @@ namespace API.Controllers.ClientController
             try
             {
                 var result = await _offeredServiceCategory.GetServiceCategoryByIdAsync(Id);
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Data = result.Category
-                  
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -78,12 +99,22 @@ namespace API.Controllers.ClientController
             try
             {
                 var result = await _offeredServiceCategory.AddServiceCategoryAsync(requestDto);
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Id = result.Servicecategory.Id,
-                    Message = result.Message,
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -104,36 +135,26 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                // Validate input
-                if (Id == Guid.Empty || requestDto == null)
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Message = "Invalid input. The category ID and request body must be provided."
-                    });
-                }
+               
 
                 var result = await _offeredServiceCategory.UpdateServiceCategoryAsync(Id,requestDto);
-                
-                // Check if the update was successful
-                if (!result.Success)
+
+                if (result.IsSuccess)
                 {
-                    return BadRequest(new
+                    return Ok(new
                     {
-                        StatusCode = 400,
-                        Success = false,
-                        Message = result.Message
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
                     });
                 }
 
-                // Return success response
-                return Ok(new
+                return StatusCode(result.StatusCode, new
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -155,11 +176,22 @@ namespace API.Controllers.ClientController
             try
             {
                 var result = await _offeredServiceCategory.DeleteServiceCategoryAsync(Id);
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)

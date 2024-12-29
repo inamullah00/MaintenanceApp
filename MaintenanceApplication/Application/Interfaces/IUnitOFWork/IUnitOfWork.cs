@@ -2,6 +2,7 @@
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
 using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,8 @@ namespace Application.Interfaces.IUnitOFWork
         public IOfferedServiceCategoryRepository OfferedServiceCategoryRepository { get; }
         public IOfferedServiceRepository OfferedServiceRepository { get; }
         public IFreelancerRepository FreelancerRepository  { get; }
+
+        public IOrderRepository OrderRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

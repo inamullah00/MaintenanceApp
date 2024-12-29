@@ -5,6 +5,7 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
 using Ardalis.Specification;
 using AutoMapper;
+using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Client;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -28,60 +29,60 @@ namespace Infrastructure.Repositories.ServiceImplemention
             _mapper = mapper;
         }
 
-        public async Task<(bool Success, string Message)> AddServiceAsync(OfferedServiceRequestDto request)
+        public async Task<Result<string>> AddServiceAsync(OfferedServiceRequestDto request)
         {
             var service = _mapper.Map<OfferedService>(request);
-
-        
 
             // Call the ImageUpload method to handle file uploads
             var (uploadSuccess, uploadedImageUrls, uploadMessage) = await ImageUploadAsync(request.ImageFiles);
 
             if (!uploadSuccess)
             {
-                return (false, uploadMessage);
+                return Result<string>.Failure(uploadMessage, 400);
             }
+
             // Store the uploaded image URLs in the entity
             service.ImageUrls = uploadedImageUrls;
 
             // Call the VideoUploadAsync method
-            var (VideouploadSuccess, uploadedVideoUrls, VideouploadMessage) = await VideoUploadAsync(request.VideoFiles);
+            var (videoUploadSuccess, uploadedVideoUrls, videoUploadMessage) = await VideoUploadAsync(request.VideoFiles);
 
-            if (!uploadSuccess)
+            if (!videoUploadSuccess)
             {
-                return (false, uploadMessage);
+                return Result<string>.Failure(videoUploadMessage, 400);
             }
 
             // Store the uploaded video URLs in the entity
             service.VideoUrls = uploadedVideoUrls;
 
+            // Call the AudioUploadAsync method
+            var (audioUploadSuccess, uploadedAudioUrls, audioUploadMessage) = await AudioUploadAsync(request.AudioFiles);
 
-
-            var (AudioUploadSuccess, UploadedAudioUrls, AudioUploadMessage) = await AudioUploadAsync(request.AudioFiles);
-            if (!AudioUploadSuccess)
+            if (!audioUploadSuccess)
             {
-                return (false, AudioUploadMessage);
+                return Result<string>.Failure(audioUploadMessage, 400);
             }
 
-            service.AudioUrls = UploadedAudioUrls;
+            // Store the uploaded audio URLs in the entity
+            service.AudioUrls = uploadedAudioUrls;
 
             var entity = await _unitOfWork.OfferedServiceRepository.CreateAsync(service);
 
             if (entity == null)
             {
-                return (false, "An Error Occured While Adding Service");
+                return Result<string>.Failure("An error occurred while adding the service.", 400);
             }
 
-            return (true, "Service Added Successfully!");
-
+            return Result<string>.Success(entity.Id.ToString(),"Service added successfully!", 201);
         }
 
-        public async Task<(bool Success, string Message)> DeleteServiceAsync(Guid serviceId)
+
+        public async Task<Result<string>> DeleteServiceAsync(Guid serviceId)
         {
             // Validate the serviceId (Check if it's empty or null)
             if (serviceId == Guid.Empty)
             {
-                return (false, "Invalid Id");
+                return Result<string>.Failure("Invalid Id", 400);
             }
 
             // Fetch the service from the repository by Id
@@ -90,7 +91,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             // Check if the service exists
             if (service == null)
             {
-                return (false, "Service Not Found");
+                return Result<string>.Failure("Service Not Found", 404);
             }
 
             // Delete the service using the repository
@@ -99,51 +100,52 @@ namespace Infrastructure.Repositories.ServiceImplemention
             // If deletion fails, return an error message
             if (!isDeleted)
             {
-                return (false, "An Error Occurred While Deleting the Service");
+                return Result<string>.Failure("An Error Occurred While Deleting the Service", 400);
             }
 
             // Successfully deleted the service, return a success message
-            return (true, "Service Deleted Successfully!");
+            return Result<string>.Success("Service Deleted Successfully!",200);
         }
 
-        public async Task<(bool Success, OfferedServiceResponseDto? Service, string Message)> GetServiceAsync(Guid serviceId)
+
+        public async Task<Result<OfferedServiceResponseDto>> GetServiceAsync(Guid serviceId)
         {
-           var service =  await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
-            
+            var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
+
             if (service == null)
             {
-                return (false, null,"Service Not Found");
+                return Result<OfferedServiceResponseDto>.Failure("Service Not Found", 404);
             }
-            var offeredservice = _mapper.Map<OfferedServiceResponseDto>(service);
 
-            return (true, offeredservice, "Service Found");
+            var offeredService = _mapper.Map<OfferedServiceResponseDto>(service);
 
-
+            return Result<OfferedServiceResponseDto>.Success(offeredService, "Service Found",200);
         }
 
-        public async Task<(bool Success, List<OfferedServiceResponseDto>? Services, string Message)> GetServicesAsync()
-        {
 
+        public async Task<Result<List<OfferedServiceResponseDto>>> GetServicesAsync()
+        {
             var services = await _unitOfWork.OfferedServiceRepository.GetAllAsync();
 
             var res = _mapper.Map<List<OfferedServiceResponseDto>>(services);
 
             if (res == null || !res.Any())
             {
-                return (false, null, "No services found.");
+                return Result<List<OfferedServiceResponseDto>>.Failure("No services found.",404);
             }
 
-            return (true, res, $"{res.Count} service(s) found.");
+            return Result<List<OfferedServiceResponseDto>>.Success(res, $"{res.Count} service(s) found.",200);
         }
 
-        public async Task<(bool Success, string Message)> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updatedRequest)
-        {
-            //var service = _mapper.Map<OfferedService>(updatedRequest);
-            //await _genericRepository.UpdateAsync(serviceId,service);
-            //return (true, "Service Updated Successfully!");
 
-            return (false, "");
-        }
+        //public async Task<(bool Success, string Message)> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updatedRequest)
+        //{
+        //    //var service = _mapper.Map<OfferedService>(updatedRequest);
+        //    //await _genericRepository.UpdateAsync(serviceId,service);
+        //    //return (true, "Service Updated Successfully!");
+
+        //    return (false, "");
+        //}
 
 
 
@@ -196,8 +198,6 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
         #endregion
-
-
 
         #region Video Upload
 

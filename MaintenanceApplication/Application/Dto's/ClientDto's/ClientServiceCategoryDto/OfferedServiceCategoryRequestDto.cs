@@ -9,6 +9,7 @@ namespace Application.Dto_s.ClientDto_s.ClientServiceCategoryDto
 {
     public class OfferedServiceCategoryRequestDto
     {
-        public string CategoryName { get; set; } 
+        public string CategoryName { get; set; }
+        public bool IsActive { get; set; }
     }
 }

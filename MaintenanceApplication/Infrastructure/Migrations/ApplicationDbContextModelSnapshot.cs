@@ -131,9 +131,118 @@ namespace Maintenance.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
                     b.HasKey("Id");
 
                     b.ToTable("OfferedServiceCategories");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.Order", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Budget")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.Property<string>("ClientId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("FreelancerAmount")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.Property<string>("FreelancerId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<Guid>("ServiceId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("TotalAmount")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.HasIndex("ServiceId");
+
+                    b.ToTable("Orders");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.Payment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("ClientPaymentAmount")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.Property<decimal>("FreelancerEarning")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.Property<Guid>("OrderId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("PlatformCommission")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrderId");
+
+                    b.ToTable("Payment");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.PerformanceReport", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("FreelancerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<int>("MonthlyLimit")
+                        .HasColumnType("int");
+
+                    b.Property<int>("OrdersCompleted")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ReportMonth")
+                        .HasColumnType("datetime2");
+
+                    b.Property<decimal>("TotalEarnings")
+                        .HasColumnType("DECIMAL(18,2)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.ToTable("PerformanceReport");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.Freelancer.Bid", b =>
@@ -142,15 +251,18 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ApplicationUserId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<decimal>("BidAmount")
-                        .HasColumnType("decimal(18,2)");
+                        .HasColumnType("DECIMAL(18,2)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FreelancerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("OfferedServiceId")
                         .HasColumnType("uniqueidentifier");
@@ -160,6 +272,12 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ApplicationUserId");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.HasIndex("OfferedServiceId");
 
                     b.ToTable("Bids");
                 });
@@ -193,19 +311,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c2bade94-a6a0-4ef1-91aa-7df2928e93b6",
+                            Id = "2c27c367-7217-427f-8398-a1239f3183f6",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "abe0b628-2b10-4afd-ad0e-5d211323e528",
+                            Id = "714c5aac-30b6-4919-af78-c00e75bd60bf",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "04fb4298-c23b-4ce2-aa81-a29d75a78e0a",
+                            Id = "228e9761-d49d-4cbd-8fbb-b1f2e0bca395",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -413,6 +531,9 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<decimal?>("HourlyRate")
                         .HasColumnType("DECIMAL(18,2)");
 
+                    b.Property<bool>("IsSuspended")
+                        .HasColumnType("bit");
+
                     b.Property<bool?>("IsVerified")
                         .HasColumnType("bit");
 
@@ -440,13 +561,13 @@ namespace Maintenance.Infrastructure.Migrations
             modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedService", b =>
                 {
                     b.HasOne("Maintenance.Domain.Entity.Client.OfferedServiceCategory", "Category")
-                        .WithMany()
+                        .WithMany("OfferedServices")
                         .HasForeignKey("CategoryID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Client")
-                        .WithMany()
+                        .WithMany("OfferedServices")
                         .HasForeignKey("ClientId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -454,6 +575,77 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Navigation("Category");
 
                     b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.Order", b =>
+                {
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Client")
+                        .WithMany("ClientOrders")
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Freelancer")
+                        .WithMany("FreelancerOrders")
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("Maintenance.Domain.Entity.Client.OfferedService", "Service")
+                        .WithMany("Orders")
+                        .HasForeignKey("ServiceId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Client");
+
+                    b.Navigation("Freelancer");
+
+                    b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.Payment", b =>
+                {
+                    b.HasOne("Maintenance.Domain.Entity.Dashboard.Order", "Order")
+                        .WithMany()
+                        .HasForeignKey("OrderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Order");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Dashboard.PerformanceReport", b =>
+                {
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Freelancer");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Freelancer.Bid", b =>
+                {
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", null)
+                        .WithMany("Bids")
+                        .HasForeignKey("ApplicationUserId");
+
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Maintenance.Domain.Entity.Client.OfferedService", "OfferedService")
+                        .WithMany()
+                        .HasForeignKey("OfferedServiceId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Freelancer");
+
+                    b.Navigation("OfferedService");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -505,6 +697,27 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedService", b =>
+                {
+                    b.Navigation("Orders");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedServiceCategory", b =>
+                {
+                    b.Navigation("OfferedServices");
+                });
+
+            modelBuilder.Entity("Domain.Entity.UserEntities.ApplicationUser", b =>
+                {
+                    b.Navigation("Bids");
+
+                    b.Navigation("ClientOrders");
+
+                    b.Navigation("FreelancerOrders");
+
+                    b.Navigation("OfferedServices");
                 });
 #pragma warning restore 612, 618
         }

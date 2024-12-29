@@ -1,6 +1,7 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Domain.Common;
+using Maintenance.Application.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,10 +12,10 @@ namespace Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfa
 {
     public interface IOfferedServiceCategory
     {
-        Task<(bool Success, OfferedServiceCategoryResponseDto? Servicecategory, string Message)> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto);
-        Task<(bool Success, string Message)> UpdateServiceCategoryAsync(Guid id,OfferedServiceCategoryUpdateDto requestDto);
-        Task<(bool Success, string Message)> DeleteServiceCategoryAsync(Guid categoryId);
-        Task<(bool Success, OfferedServiceCategoryResponseDto? Category)> GetServiceCategoryByIdAsync(Guid categoryId);
-        Task<(bool Success, List<OfferedServiceCategoryResponseDto>? Categories)> GetAllServiceCategoriesAsync();
+        Task<Result<OfferedServiceCategoryResponseDto>> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto);
+        Task<Result<OfferedServiceCategoryResponseDto>> UpdateServiceCategoryAsync(Guid id,OfferedServiceCategoryUpdateDto requestDto);
+        Task<Result<string>> DeleteServiceCategoryAsync(Guid categoryId);
+        Task<Result<OfferedServiceCategoryResponseDto>> GetServiceCategoryByIdAsync(Guid categoryId);
+        Task<Result<List<OfferedServiceCategoryResponseDto>>> GetAllServiceCategoriesAsync();
     }
 }
