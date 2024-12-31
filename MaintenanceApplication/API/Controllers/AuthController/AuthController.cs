@@ -149,78 +149,6 @@ namespace API.Controllers.AuthController
 
         #endregion
 
-        #region List-OF-Users
-        [HttpGet]
-        [Route("Users")]
-        public async Task<IActionResult> GetAllUsers()
-        {
-            try
-            {
-
-                var result = await _registerationService.UsersAsync();
-                if (!result.Success)
-                {
-                    return NotFound(new { Message = "User not found" });
-                }
-
-                return Ok(new { Message = result.Message, Users = result.Users });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
-            }
-        }
-
-        #endregion
-
-        #region User-Details
-        [HttpGet]
-        [Route("User-Details/Id:Guid")]
-        public async Task<IActionResult> UserDetails(Guid Id)
-        {
-            try
-            {
-
-                var result = await _registerationService.UserDetailsAsync(Id);
-                if (!result.Success)
-                {
-                    return NotFound(new { Message = "User not found" });
-                }
-
-                return Ok(new { Message = result.Message , User = result.User });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
-            }
-        }
-
-        #endregion
-
-        #region Block-User
-        [HttpPost]
-        [Route("Block-User")]
-        public async Task<IActionResult> BlockUser([FromBody] BlockUserRequestDto requestDto)
-        {
-            try
-            {
-                var result = await _registerationService.BlockUserAsync(requestDto.Email, requestDto.IsBlocked);
-
-                if (!result.Success)
-                {
-                    return BadRequest(new { Message = result.Message });
-                }
-
-                return Ok(new { Message = result.Message });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
-            }
-        }
-
-        #endregion
-
         #region Validate-Otp
         [HttpPost]
         [Route("Validate-Otp")]
@@ -245,6 +173,173 @@ namespace API.Controllers.AuthController
 
         #endregion
 
+
+        #region User & Account Management
+
+        #region List-OF-Users
+        [HttpGet]
+        [Route("Users")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+
+                var result = await _registerationService.UsersAsync();
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #region User-Details
+        [HttpGet]
+        [Route("User-Details/Id:Guid")]
+        public async Task<IActionResult> UserDetails(Guid Id)
+        {
+            try
+            {
+
+                var result = await _registerationService.UserDetailsAsync(Id);
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #region Block-User
+      
+        [HttpPost]
+        [Route("Block-User/{UserId:guid}")]
+        public async Task<IActionResult> BlockUser(Guid UserId)
+        {
+            try
+            {
+                var result = await _registerationService.BlockUserAsync(UserId);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+
+        #region UnBlock-User
+
+        [HttpPost]
+        [Route("UnBlock-User/{UserId:guid}")]
+        public async Task<IActionResult> UnBlockUser(Guid UserId)
+        {
+            try
+            {
+                var result = await _registerationService.UnBlockUserAsync(UserId);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #endregion
 
     }
 }

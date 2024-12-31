@@ -27,11 +27,15 @@ using Application.Interfaces.ReposoitoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
 using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
+using Maintenance.Application.Wrapper;
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
     public class RegistrationService : IRegisterationService
     {
+
+        #region Constructor & Fields
+
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -54,6 +58,9 @@ namespace Infrastructure.Repositories.ServiceImplemention
             _Cache = cache;
             _dbContext = dbContext;
         }
+
+        #endregion
+
         public async Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto request)
         {
             // Find user by email
@@ -167,36 +174,62 @@ namespace Infrastructure.Repositories.ServiceImplemention
             throw new NotImplementedException();
         }
 
-        public async Task<(bool Success,ApplicationUser? User, string Message)> UserDetailsAsync(Guid Id)
+        public async Task<Result<UserDetailsResponseDto>> UserDetailsAsync(Guid Id)
         {
-            var user= await _userManager.FindByIdAsync(Id.ToString());
-            if (user == null)
-            {
-                return (false, null, "User Not Found");
-            }
-      
-            return (true, user, "User found.");
+                var result = await (from user in _userManager.Users
+                                    where user.Id == Id.ToString()
+                                    select new UserDetailsResponseDto
+                                    {
+                                        Id = user.Id,
+                                        FirstName = user.FirstName,
+                                        LastName = user.LastName,
+                                        Status = user.Status.ToString(),
+                                        Location = user.Location,
+                                        Address = user.Address,
+                                        ExpertiseArea = user.ExpertiseArea,
+                                        Rating = user.Rating.ToString(),
+                                        Bio = user.Bio,
+                                        ApprovedDate = user.ApprovedDate,
+                                        RegistrationDate = user.RegistrationDate,
+                                        Skills = user.Skills,
+                                        HourlyRate = user.HourlyRate,
+                                        IsVerified = user.IsVerified,
+                                        Email = user.Email,
+                                        EmailConfirmed = user.EmailConfirmed
+                                    }).FirstOrDefaultAsync();
+
+                if (result == null)
+                {
+                    return Result<UserDetailsResponseDto>.Failure("User with the given ID does not exist.", 404);
+                }
+                return Result<UserDetailsResponseDto>.Success(result, "User found.", 200);
         }
 
-        public async Task<(bool Success, List<AllUsersResponseDto>? Users, string Message)> UsersAsync()
+
+        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync()
         {
-            // Project the users into the DTO
-            var users = _userManager.Users
-                .Select(u => new AllUsersResponseDto
-                {
-                    Id = u.Id,
-                    FirstName = u.FirstName,
-                    Email = u.Email
-                })
-                .ToList();
+            var users = await (from AppUsers in _userManager.Users
+                               select new UserDetailsResponseDto
+                               {
+                                   Id = AppUsers.Id,
+                                   FirstName = AppUsers.FirstName,
+                                   LastName = AppUsers.LastName,
+                                   Status = AppUsers.Status.ToString(),
+                                   Location = AppUsers.Location,
+                                   Address = AppUsers.Address,
+                                   ExpertiseArea = AppUsers.ExpertiseArea,
+                                   Rating = AppUsers.Rating.ToString(),
+                                   Bio = AppUsers.Bio,
+                                   ApprovedDate = AppUsers.ApprovedDate,
+                                   RegistrationDate = AppUsers.RegistrationDate,
+                                   Skills = AppUsers.Skills,
+                                   HourlyRate = AppUsers.HourlyRate,
+                                   IsVerified = AppUsers.IsVerified,
+                                   Email = AppUsers.Email,
+                                   EmailConfirmed = AppUsers.EmailConfirmed
+                               }).ToListAsync();
 
-            // Check if any users were found
-            if (!users.Any())
-            {
-                return (false, null, "No users found.");
-            }
-
-            return (true, users, $"{users.Count} user(s) found.");
+            return Result<List<UserDetailsResponseDto>>.Success(users, "User found.", 200);
         }
 
         public Task<(bool Success, string Message)> UserProfileAsync()
@@ -277,28 +310,45 @@ namespace Infrastructure.Repositories.ServiceImplemention
             return (true, "Password reset successful.");
         }
 
-        public async Task<(bool Success, string Message)> BlockUserAsync(string email, bool isBlocked)
+        public async Task<Result<string>> BlockUserAsync(Guid UserId)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByIdAsync(UserId.ToString());
             if (user == null)
             {
-                return (false, "User not found.");
+                return Result<string>.Failure("User not found.", "User with the given ID does not exist.", 404);
             }
 
-            user.LockoutEnd = isBlocked
-                ? DateTimeOffset.MaxValue // Indefinitely block the user
-                : null;                   // Unblock the user
-
-            var result = await _userManager.UpdateAsync(user);
+            // Lock the user account
+            var result = await _userManager.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.AddYears(100));
 
             if (!result.Succeeded)
             {
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
-                return (false, $"Failed to update user status. {errors}");
+                return Result<string>.Failure($"Failed to update user status. {errors}", "An error occurred while updating the user status.", 500);
+            }
+            return Result<string>.Success("User has been blocked successfully.",200);
+        }
+
+
+        public async Task<Result<string>> UnBlockUserAsync(Guid UserId)
+        {
+            var user = await _userManager.FindByIdAsync(UserId.ToString());
+            if (user == null)
+            {
+                return Result<string>.Failure("User not found.", "User with the given ID does not exist.", 404);
             }
 
-            return (true, isBlocked ? "User has been blocked." : "User has been unblocked.");
+            var result = await _userManager.SetLockoutEndDateAsync(user, null);
+
+            if (!result.Succeeded)
+            {
+                var errors = string.Join(", ", result.Errors.Select(e => e.Description));
+                return Result<string>.Failure($"Failed to update user status. {errors}", "An error occurred while updating the user status.", 500);
+            }
+
+            return Result<string>.Success("User has been unblocked successfully.", 200);
         }
+
 
         public async Task<(bool Success, string Message)> ValidateOtpAsync(string otp)
         {          

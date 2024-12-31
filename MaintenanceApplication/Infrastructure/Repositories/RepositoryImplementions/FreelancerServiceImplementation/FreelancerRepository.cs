@@ -92,15 +92,50 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
 
         }
 
-        public async Task<Bid?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<BidResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _applicationDbContext.Bids.FirstOrDefaultAsync(x =>x.Id ==id, cancellationToken);
+            return await (from Bid in _applicationDbContext.Bids
+                          join OfferedService in _applicationDbContext.OfferedServices
+                          on Bid.OfferedServiceId equals OfferedService.Id
+                          join Category in _applicationDbContext.OfferedServiceCategories
+                            on OfferedService.CategoryID equals Category.Id
+                          join Freelancer in _applicationDbContext.Users
+                          on Bid.FreelancerId equals Freelancer.Id
+                          where Bid.Id == id
+                          select new BidResponseDto
+                          {
+                              Id = Bid.Id,
+                              OfferedServiceId = Bid.OfferedServiceId,
+                              FreelancerId = Bid.FreelancerId,
+                              FreelancerName = Freelancer.FirstName,
+                              ServiceTitle = OfferedService.Title,
+                              BidAmount = Bid.BidAmount,
+                              Status = Bid.Status,
+                              CreatedAt = Bid.CreatedAt,
+                              ClientId = OfferedService.ClientId,
+                              CategoryName = Category.CategoryName,
+                              Description = OfferedService.Description,
+                              Location = OfferedService.Location,
+                              PreferredTime = OfferedService.PreferredTime,
+                              Building = OfferedService.Building,
+                              Apartment = OfferedService.Apartment,
+                              Floor = OfferedService.Floor,
+                              Street = OfferedService.Street,
+                              VideoUrls = OfferedService.VideoUrls ?? new List<string>(),
+                              ImageUrls = OfferedService.ImageUrls ?? new List<string>(),
+                              AudioUrls = OfferedService.AudioUrls ?? new List<string>(),
+                          }).FirstOrDefaultAsync(cancellationToken);
+
+
+
+
         }
     
 
-        public async Task<IEnumerable<Bid>> GetListAsync(CancellationToken cancellationToken = default)
+        public async Task<List<BidResponseDto>> GetListAsync(CancellationToken cancellationToken = default)
         {
-          return await _applicationDbContext.Bids.ToListAsync(cancellationToken);
+            //return await _applicationDbContext.Bids.ToListAsync(cancellationToken);
+            return null;
         }
 
         public async Task<bool> RemoveAsync(Bid entity, CancellationToken cancellationToken = default)

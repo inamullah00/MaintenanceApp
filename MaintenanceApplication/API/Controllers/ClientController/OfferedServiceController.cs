@@ -25,17 +25,32 @@ namespace API.Controllers.ClientController
             {
 
                 var result = await _clientService.GetServicesAsync();
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
 
-                return Ok(new {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message, 
-                    Services = result.Services 
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
             }
         }
 
@@ -50,17 +65,27 @@ namespace API.Controllers.ClientController
 
                 var result = await _clientService.GetServiceAsync(Id);
 
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
-                    Data = result.Service
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
 
@@ -75,44 +100,64 @@ namespace API.Controllers.ClientController
 
                 var result = await _clientService.AddServiceAsync(serviceRequestDto);
 
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
-                    
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
 
         #endregion
 
         #region Update-Service
-        [HttpPut("Service/{Id:guid}")]
-        public async Task<IActionResult> UpdateService([FromBody] OfferedUpdateRequestDto serviceRequestDto , Guid Id)
-        {
-            try
-            {
+        //[HttpPut("Service/{Id:guid}")]
+        //public async Task<IActionResult> UpdateService([FromBody] OfferedUpdateRequestDto serviceRequestDto , Guid Id)
+        //{
+        //    try
+        //    {
 
-                var result = await _clientService.UpdateServiceAsync(Id,serviceRequestDto);
+        //        var result = await _clientService.UpdateServiceAsync(Id,serviceRequestDto);
 
-                return Ok(new
-                {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
+        //        if (result.IsSuccess)
+        //        {
+        //            return Ok(new
+        //            {
+        //                StatusCode = result.StatusCode,
+        //                Success = true,
+        //                Message = result.Message,
+        //                Data = result.Value
+        //            });
+        //        }
 
-                });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
-            }
-        }
+        //        return StatusCode(result.StatusCode, new
+        //        {
+        //            StatusCode = result.StatusCode,
+        //            Success = false,
+        //            Message = result.Message
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
+        //    }
+        //}
 
         #endregion
 
@@ -125,17 +170,27 @@ namespace API.Controllers.ClientController
 
                 var result = await _clientService.DeleteServiceAsync(Id);
 
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Message = result.Message,
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
 
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
 

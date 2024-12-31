@@ -9,8 +9,10 @@ using Infrastructure.Repositories.RepositoryImplementions;
 using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplementation;
 using Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplementation;
 using Infrastructure.Repositories.ServiceImplemention;
+using Maintenance.Application.Interfaces.ServiceInterfaces.DashboardInterfaces.AdminOrderInterafces;
 using Maintenance.Application.Interfaces.ServiceInterfaces.FreelancerInterfaces;
 using Maintenance.Infrastructure.Repositories.ServiceImplemention;
+using Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardServiceImplemention;
 using Microsoft.OpenApi.Models;
 
 namespace API.DependancyContainer
@@ -25,6 +27,7 @@ namespace API.DependancyContainer
             services.AddScoped<IClientService, OfferedServices>();
             services.AddScoped<IOfferedServiceCategory,OfferedServiceCategory>();
             services.AddScoped<IFreelancerService,FreelancerService>();
+            services.AddScoped<IOrderService,OrderService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddEndpointsApiExplorer();

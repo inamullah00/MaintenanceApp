@@ -8,7 +8,7 @@ namespace Application.Dto_s.UserDto_s
 {
     public class UserDetailsResponseDto
     {
-
+        public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Status { get; set; }
@@ -22,11 +22,7 @@ namespace Application.Dto_s.UserDto_s
         public string Skills { get; set; }
         public decimal? HourlyRate { get; set; }
         public bool? IsVerified { get; set; }
-        public Guid Id { get; set; }
-        public string UserName { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
-        public bool LockoutEnabled { get; set; }
-        public int AccessFailedCount { get; set; }
     }
 }

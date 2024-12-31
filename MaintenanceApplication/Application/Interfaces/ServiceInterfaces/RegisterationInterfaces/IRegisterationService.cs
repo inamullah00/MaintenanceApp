@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.UserDto_s;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Wrapper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,10 +18,11 @@ namespace Application.Interfaces.ServiceInterfaces.RegisterationInterfaces
         public Task<(bool Success, string Otp, string Message)> ForgotPasswordAsync(string Email);
         public Task<(bool Success, string Message)> ResetPasswordAsync(string email, string newPassword);
         public Task<(bool Success, string Message)> UserApprovalAsync();
-        public Task<(bool Success, ApplicationUser? User, string Message)> UserDetailsAsync(Guid Id);
-        public Task<(bool Success, string Message)> BlockUserAsync(string Email, bool IsBlock);
+        public Task<Result<UserDetailsResponseDto>> UserDetailsAsync(Guid Id);
+        public Task<Result<string>> BlockUserAsync(Guid UserId);
+        public Task<Result<string>> UnBlockUserAsync(Guid UserId);
         public Task<(bool Success, string Message)> UserProfileAsync();
-        public Task<(bool Success, List<AllUsersResponseDto>? Users, string Message)> UsersAsync();
+        public Task<Result<List<UserDetailsResponseDto>>> UsersAsync();
         public Task<(bool Success, string Message)> ValidateOtpAsync(string otp);
 
 

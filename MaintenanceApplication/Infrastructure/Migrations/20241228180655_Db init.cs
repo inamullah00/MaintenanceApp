@@ -46,6 +46,7 @@ namespace Maintenance.Infrastructure.Migrations
                     Skills = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HourlyRate = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: true),
                     IsVerified = table.Column<bool>(type: "bit", nullable: true),
+                    IsSuspended = table.Column<bool>(type: "bit", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -67,27 +68,12 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Bids",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BidAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FreelancerId = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bids", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "OfferedServiceCategories",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -216,6 +202,28 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "PerformanceReport",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MonthlyLimit = table.Column<int>(type: "int", nullable: false),
+                    OrdersCompleted = table.Column<int>(type: "int", nullable: false),
+                    TotalEarnings = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    ReportMonth = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PerformanceReport", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PerformanceReport_AspNetUsers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OfferedServices",
                 columns: table => new
                 {
@@ -254,14 +262,109 @@ namespace Maintenance.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Bids",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    BidAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bids", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Bids_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Bids_AspNetUsers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Bids_OfferedServices_OfferedServiceId",
+                        column: x => x.OfferedServiceId,
+                        principalTable: "OfferedServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Orders",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Budget = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    TotalAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    FreelancerAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Orders", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_ClientId",
+                        column: x => x.ClientId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_OfferedServices_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "OfferedServices",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Payment",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ClientPaymentAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    FreelancerEarning = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    PlatformCommission = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payment", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payment_Orders_OrderId",
+                        column: x => x.OrderId,
+                        principalTable: "Orders",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "04fb4298-c23b-4ce2-aa81-a29d75a78e0a", null, "Client", "CLIENT" },
-                    { "abe0b628-2b10-4afd-ad0e-5d211323e528", null, "Freelancer", "FREELANCER" },
-                    { "c2bade94-a6a0-4ef1-91aa-7df2928e93b6", null, "Admin", "ADMIN" }
+                    { "228e9761-d49d-4cbd-8fbb-b1f2e0bca395", null, "Client", "CLIENT" },
+                    { "2c27c367-7217-427f-8398-a1239f3183f6", null, "Admin", "ADMIN" },
+                    { "714c5aac-30b6-4919-af78-c00e75bd60bf", null, "Freelancer", "FREELANCER" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -304,6 +407,21 @@ namespace Maintenance.Infrastructure.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Bids_ApplicationUserId",
+                table: "Bids",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bids_FreelancerId",
+                table: "Bids",
+                column: "FreelancerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bids_OfferedServiceId",
+                table: "Bids",
+                column: "OfferedServiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_OfferedServices_CategoryID",
                 table: "OfferedServices",
                 column: "CategoryID");
@@ -312,6 +430,31 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "IX_OfferedServices_ClientId",
                 table: "OfferedServices",
                 column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ClientId",
+                table: "Orders",
+                column: "ClientId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_FreelancerId",
+                table: "Orders",
+                column: "FreelancerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_ServiceId",
+                table: "Orders",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payment_OrderId",
+                table: "Payment",
+                column: "OrderId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PerformanceReport_FreelancerId",
+                table: "PerformanceReport",
+                column: "FreelancerId");
         }
 
         /// <inheritdoc />
@@ -336,13 +479,22 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "Bids");
 
             migrationBuilder.DropTable(
-                name: "OfferedServices");
+                name: "Payment");
+
+            migrationBuilder.DropTable(
+                name: "PerformanceReport");
 
             migrationBuilder.DropTable(
                 name: "UserOtps");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "OfferedServices");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");

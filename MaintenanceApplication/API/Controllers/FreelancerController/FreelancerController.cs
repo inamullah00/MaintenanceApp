@@ -27,11 +27,22 @@ namespace Maintenance.API.Controllers.FreelancerController
             {
                 var result = await _freelancerService.GetBidsByFreelancerAsync();
 
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Bids = result
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -50,11 +61,22 @@ namespace Maintenance.API.Controllers.FreelancerController
             {
                 var result = await _freelancerService.GetBidsByFreelancerAsync(freelancerId);
 
-                return Ok(new
+                if (result.IsSuccess)
                 {
-                    StatusCode = 200,
-                    Success = true,
-                    Bids = result
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
                 });
             }
             catch (Exception ex)
@@ -72,9 +94,23 @@ namespace Maintenance.API.Controllers.FreelancerController
             {
                 var result = await _freelancerService.SubmitBidAsync(bidRequestDto);
 
-                return result.Success
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
             }
             catch (Exception ex)
             {
@@ -91,9 +127,23 @@ namespace Maintenance.API.Controllers.FreelancerController
             {
                 var result = await _freelancerService.UpdateBidAsync(bidUpdateDto ,freelancerId);
 
-                return result.Success
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
             }
             catch (Exception ex)
             {
@@ -116,10 +166,23 @@ namespace Maintenance.API.Controllers.FreelancerController
                 }
 
                 var result = await _freelancerService.DeleteBidAsync(bidId);
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
 
-                return result.Success
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : NotFound(new { StatusCode = 404, Success = false, Message = result.Message });
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
             }
             catch (Exception ex)
             {
@@ -144,9 +207,23 @@ namespace Maintenance.API.Controllers.FreelancerController
                 // Call the service to approve the bid
                 var result = await _freelancerService.ApproveBidAsync(id, bidRequestDto);
 
-                return result.Success
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
             }
             catch (Exception ex)
             {
