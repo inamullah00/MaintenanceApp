@@ -2,6 +2,7 @@
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -73,6 +74,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
                          {
                              Id = orders.Id,
                              ClientId = orders.ClientId,
+                             FreelancerId = orders.FreelancerId,
                              ClientFirstName = orders.Client.FirstName,
                              ClientLastName = orders.Client.LastName,
                              ClientLocation = orders.Client.Location,
@@ -100,9 +102,24 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
             throw new NotImplementedException();
         }
 
+        public async Task<bool> UpdateFieldsAsync(Order order, string[] fieldsToUpdate, CancellationToken cancellationToken)
+        {
+            var entry = _dbContext.Entry(order);
+
+            foreach (var field in fieldsToUpdate)
+            {
+                entry.Property(field).IsModified = true;
+            }
+
+            var changes = await _dbContext.SaveChangesAsync(cancellationToken);
+            return changes > 0;
+        }
+
         public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
+
+      
     }
 }

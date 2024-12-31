@@ -1,5 +1,6 @@
 ﻿using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.Freelancer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,8 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         public Task<OrderResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         public Task<bool> CreateAsync(Order order, CancellationToken cancellationToken);
         public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken);
+        public Task<bool> UpdateFieldsAsync(Order order, string[] fieldsToUpdate, CancellationToken cancellationToken = default);
+
         public Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken);  
     }
 }

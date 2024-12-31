@@ -17,6 +17,8 @@ namespace Maintenance.API.Controllers.AdminController
             _orderService = orderService;
         }
 
+        #region Order Management
+
         #region Get All Orders
         [HttpGet]
         public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken)
@@ -102,7 +104,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                if (createOrderDto == null)
+                if (createOrderDto == null) 
                 {
                     return BadRequest(new { StatusCode = 400, Message = "Invalid data." });
                 }
@@ -204,6 +206,8 @@ namespace Maintenance.API.Controllers.AdminController
                 return StatusCode(500, new { StatusCode = 500, Message = $"Internal server error: {ex.Message}" });
             }
         }
+        #endregion
+
         #endregion
 
     }

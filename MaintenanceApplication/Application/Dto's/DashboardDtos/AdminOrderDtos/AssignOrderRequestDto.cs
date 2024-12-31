@@ -8,5 +8,6 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
 {
     public class AssignOrderRequestDto
     {
-    }
+        public string? FreelancerId { get; set; }
+    }  
 }

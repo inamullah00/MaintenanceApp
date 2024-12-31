@@ -11,7 +11,9 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
     {
             public Guid Id { get; set; } // Order ID
             public string ClientId { get; set; } // Client's ID
-            public string ClientFirstName { get; set; } // Client's first name
+            public string FreelancerId { get; set; } // Freelancer ID
+
+        public string ClientFirstName { get; set; } // Client's first name
             public string ClientLastName { get; set; } // Client's last name
             public string ClientLocation { get; set; } // Client's location
 

@@ -26,6 +26,8 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
             _mapper = mapper;
         }
 
+        #region Order Management
+
         #region Get All Orders
         public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken)
         {
@@ -74,9 +76,24 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                     return Result<string>.Failure("Order not found", "Order not found", 404); // HTTP 404 Not Found
                 }
 
-                // Logic for assigning the order (you can uncomment and add your business logic here)
-                // order.AssignedTo = assignOrderDto.AssignedTo; 
-                // await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
+                // Check if the order is already assigned or completed
+                if (order.Status != OrderStatus.Pending)
+                {
+                    return Result<string>.Failure("Cannot assign this order.", "The order is not in a pending state.", 400);
+                }
+
+                // Assign the freelancer and update the status
+                order.FreelancerId = assignOrderDto.FreelancerId;
+                order.Status = OrderStatus.InProgress;
+                order.UpdatedAt = DateTime.UtcNow;
+
+                var orderEntity = _mapper.Map<Order>(order);
+                // Save changes
+                var isUpdated = await _unitOfWork.OrderRepository.UpdateFieldsAsync(
+                    orderEntity,
+                    new[] { nameof(order.FreelancerId), nameof(order.Status), nameof(order.UpdatedAt) },
+                    cancellationToken
+                );
 
                 // Return success result with a message
                 return Result<string>.Success("Order assigned successfully.", "Order assigned", 200); // HTTP 200 OK
@@ -179,5 +196,9 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
 
 
         #endregion
+
+        #endregion
+
+
     }
 }
