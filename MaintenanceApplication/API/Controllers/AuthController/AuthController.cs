@@ -1,12 +1,14 @@
 ﻿using Application.Dto_s.UserDto_s;
-using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Infrastructure.Repositories.ServiceImplemention;
+using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Account.Specification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace API.Controllers.AuthController
 {
@@ -179,12 +181,12 @@ namespace API.Controllers.AuthController
         #region List-OF-Users
         [HttpGet]
         [Route("Users")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(string? Keyword = "")
         {
             try
             {
-
-                var result = await _registerationService.UsersAsync();
+                UserSearchList Specification = new(Keyword);
+                var result = await _registerationService.UsersAsync(Specification);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -223,8 +225,18 @@ namespace API.Controllers.AuthController
         {
             try
             {
+                if (Id == Guid.Empty)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "User ID cannot be empty."
+                    });
+                }
 
-                var result = await _registerationService.UserDetailsAsync(Id);
+                UserSearchList Specification = new UserSearchList(Id.ToString());
+                var result = await _registerationService.UserDetailsAsync(Specification);
                 if (result.IsSuccess)
                 {
                     return Ok(new

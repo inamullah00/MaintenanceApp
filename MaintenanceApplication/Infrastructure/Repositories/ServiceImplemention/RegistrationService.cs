@@ -26,8 +26,11 @@ using Microsoft.Extensions.Caching.Memory;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
-using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using Maintenance.Application.Wrapper;
+using Maintenance.Application.Services.Account;
+using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using System.Threading;
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
@@ -174,31 +177,37 @@ namespace Infrastructure.Repositories.ServiceImplemention
             throw new NotImplementedException();
         }
 
-        public async Task<Result<UserDetailsResponseDto>> UserDetailsAsync(Guid Id)
+        public async Task<Result<UserDetailsResponseDto>> UserDetailsAsync(ISpecification<ApplicationUser> specification)
         {
-                var result = await (from user in _userManager.Users
-                                    where user.Id == Id.ToString()
-                                    select new UserDetailsResponseDto
-                                    {
-                                        Id = user.Id,
-                                        FirstName = user.FirstName,
-                                        LastName = user.LastName,
-                                        Status = user.Status.ToString(),
-                                        Location = user.Location,
-                                        Address = user.Address,
-                                        ExpertiseArea = user.ExpertiseArea,
-                                        Rating = user.Rating.ToString(),
-                                        Bio = user.Bio,
-                                        ApprovedDate = user.ApprovedDate,
-                                        RegistrationDate = user.RegistrationDate,
-                                        Skills = user.Skills,
-                                        HourlyRate = user.HourlyRate,
-                                        IsVerified = user.IsVerified,
-                                        Email = user.Email,
-                                        EmailConfirmed = user.EmailConfirmed
-                                    }).FirstOrDefaultAsync();
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
 
-                if (result == null)
+                query : _dbContext.Users.AsQueryable(),
+                specification: specification
+                );
+
+
+            var result = await queryResult
+                         .Select(user => new UserDetailsResponseDto
+                         {
+                             Id = user.Id,
+                             FirstName = user.FirstName,
+                             LastName = user.LastName,
+                             Status = user.Status.ToString(),
+                             Location = user.Location,
+                             Address = user.Address,
+                             ExpertiseArea = user.ExpertiseArea,
+                             Rating = user.Rating.ToString(),
+                             Bio = user.Bio,
+                             ApprovedDate = user.ApprovedDate,
+                             RegistrationDate = user.RegistrationDate,
+                             Skills = user.Skills,
+                             HourlyRate = user.HourlyRate,
+                             IsVerified = user.IsVerified,
+                             Email = user.Email,
+                             EmailConfirmed = user.EmailConfirmed
+                         }).FirstOrDefaultAsync();
+
+            if (result == null)
                 {
                     return Result<UserDetailsResponseDto>.Failure("User with the given ID does not exist.", 404);
                 }
@@ -206,9 +215,14 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
-        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync()
+        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification =null)
         {
-            var users = await (from AppUsers in _userManager.Users
+              var queryResult = SpecificationEvaluator.Default.GetQuery(
+                            query: _dbContext.Users.AsQueryable(),
+                            specification: specification
+                             );
+
+              var users = await (from AppUsers in queryResult
                                select new UserDetailsResponseDto
                                {
                                    Id = AppUsers.Id,

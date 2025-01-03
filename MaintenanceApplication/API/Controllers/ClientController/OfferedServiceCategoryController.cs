@@ -1,7 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
-using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
-using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
+using Maintenance.Application.Services.OffereServiceCategory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

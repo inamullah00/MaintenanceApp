@@ -2,9 +2,9 @@
 using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
-using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
 using AutoMapper;
 using Domain.Common;
+using Maintenance.Application.Services.OffereServiceCategory;
 using Maintenance.Application.Wrapper;
 using System;
 using System.Collections.Generic;

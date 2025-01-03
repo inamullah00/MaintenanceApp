@@ -1,5 +1,6 @@
 ﻿using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
-using Maintenance.Application.Interfaces.ServiceInterfaces.DashboardInterfaces.AdminOrderInterafces;
+using Maintenance.Application.Services.Admin;
+using Maintenance.Application.Services.Admin.Specification;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -21,11 +22,11 @@ namespace Maintenance.API.Controllers.AdminController
 
         #region Get All Orders
         [HttpGet]
-        public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken)
+        public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken , string Keyword = "")
         {
             try
             {
-                var result = await _orderService.GetAllOrdersAsync(cancellationToken);
+                var result = await _orderService.GetAllOrdersAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -57,15 +58,21 @@ namespace Maintenance.API.Controllers.AdminController
         #endregion
 
         #region Get Order by ID
-        [HttpGet("Order/{id:guid}")]
-        public async Task<IActionResult> GetOrderById(Guid id,CancellationToken cancellationToken)
+        [HttpGet("Order/{Id:guid}")]
+        public async Task<IActionResult> GetOrderById(Guid Id, CancellationToken cancellationToken)
         {
             try
             {
-                if (id == Guid.Empty)
-                    return BadRequest(new { StatusCode = 400, Message = "Invalid or empty order ID." });
-
-                var result = await _orderService.GetOrderByIdAsync(id, cancellationToken);
+                if (Id == Guid.Empty)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "Invalid or Empty Order Id."
+                    });
+                }
+                var result = await _orderService.GetOrderByIdAsync(Id,cancellationToken);
 
                 if (result.IsSuccess)
                 {

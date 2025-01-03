@@ -1,9 +1,11 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Interfaces.IUnitOFWork;
+using Ardalis.Specification;
 using AutoMapper;
 using Infrastructure.Data;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
-using Maintenance.Application.Interfaces.ServiceInterfaces.FreelancerInterfaces;
+using Maintenance.Application.Services.Freelance;
+using Maintenance.Application.Services.Freelance.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Freelancer;
 using System;
@@ -25,10 +27,11 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
             _unitOfWork = unitOfWork;
         }
 
-
+        #region DeleteBidAsync
         public async Task<Result<string>> DeleteBidAsync(Guid bidId)
         {
-            var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(bidId);
+            SearchBidByMatchingId Specification = new SearchBidByMatchingId(bidId);
+            var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(Specification);
 
             if (bid == null)
             {
@@ -45,11 +48,14 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
             await _unitOfWork.SaveChangesAsync();
             return Result<string>.Success("Bid deleted successfully", 200);
         }
+        #endregion
 
+        #region GetBidsByFreelancerAsync
         public async Task<Result<BidResponseDto>> GetBidsByFreelancerAsync(Guid freelancerId)
         {
- 
-            var bids = await _unitOfWork.FreelancerRepository.GetByIdAsync(freelancerId);
+
+            FreelancerBidSearchList Specification = new FreelancerBidSearchList(freelancerId.ToString());
+            var bids = await _unitOfWork.FreelancerRepository.GetByIdAsync(Specification);
 
             if (bids == null)
             {
@@ -60,8 +66,9 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
 
             return Result<BidResponseDto>.Success(bidResponseDto, "Bid found successfully", 200); 
         }
+        #endregion
 
-
+        #region SubmitBidAsync
         public async Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto)
         {
             var bidEntity = _mapper.Map<Bid>(bidRequestDto);
@@ -76,11 +83,13 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
             await _unitOfWork.SaveChangesAsync();
             return Result<string>.Success("Bid submitted successfully", 200);
         }
+        #endregion
 
-
+        #region UpdateBidAsync
         public async Task<Result<string>> UpdateBidAsync(BidUpdateDto bidUpdateDto, Guid freelancerId)
         {
-            var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(freelancerId);
+            SearchBidByMatchingId Specification = new SearchBidByMatchingId(freelancerId.ToString());
+             var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(Specification);
             if (bid == null)
             {
                 return Result<string>.Failure("The specified bid could not be found.", 404);
@@ -98,24 +107,24 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
             return Result<string>.Success("Bid updated successfully", 200); 
         }
 
+        #endregion
 
-        public async Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync()
+        #region GetBidsByFreelancerAsync
+        public async Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(CancellationToken cancellationToken,string? Keyword ="")
         {
-            var bids = await _unitOfWork.FreelancerRepository.GetAllAsync();
-
-            if (bids == null || !bids.Any())
-            {
-                return Result<List<BidResponseDto>>.Failure( "There are no bids available for the freelancer.", 404);
-            }
+           BidSearchList Specification = new BidSearchList(Keyword);
+            var bids = await _unitOfWork.FreelancerRepository.GetAllAsync(cancellationToken,Specification);
 
             var bidList = _mapper.Map<List<BidResponseDto>>(bids);
-            return Result<List<BidResponseDto>>.Success(bidList, "Bids retrieved successfully.", 200); 
+            return Result<List<BidResponseDto>>.Success(bidList, $"{bids.Count} Bids retrieved successfully.", 200); 
         }
+        #endregion
 
-
+        #region ApproveBidAsync
         public async Task<Result<string>> ApproveBidAsync(Guid Id, ApproveBidRequestDto bidRequestDto)
         {
-            var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(Id);
+            SearchBidByMatchingId Specification = new SearchBidByMatchingId(Id);
+            var bid = await _unitOfWork.FreelancerRepository.GetByIdAsync(Specification);
 
             if (bid == null)
             {
@@ -133,6 +142,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
 
             return Result<string>.Success("Bid Accepted successfully", 200);
         }
+        #endregion
 
     }
 }

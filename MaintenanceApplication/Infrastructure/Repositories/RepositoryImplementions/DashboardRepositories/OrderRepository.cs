@@ -1,4 +1,6 @@
-﻿using Infrastructure.Data;
+﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using Infrastructure.Data;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
@@ -29,10 +31,15 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
             return true;
         }
 
-        public async Task<List<OrderResponseDto>> GetAllAsync(CancellationToken cancellationToken)
+        public async Task<List<OrderResponseDto>> GetAllAsync(CancellationToken cancellationToken , ISpecification<Order>? specification = null)
         {
-           return await (from orders in _dbContext.Orders
-                   join client in _dbContext.Users
+            var queryResult =  SpecificationEvaluator.Default.GetQuery(
+            query: _dbContext.Orders.AsQueryable(),
+            specification: specification);
+
+
+            return await (from orders in queryResult
+                          join client in _dbContext.Users
                      on orders.ClientId equals client.Id
                    join service in _dbContext.OfferedServices
                      on orders.ServiceId equals service.Id

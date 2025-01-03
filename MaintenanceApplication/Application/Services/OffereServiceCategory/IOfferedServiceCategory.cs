@@ -8,12 +8,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces
+namespace Maintenance.Application.Services.OffereServiceCategory
 {
     public interface IOfferedServiceCategory
     {
         Task<Result<OfferedServiceCategoryResponseDto>> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto);
-        Task<Result<OfferedServiceCategoryResponseDto>> UpdateServiceCategoryAsync(Guid id,OfferedServiceCategoryUpdateDto requestDto);
+        Task<Result<OfferedServiceCategoryResponseDto>> UpdateServiceCategoryAsync(Guid id, OfferedServiceCategoryUpdateDto requestDto);
         Task<Result<string>> DeleteServiceCategoryAsync(Guid categoryId);
         Task<Result<OfferedServiceCategoryResponseDto>> GetServiceCategoryByIdAsync(Guid categoryId);
         Task<Result<List<OfferedServiceCategoryResponseDto>>> GetAllServiceCategoriesAsync();

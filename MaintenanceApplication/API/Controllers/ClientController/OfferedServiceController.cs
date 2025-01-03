@@ -1,6 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
-using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Services.Client;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 

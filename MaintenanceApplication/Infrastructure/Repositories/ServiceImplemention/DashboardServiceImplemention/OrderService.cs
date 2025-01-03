@@ -2,7 +2,8 @@
 using AutoMapper;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
-using Maintenance.Application.Interfaces.ServiceInterfaces.DashboardInterfaces.AdminOrderInterafces;
+using Maintenance.Application.Services.Admin;
+using Maintenance.Application.Services.Admin.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
 using System;
@@ -29,11 +30,12 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         #region Order Management
 
         #region Get All Orders
-        public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken)
+        public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken, string? Keyword = "")
         {
             try
             {
-                var orders = await _unitOfWork.OrderRepository.GetAllAsync(cancellationToken);
+                OrderSearchList Specification = new(Keyword);
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync(cancellationToken, Specification);
                 var orderDtos = _mapper.Map<List<OrderResponseDto>>(orders); 
                 return Result<List<OrderResponseDto>>.Success(orderDtos, "Orders fetched successfully", 200); 
             }

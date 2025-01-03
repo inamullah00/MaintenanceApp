@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+﻿using Ardalis.Specification;
+using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.Freelancer;
 using System;
@@ -11,7 +12,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
 {
     public interface IOrderRepository
     {
-        public Task<List<OrderResponseDto>> GetAllAsync(CancellationToken cancellationToken);
+        public Task<List<OrderResponseDto>> GetAllAsync(CancellationToken cancellationToken, ISpecification<Order>? specification = null);
         public Task<OrderResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
         public Task<bool> CreateAsync(Order order, CancellationToken cancellationToken);
         public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken);

@@ -54,12 +54,7 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
 
         public string Street { get; set; } // Street details
 
-        public List<string> VideoUrls { get; set; } = new List<string>(); // URLs of associated videos
-
-        public List<string> ImageUrls { get; set; } = new List<string>(); // URLs of associated images
-
-        public List<string> AudioUrls { get; set; } = new List<string>(); // URLs of associated audio files
-
+     
         //public DateTime? UpdatedAt { get; set; } // Timestamp for last update
     }
 }

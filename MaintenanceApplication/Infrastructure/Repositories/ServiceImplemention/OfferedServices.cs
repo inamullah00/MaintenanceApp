@@ -2,9 +2,9 @@
 using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
-using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
 using Ardalis.Specification;
 using AutoMapper;
+using Maintenance.Application.Services.Client;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Client;
 using Microsoft.AspNetCore.Http;
