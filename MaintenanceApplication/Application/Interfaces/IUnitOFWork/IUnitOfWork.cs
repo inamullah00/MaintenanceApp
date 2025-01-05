@@ -1,7 +1,5 @@
 ﻿using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
-using Application.Interfaces.ServiceInterfaces.OfferedServiceCategoryInterfaces;
-using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using System;

@@ -311,19 +311,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "2c27c367-7217-427f-8398-a1239f3183f6",
+                            Id = "b352ec0e-66b1-4a6b-8080-16fb7a82835e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "714c5aac-30b6-4919-af78-c00e75bd60bf",
+                            Id = "4db0871e-6c3d-4a1a-869a-31f2dfa9c50e",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "228e9761-d49d-4cbd-8fbb-b1f2e0bca395",
+                            Id = "0491f674-9090-4520-b210-aa0e6644c471",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
@@ -520,6 +520,9 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Bio")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Experience")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ExpertiseArea")

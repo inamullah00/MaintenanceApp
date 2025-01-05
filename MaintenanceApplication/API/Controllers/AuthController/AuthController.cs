@@ -1,12 +1,15 @@
 ﻿using Application.Dto_s.UserDto_s;
-using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Infrastructure.Repositories.ServiceImplemention;
+using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Account.Specification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
 
 namespace API.Controllers.AuthController
 {
@@ -179,12 +182,12 @@ namespace API.Controllers.AuthController
         #region List-OF-Users
         [HttpGet]
         [Route("Users")]
-        public async Task<IActionResult> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(string? Keyword = "")
         {
             try
             {
-
-                var result = await _registerationService.UsersAsync();
+                UserSearchList Specification = new(Keyword);
+                var result = await _registerationService.UsersAsync(Specification);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -223,8 +226,18 @@ namespace API.Controllers.AuthController
         {
             try
             {
+                if (Id == Guid.Empty)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "User ID cannot be empty."
+                    });
+                }
 
-                var result = await _registerationService.UserDetailsAsync(Id);
+                UserSearchList Specification = new UserSearchList(Id.ToString());
+                var result = await _registerationService.UserDetailsAsync(Specification);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -297,7 +310,6 @@ namespace API.Controllers.AuthController
 
         #endregion
 
-
         #region UnBlock-User
 
         [HttpPost]
@@ -338,6 +350,59 @@ namespace API.Controllers.AuthController
         }
 
         #endregion
+
+        #region Edit-User-Profile
+
+        [HttpPut]
+        [Route("Edit-User-Profile/{UserId:guid}")]
+        public async Task<IActionResult> EditUserProfile(Guid UserId, [FromBody] UserProfileEditDto userProfileEditDto)
+        {
+            try
+            {
+                if (userProfileEditDto == null || !ModelState.IsValid)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "Invalid profile data."
+                    });
+                }
+
+                var result = await _registerationService.EditUserProfileAsync(UserId, userProfileEditDto);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+
 
         #endregion
 

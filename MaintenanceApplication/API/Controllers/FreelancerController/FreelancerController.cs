@@ -1,7 +1,8 @@
 ﻿using Application.Dto_s.ClientDto_s;
-using Application.Interfaces.ServiceInterfaces.ClientInterfaces;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
-using Maintenance.Application.Interfaces.ServiceInterfaces.FreelancerInterfaces;
+using Maintenance.Application.Services.Freelance;
+using Maintenance.Application.Services.Freelance.Specification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -21,11 +22,12 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Get Bids by Freelancer
         [HttpGet("Bids")]
-        public async Task<IActionResult> GetBidsByFreelancer()
+        public async Task<IActionResult> GetBidsByFreelancer(CancellationToken cancellationToken, string? Keyword = "")
         {
             try
             {
-                var result = await _freelancerService.GetBidsByFreelancerAsync();
+               
+                var result = await _freelancerService.GetBidsByFreelancerAsync(cancellationToken,Keyword);
 
                 if (result.IsSuccess)
                 {
@@ -47,11 +49,15 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
-
 
         #region Get Bids by Freelancer
         [HttpGet("Bids/{freelancerId:guid}")]
@@ -59,7 +65,17 @@ namespace Maintenance.API.Controllers.FreelancerController
         {
             try
             {
-                var result = await _freelancerService.GetBidsByFreelancerAsync(freelancerId);
+
+                if (freelancerId == Guid.Empty)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "Invalid or Empty Freelancer Id."
+                    });
+                }
+                    var result = await _freelancerService.GetBidsByFreelancerAsync(freelancerId);
 
                 if (result.IsSuccess)
                 {
@@ -81,7 +97,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -114,7 +135,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -147,11 +173,15 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
-
 
         #region Delete Bid
         [HttpDelete("Bids/{bidId:guid}")]
@@ -162,7 +192,12 @@ namespace Maintenance.API.Controllers.FreelancerController
 
                 if (bidId == Guid.Empty)
                 {
-                    return BadRequest(new { StatusCode = 400, Success = false, Message = "Invalid or Empty Id." });
+                    return BadRequest(new
+                    {
+                        StatusCode = 400,
+                        Success = false,
+                        Message = "Invalid or Empty Bid Id."
+                    });
                 }
 
                 var result = await _freelancerService.DeleteBidAsync(bidId);
@@ -186,12 +221,15 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
-
-
 
         #region Approve Bid Request
         [HttpPatch("Bids/{id:guid}")]
@@ -204,7 +242,6 @@ namespace Maintenance.API.Controllers.FreelancerController
 
             try
             {
-                // Call the service to approve the bid
                 var result = await _freelancerService.ApproveBidAsync(id, bidRequestDto);
 
                 if (result.IsSuccess)
@@ -227,7 +264,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { StatusCode = 500, Success = false, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion

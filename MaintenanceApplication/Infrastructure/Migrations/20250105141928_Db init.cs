@@ -41,6 +41,7 @@ namespace Maintenance.Infrastructure.Migrations
                     ExpertiseArea = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Rating = table.Column<float>(type: "real", nullable: true),
                     Bio = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Experience = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ApprovedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Skills = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -362,9 +363,9 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "228e9761-d49d-4cbd-8fbb-b1f2e0bca395", null, "Client", "CLIENT" },
-                    { "2c27c367-7217-427f-8398-a1239f3183f6", null, "Admin", "ADMIN" },
-                    { "714c5aac-30b6-4919-af78-c00e75bd60bf", null, "Freelancer", "FREELANCER" }
+                    { "0491f674-9090-4520-b210-aa0e6644c471", null, "Client", "CLIENT" },
+                    { "4db0871e-6c3d-4a1a-869a-31f2dfa9c50e", null, "Freelancer", "FREELANCER" },
+                    { "b352ec0e-66b1-4a6b-8080-16fb7a82835e", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

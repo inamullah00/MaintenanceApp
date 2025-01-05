@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
 using Infrastructure.Data;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
@@ -27,35 +28,48 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
             _applicationDbContext = applicationDbContext;
         }
 
+        #region CreateAsync
         public async Task<Bid> CreateAsync(Bid entity, CancellationToken cancellationToken = default)
         {
             await _applicationDbContext.Bids.AddAsync(entity, cancellationToken);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
             return entity;
         }
+        #endregion
 
+        #region CreateRangeAsync
         public async Task<List<Guid>> CreateRangeAsync(List<Bid> entities, CancellationToken cancellationToken = default)
         {
             await _applicationDbContext.Bids.AddRangeAsync(entities, cancellationToken);
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
             return entities.Select(e => e.Id).ToList();
         }
+        #endregion
 
+        #region ExistsAsync
         public async Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _applicationDbContext.Bids.AnyAsync(predicate, cancellationToken);
         }
+        #endregion
 
+        #region FindAsync
         public async Task<Bid?> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default)
         {
             return await _applicationDbContext.Bids.FirstOrDefaultAsync(predicate, cancellationToken);
         }
+        #endregion
 
-        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
+        #region GetAllAsync
+        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default , ISpecification<Bid>? specification = null )
         {
-  
+            var QueryResult = SpecificationEvaluator.Default.GetQuery(
 
-            var result = await (from bid in _applicationDbContext.Bids
+                query : _applicationDbContext.Bids.AsQueryable(),
+                specification : specification
+                );
+
+            var result = await (from bid in QueryResult
                                 join service in _applicationDbContext.OfferedServices
                                     on bid.OfferedServiceId equals service.Id
                                 join freelancer in _applicationDbContext.Users
@@ -81,27 +95,32 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                                     Apartment = service.Apartment,
                                     Floor = service.Floor,
                                     Street = service.Street,
-                                    VideoUrls = service.VideoUrls ?? new List<string>(),
-                                    ImageUrls = service.ImageUrls ?? new List<string>(),
-                                    AudioUrls = service.AudioUrls ?? new List<string>(),
-
                                 })
                     .ToListAsync(cancellationToken);
 
             return result;
 
         }
+        #endregion
 
-        public async Task<BidResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        #region GetByIdAsync
+        public async Task<BidResponseDto?> GetByIdAsync(ISpecification<Bid> specification, CancellationToken cancellationToken = default)
         {
-            return await (from Bid in _applicationDbContext.Bids
+
+            var QueryResult = SpecificationEvaluator.Default.GetQuery(
+
+              query: _applicationDbContext.Bids.AsQueryable(),
+              specification: specification
+              );
+
+            return await (from Bid in QueryResult
                           join OfferedService in _applicationDbContext.OfferedServices
                           on Bid.OfferedServiceId equals OfferedService.Id
                           join Category in _applicationDbContext.OfferedServiceCategories
                             on OfferedService.CategoryID equals Category.Id
                           join Freelancer in _applicationDbContext.Users
                           on Bid.FreelancerId equals Freelancer.Id
-                          where Bid.Id == id
+      
                           select new BidResponseDto
                           {
                               Id = Bid.Id,
@@ -121,30 +140,22 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                               Apartment = OfferedService.Apartment,
                               Floor = OfferedService.Floor,
                               Street = OfferedService.Street,
-                              VideoUrls = OfferedService.VideoUrls ?? new List<string>(),
-                              ImageUrls = OfferedService.ImageUrls ?? new List<string>(),
-                              AudioUrls = OfferedService.AudioUrls ?? new List<string>(),
+                          
                           }).FirstOrDefaultAsync(cancellationToken);
-
-
-
-
-        }
-    
-
-        public async Task<List<BidResponseDto>> GetListAsync(CancellationToken cancellationToken = default)
-        {
-            //return await _applicationDbContext.Bids.ToListAsync(cancellationToken);
-            return null;
         }
 
+        #endregion
+
+        #region RemoveAsync
         public async Task<bool> RemoveAsync(Bid entity, CancellationToken cancellationToken = default)
         {
             _applicationDbContext.Bids.Remove(entity);
             var result = await _applicationDbContext.SaveChangesAsync(cancellationToken);
             return result > 0;
         }
+        #endregion
 
+        #region UpdateAsync
         public async Task<(bool, Bid?)> UpdateAsync(Bid entity, Guid id, CancellationToken cancellationToken = default)
         {
             var existingEntity = await _applicationDbContext.Bids.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -158,7 +169,9 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
 
             return (true, existingEntity);
         }
+        #endregion
 
+        #region ApproveBidAsync
         public async Task<(bool, Bid?)> ApproveBidAsync(Bid entity, Guid id, CancellationToken cancellationToken)
         {
             var existingEntity = await _applicationDbContext.Bids.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
@@ -172,5 +185,6 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
 
             return (true, existingEntity);
         }
+        #endregion
     }
 }

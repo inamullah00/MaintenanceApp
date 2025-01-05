@@ -26,8 +26,13 @@ using Microsoft.Extensions.Caching.Memory;
 using Application.Interfaces.ReposoitoryInterfaces;
 using Microsoft.EntityFrameworkCore;
 using Infrastructure.Data;
-using Application.Interfaces.ServiceInterfaces.RegisterationInterfaces;
 using Maintenance.Application.Wrapper;
+using Maintenance.Application.Services.Account;
+using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using System.Threading;
+using Maintenance.Application.Dto_s.UserDto_s;
+using AutoMapper;
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
@@ -44,11 +49,12 @@ namespace Infrastructure.Repositories.ServiceImplemention
         private readonly IMemoryCache _Cache;
 
         private readonly ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
         public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager ,
             SignInManager<ApplicationUser> signInManager, IConfiguration configuration, 
             IHttpContextAccessor httpContextAccessor, 
-            IMemoryCache cache  , ApplicationDbContext dbContext)
+            IMemoryCache cache  , ApplicationDbContext dbContext, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -57,6 +63,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             _httpContextAccessor = httpContextAccessor;
             _Cache = cache;
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         #endregion
@@ -118,13 +125,14 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 Location = request.Location,
                 Address = request.Address,
                 ExpertiseArea = request.ExpertiseArea,
-                Rating = request.Rating,
+                Rating = 0,
+                Experience = request.Experience,
                 Bio = request.Bio,
-                ApprovedDate = request.ApprovedDate,
-                RegistrationDate = request.RegistrationDate,
+                ApprovedDate = DateTime.UtcNow,
+                RegistrationDate = DateTime.UtcNow,
                 Skills = request.Skills,
                 HourlyRate = request.HourlyRate,
-                IsVerified = request.IsVerified
+                IsVerified =false
             };
 
             // Register the user with the password
@@ -174,31 +182,37 @@ namespace Infrastructure.Repositories.ServiceImplemention
             throw new NotImplementedException();
         }
 
-        public async Task<Result<UserDetailsResponseDto>> UserDetailsAsync(Guid Id)
+        public async Task<Result<UserDetailsResponseDto>> UserDetailsAsync(ISpecification<ApplicationUser> specification)
         {
-                var result = await (from user in _userManager.Users
-                                    where user.Id == Id.ToString()
-                                    select new UserDetailsResponseDto
-                                    {
-                                        Id = user.Id,
-                                        FirstName = user.FirstName,
-                                        LastName = user.LastName,
-                                        Status = user.Status.ToString(),
-                                        Location = user.Location,
-                                        Address = user.Address,
-                                        ExpertiseArea = user.ExpertiseArea,
-                                        Rating = user.Rating.ToString(),
-                                        Bio = user.Bio,
-                                        ApprovedDate = user.ApprovedDate,
-                                        RegistrationDate = user.RegistrationDate,
-                                        Skills = user.Skills,
-                                        HourlyRate = user.HourlyRate,
-                                        IsVerified = user.IsVerified,
-                                        Email = user.Email,
-                                        EmailConfirmed = user.EmailConfirmed
-                                    }).FirstOrDefaultAsync();
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
 
-                if (result == null)
+                query : _dbContext.Users.AsQueryable(),
+                specification: specification
+                );
+
+
+            var result = await queryResult
+                         .Select(user => new UserDetailsResponseDto
+                         {
+                             Id = user.Id,
+                             FirstName = user.FirstName,
+                             LastName = user.LastName,
+                             Status = user.Status.ToString(),
+                             Location = user.Location,
+                             Address = user.Address,
+                             ExpertiseArea = user.ExpertiseArea,
+                             Rating = user.Rating.ToString(),
+                             Bio = user.Bio,
+                             ApprovedDate = user.ApprovedDate,
+                             RegistrationDate = user.RegistrationDate,
+                             Skills = user.Skills,
+                             HourlyRate = user.HourlyRate,
+                             IsVerified = user.IsVerified,
+                             Email = user.Email,
+                             EmailConfirmed = user.EmailConfirmed
+                         }).FirstOrDefaultAsync();
+
+            if (result == null)
                 {
                     return Result<UserDetailsResponseDto>.Failure("User with the given ID does not exist.", 404);
                 }
@@ -206,9 +220,14 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
-        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync()
+        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification =null)
         {
-            var users = await (from AppUsers in _userManager.Users
+              var queryResult = SpecificationEvaluator.Default.GetQuery(
+                            query: _dbContext.Users.AsQueryable(),
+                            specification: specification
+                             );
+
+              var users = await (from AppUsers in queryResult
                                select new UserDetailsResponseDto
                                {
                                    Id = AppUsers.Id,
@@ -369,7 +388,86 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
+        public async Task<Result<UserProfileDto>> EditUserProfileAsync(Guid userId, UserProfileEditDto userUpdateRequestDto)
+        {
 
+            var user = await _userManager.FindByIdAsync(userId.ToString());
+
+            if (user == null)
+            {
+                return Result<UserProfileDto>.Failure("No user found with the provided ID", 404);
+            }
+
+            if (!string.IsNullOrEmpty(userUpdateRequestDto.Email))
+            {
+                if (!IsValidEmail(userUpdateRequestDto.Email))
+                {
+                    return Result<UserProfileDto>.Failure("Invalid email format", 400);
+                }
+                var existingUser = await _userManager.FindByEmailAsync(userUpdateRequestDto.Email);
+
+                if (existingUser != null && existingUser.Id != userId.ToString())
+                {
+                    return Result<UserProfileDto>.Failure("Email conflict: The provided email is already in use by another user", 400);
+                }
+
+                user.Email = userUpdateRequestDto.Email;
+            }
+
+            if (!string.IsNullOrEmpty(userUpdateRequestDto.FirstName))
+            {
+                user.FirstName = userUpdateRequestDto.FirstName;
+            }
+
+            if (!string.IsNullOrEmpty(userUpdateRequestDto.LastName))
+            {
+                user.LastName = userUpdateRequestDto.LastName;
+            }
+
+            try
+            {
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    return Result<UserProfileDto>.Failure("Failed to update user profile", 500);
+                }
+            }
+            catch (Exception ex)
+            {
+                return Result<UserProfileDto>.Failure($"An error occurred while saving the profile: {ex.Message}", 500);
+            }
+            var updatedUserProfile = _mapper.Map<UserProfileDto>(user);
+
+            return Result<UserProfileDto>.Success(updatedUserProfile, "Profile updated successfully", 200);
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+        #region Validate Email
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        #endregion
 
         #region Token
         private async Task<string> GenerateJwtTokenAsync(ApplicationUser user)
@@ -411,25 +509,22 @@ namespace Infrastructure.Repositories.ServiceImplemention
             email.Subject = Subject;    
 
 
-            var builder = new BodyBuilder();
-            //if(Attachments != null)
-            //{
-            //    byte[] fileBytes;
-            //    foreach(var file in Attachments)
-            //    {
-            //        if (file.Length > 0)
-            //        {
-            //            using (var ms = new MemoryStream())
-            //            {
-            //                file.CopyTo(ms);
-            //                fileBytes = ms.ToArray();
-            //            }
-            //            builder.Attachments.Add(file.Name,fileBytes,MimeKit.ContentType.Parse(file.ContentType));
-            //        }
-            //    }
-            //}
+            // Load Email Template 
 
-            builder.HtmlBody = Body;
+            var RootPath  = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/Templates/EmailTemplate");
+            var FullPath = Path.Combine(RootPath, "Welcome_EmailTemplate.html");
+
+            if (!File.Exists(FullPath))
+            {
+                throw new FileNotFoundException("The email template file was not found.", FullPath);
+            }
+
+            var EmailBody = await File.ReadAllTextAsync(FullPath);
+
+            var builder = new BodyBuilder();
+           
+
+            builder.HtmlBody = EmailBody;
             email.Body = builder.ToMessageBody();
             using var smtp = new SmtpClient();
 

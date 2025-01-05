@@ -1,10 +1,14 @@
-﻿using Application.Interfaces.IUnitOFWork;
+﻿using Application.Dto_s.ClientDto_s;
+using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
-using Maintenance.Application.Interfaces.ServiceInterfaces.DashboardInterfaces.AdminOrderInterafces;
+using Maintenance.Application.Services.Admin;
+using Maintenance.Application.Services.Admin.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,17 +33,18 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         #region Order Management
 
         #region Get All Orders
-        public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken)
+        public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken, string? Keyword = "")
         {
             try
             {
-                var orders = await _unitOfWork.OrderRepository.GetAllAsync(cancellationToken);
+                OrderSearchList Specification = new(Keyword);
+                var orders = await _unitOfWork.OrderRepository.GetAllAsync(cancellationToken, Specification);
                 var orderDtos = _mapper.Map<List<OrderResponseDto>>(orders); 
-                return Result<List<OrderResponseDto>>.Success(orderDtos, "Orders fetched successfully", 200); 
+                return Result<List<OrderResponseDto>>.Success(orderDtos, SuccessMessages.OperationSuccessful, StatusCodes.Status200OK); 
             }
             catch (Exception ex)
             {
-                return Result<List<OrderResponseDto>>.Failure($"Error fetching orders: {ex.Message}", "An error occurred", 500); 
+                return Result<List<OrderResponseDto>>.Failure($"Error fetching orders: {ex.Message}", "An error occurred", StatusCodes.Status500InternalServerError); 
             }
         }
         #endregion
@@ -49,17 +54,25 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         {
             try
             {
+                if (id == Guid.Empty)
+                {
+                    return Result<OrderResponseDto>.Failure(
+                     ErrorMessages.InvalidOrEmptyId,
+                     HttpResponseCodes.BadRequest
+                 );
+                }
+
                 var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
                 if (order == null)
-                    return Result<OrderResponseDto>.Failure("Order not found", "No order found with the provided ID", 404); 
-
+                {
+                    return Result<OrderResponseDto>.Failure(ErrorMessages.ResourceNotFound, StatusCodes.Status404NotFound);
+                }
                 var orderDto = _mapper.Map<OrderResponseDto>(order); 
-                return Result<OrderResponseDto>.Success(orderDto, "Order fetched successfully", 200);
+                return Result<OrderResponseDto>.Success(orderDto, SuccessMessages.OperationSuccessful, StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
-                // Log exception and handle as needed
-                return Result<OrderResponseDto>.Failure($"Error fetching order by ID: {ex.Message}", "An error occurred", 500); // Failure result
+                return Result<OrderResponseDto>.Failure($"Error fetching order by ID: {ex.Message}", "An error occurred", StatusCodes.Status500InternalServerError); 
             }
         }
         #endregion
@@ -69,39 +82,40 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         {
             try
             {
-                // Fetch the order by ID
+                if (id == Guid.Empty || assignOrderDto == null)
+                {
+                    return Result<string>.Failure( ErrorMessages.InvalidOrEmpty, StatusCodes.Status400BadRequest);
+                }
+
                 var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
                 if (order == null)
                 {
-                    return Result<string>.Failure("Order not found", "Order not found", 404); // HTTP 404 Not Found
+                    return Result<string>.Failure(ErrorMessages.ResourceNotFound, StatusCodes.Status404NotFound);
                 }
 
-                // Check if the order is already assigned or completed
                 if (order.Status != OrderStatus.Pending)
                 {
-                    return Result<string>.Failure("Cannot assign this order.", "The order is not in a pending state.", 400);
+                    return Result<string>.Failure("Cannot assign this order.", "The order is not in a pending state.", HttpResponseCodes.BadRequest);
                 }
 
-                // Assign the freelancer and update the status
+
                 order.FreelancerId = assignOrderDto.FreelancerId;
                 order.Status = OrderStatus.InProgress;
                 order.UpdatedAt = DateTime.UtcNow;
 
                 var orderEntity = _mapper.Map<Order>(order);
-                // Save changes
+               
                 var isUpdated = await _unitOfWork.OrderRepository.UpdateFieldsAsync(
                     orderEntity,
                     new[] { nameof(order.FreelancerId), nameof(order.Status), nameof(order.UpdatedAt) },
                     cancellationToken
                 );
 
-                // Return success result with a message
-                return Result<string>.Success("Order assigned successfully.", "Order assigned", 200); // HTTP 200 OK
+                return Result<string>.Success(SuccessMessages.OrderAssignedSuccessfully, HttpResponseCodes.OK); 
             }
             catch (Exception ex)
             {
-                // Return failure result with the error message
-                return Result<string>.Failure($"Error assigning order: {ex.Message}", "An error occurred", 500); // HTTP 500 Internal Server Error
+                return Result<string>.Failure($"Error assigning order: {ex.Message}", "An error occurred", HttpResponseCodes.InternalServerError); // HTTP 500 Internal Server Error
             }
         }
 
@@ -112,11 +126,19 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         {
             try
             {
-                // Fetch the order by ID
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
-                if (order == null)
+                if (id == Guid.Empty || updateOrderStatusDto ==null) 
                 {
-                    return Result<string>.Failure("Order not found", "Order not found", 404); // HTTP 404 Not Found
+                   return Result<string>.Failure(ErrorMessages.InvalidOrEmptyId,  StatusCodes.Status400BadRequest);
+                   
+                }
+
+                var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
+                if (order ==null)
+                {
+                    return Result<string>.Failure(
+                     ErrorMessages.ResourceNotFound,
+                     StatusCodes.Status404NotFound
+                 );
                 }
 
                 // Update the order status (you can uncomment and add your business logic here)
@@ -124,16 +146,14 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                 // await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
 
                 // Return success result with a message
-                return Result<string>.Success("Order status updated successfully.", "Status updated", 200); // HTTP 200 OK
+                return Result<string>.Success(SuccessMessages.OrderStatusUpdatedSuccessfully, StatusCodes.Status200OK);
             }
             catch (Exception ex)
             {
-                // Return failure result with the error message
-                return Result<string>.Failure($"Error updating order status: {ex.Message}", "An error occurred", 500); // HTTP 500 Internal Server Error
+                return Result<string>.Failure($"Error updating order status: {ex.Message}", "An error occurred", StatusCodes.Status500InternalServerError);
             }
         }
         #endregion
-
 
         #region Resolve Order Dispute
         public async Task<Result<string>> ResolveDisputeAsync(Guid id, ResolveDisputeDto resolveDisputeDto, CancellationToken cancellationToken)
@@ -167,29 +187,33 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         {
             try
             {
-                // Map the DTO to the domain entity
+
+                if (createOrderRequestDto == null)
+                {
+                    return Result<OrderResponseDto>.Failure(
+                     ErrorMessages.InvalidOrEmpty,
+                     HttpResponseCodes.BadRequest
+                 );
+                }
+
                 var order = _mapper.Map<Order>(createOrderRequestDto);
 
-                // Create the order asynchronously
                 var orderRes = await _unitOfWork.OrderRepository.CreateAsync(order, cancellationToken);
 
-                // Map the created order to the response DTO
                 var orderResponse = _mapper.Map<OrderResponseDto>(order);
 
-                // Return the success result with the created order
                 return Result<OrderResponseDto>.Success(
                     orderResponse,
-                    "Order placed successfully",
-                    201 // HTTP Status Code 201 Created
+                   SuccessMessages.OrderPlacedSuccessfully,
+                    StatusCodes.Status201Created
                 );
             }
             catch (Exception ex)
             {
-                // Return the failure result with an error message and appropriate status code
                 return Result<OrderResponseDto>.Failure(
                     $"Error placing order: {ex.Message}",
                     "An error occurred while placing the order",
-                    500 // HTTP Status Code 500 Internal Server Error
+                   StatusCodes.Status500InternalServerError
                 );
             }
         }

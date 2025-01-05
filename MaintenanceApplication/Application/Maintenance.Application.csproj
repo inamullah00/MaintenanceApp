@@ -8,7 +8,12 @@
 
   <ItemGroup>
     <Folder Include="Mailing\" />
-    <Folder Include="Services\" />
+    <Folder Include="Services\Account\Filter\" />
+    <Folder Include="Services\Admin\Filter\" />
+    <Folder Include="Services\Client\Filter\" />
+    <Folder Include="Services\Freelance\Filter\" />
+    <Folder Include="Services\OffereServiceCategory\Filter\" />
+    <Folder Include="Services\OffereServiceCategory\Specification\" />
     <Folder Include="Settings\" />
   </ItemGroup>
 

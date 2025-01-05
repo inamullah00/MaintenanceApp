@@ -1,4 +1,7 @@
-﻿using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
+﻿using Application.Dto_s.ClientDto_s;
+using Application.Dto_s.UserDto_s;
+using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Ardalis.Specification;
 using Infrastructure.Data;
 using Maintenance.Domain.Entity.Client;
@@ -45,25 +48,101 @@ namespace Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImpl
             return await _dbContext.OfferedServices.FirstOrDefaultAsync(predicate, cancellationToken);
         }
 
-        public async Task<List<OfferedService>> GetAllAsync(CancellationToken cancellationToken = default)
+        public async Task<List<OfferedServiceResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await _dbContext.OfferedServices.ToListAsync(cancellationToken);
+
+            var offeredServices = await (from service in _dbContext.OfferedServices
+                                         join user in _dbContext.Users
+                                         on service.ClientId equals user.Id
+                                         join category in _dbContext.OfferedServiceCategories
+                                         on service.CategoryID equals category.Id
+                                         select new OfferedServiceResponseDto
+                                         {
+                                             Id = service.Id,
+                                             ClientId = service.ClientId,
+                                             Title = service.Title,
+                                             Description = service.Description,
+                                             Location = service.Location,
+                                             PreferredTime = service.PreferredTime,
+                                             Building = service.Building,
+                                             Apartment = service.Apartment,
+                                             Floor = service.Floor,
+                                             Street = service.Street,
+                                             SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
+                                             CreatedAt = service.CreatedAt,
+                                             UpdatedAt = service.UpdatedAt,
+
+                                             // Map Category
+                                             Category = new OfferedServiceCategoryResponseDto
+                                             {
+                                                 Id = category.Id,
+                                                 CategoryName = category.CategoryName,
+                                                 IsActive = category.IsActive
+                                             },
+
+                                             // Map Client
+                                             Client = new ApplicationUsersResponseDto
+                                             {
+                                                 Id = user.Id,
+                                                 FirstName = user.FirstName,
+                                                 Location = user.Location,
+                                                 Address = user.Address
+                                             }
+                                         }).ToListAsync(cancellationToken);
+
+            return offeredServices;
         }
 
-        public async Task<OfferedService?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<OfferedServiceResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _dbContext.OfferedServices.FirstOrDefaultAsync(x =>x.Id ==id, cancellationToken);
-        }
 
-        public async Task<IEnumerable<OfferedService>> GetListAsync(CancellationToken cancellationToken = default)
-        {
-            return await _dbContext.OfferedServices.ToListAsync(cancellationToken);
+            var offeredServices = await (from service in _dbContext.OfferedServices
+                                         join user in _dbContext.Users
+                                         on service.ClientId equals user.Id
+                                         join category in _dbContext.OfferedServiceCategories
+                                         on service.CategoryID equals category.Id
+                                         where(service.Id == id )
+                                         select new OfferedServiceResponseDto
+                                         {
+                                             Id = service.Id,
+                                             ClientId = service.ClientId,
+                                             Title = service.Title,
+                                             Description = service.Description,
+                                             Location = service.Location,
+                                             PreferredTime = service.PreferredTime,
+                                             Building = service.Building,
+                                             Apartment = service.Apartment,
+                                             Floor = service.Floor,
+                                             Street = service.Street,
+                                             SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
+                                             CreatedAt = service.CreatedAt,
+                                             UpdatedAt = service.UpdatedAt,
+
+                                             // Map Category
+                                             Category = new OfferedServiceCategoryResponseDto
+                                             {
+                                                 Id = category.Id,
+                                                 CategoryName = category.CategoryName,
+                                                 IsActive = category.IsActive
+                                             },
+
+                                             // Map Client
+                                             Client = new ApplicationUsersResponseDto
+                                             {
+                                                 Id = user.Id,
+                                                 FirstName = user.FirstName,
+                                                 Location = user.Location,
+                                                 Address = user.Address
+                                             }
+                                         }).FirstOrDefaultAsync(cancellationToken);
+
+            return offeredServices;
         }
 
         public async Task<bool> RemoveAsync(OfferedService offeredService, CancellationToken cancellationToken = default)
         {
           
-              _dbContext.OfferedServices.Remove(offeredService);
+             _dbContext.OfferedServices.Remove(offeredService);
              await _dbContext.SaveChangesAsync(cancellationToken);
             return true;
         }
@@ -78,26 +157,24 @@ namespace Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImpl
             }
 
             // Update the service's properties
-            service.ClientId = entity.ClientId; // Set ClientId
-            service.CategoryID = entity.CategoryID; // Set CategoryID
-            service.Title = entity.Title; // Set Title
-            service.Description = entity.Description; // Set Description
-            service.Location = entity.Location; // Set Location
-            service.VideoUrls = entity.VideoUrls; // Set VideoUrl
-            service.ImageUrls = entity.ImageUrls; // Set ImageUrls
-            service.AudioUrls = entity.AudioUrls; // Set VoiceUrl
-            service.PreferredTime = entity.PreferredTime; // Set PreferredTime
-            service.Building = entity.Building; // Set Building
-            service.Apartment = entity.Apartment; // Set Apartment
-            service.Floor = entity.Floor; // Set Floor
-            service.Street = entity.Street; // Set Street
-            service.SetAsCurrentHomeAddress = entity.SetAsCurrentHomeAddress; // Set SetAsCurrentHomeAddress
-            service.UpdatedAt = DateTime.UtcNow; // Update the UpdatedAt timestamp
+            service.ClientId = entity.ClientId; 
+            service.CategoryID = entity.CategoryID; 
+            service.Title = entity.Title; 
+            service.Description = entity.Description; 
+            service.Location = entity.Location; 
+            service.VideoUrls = entity.VideoUrls; 
+            service.ImageUrls = entity.ImageUrls; 
+            service.AudioUrls = entity.AudioUrls; 
+            service.PreferredTime = entity.PreferredTime;
+            service.Building = entity.Building; 
+            service.Apartment = entity.Apartment; 
+            service.Floor = entity.Floor; 
+            service.Street = entity.Street;
+            service.SetAsCurrentHomeAddress = entity.SetAsCurrentHomeAddress;
+            service.UpdatedAt = DateTime.UtcNow; 
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             return (true, service);
-
-
         }
     }
 }
