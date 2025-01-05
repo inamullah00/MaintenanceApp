@@ -38,24 +38,25 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
             specification: specification);
 
 
-            return await (from orders in queryResult
-                          join client in _dbContext.Users
-                     on orders.ClientId equals client.Id
-                   join service in _dbContext.OfferedServices
-                     on orders.ServiceId equals service.Id
+            return await (from orders in queryResult.AsSplitQuery()
+                          join client in _dbContext.Users.AsNoTracking()
+                          on orders.ClientId equals client.Id
+                          join service in _dbContext.OfferedServices.AsNoTracking()
+                          on orders.ServiceId equals service.Id
+
                  select new OrderResponseDto
                {
                    Id = orders.Id,
                    ClientId = orders.ClientId,
-                   ClientFirstName = orders.Client.FirstName, 
-                   ClientLastName = orders.Client.LastName, 
-                   ClientLocation = orders.Client.Location,
+                   ClientFirstName = client.FirstName, 
+                   ClientLastName = client.LastName, 
+                   ClientLocation = client.Location,
 
-                   ServiceId = orders.ServiceId,
-                   ServiceTitle = orders.Service.Title, 
-                   ServiceDescription = orders.Service.Description, 
-                   ServiceLocation = orders.Service.Location, 
-                   ServicePreferredTime = orders.Service.PreferredTime, 
+                   ServiceId = service.Id,
+                   ServiceTitle = service.Title, 
+                   ServiceDescription = service.Description, 
+                   ServiceLocation = service.Location, 
+                   ServicePreferredTime = service.PreferredTime, 
 
                    Description = orders.Description, 
                    Budget = orders.Budget, 
@@ -66,15 +67,17 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
 
                    TotalAmount = orders.TotalAmount,
                    FreelancerAmount = orders.FreelancerAmount
-               }).ToListAsync(cancellationToken);
+               })
+               .AsNoTracking()
+               .ToListAsync(cancellationToken);
         }
 
         public async Task<OrderResponseDto?> GetByIdAsync(Guid id , CancellationToken cancellationToken)
         {
-            return await(from orders in _dbContext.Orders
-                         join client in _dbContext.Users
+            return await(from orders in _dbContext.Orders.AsNoTracking()
+                         join client in _dbContext.Users.AsNoTracking()
                            on orders.ClientId equals client.Id
-                         join service in _dbContext.OfferedServices
+                         join service in _dbContext.OfferedServices.AsNoTracking()
                            on orders.ServiceId equals service.Id
                          where orders.Id == id
                          select new OrderResponseDto
@@ -101,7 +104,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
 
                              TotalAmount = orders.TotalAmount,
                              FreelancerAmount = orders.FreelancerAmount
-                         }).FirstOrDefaultAsync(cancellationToken);
+                         }).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
         }
 
         public Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken)

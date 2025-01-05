@@ -1,6 +1,7 @@
 ﻿using Application.Dto_s.UserDto_s;
 using Ardalis.Specification;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -25,6 +26,8 @@ namespace Maintenance.Application.Services.Account
         public Task<(bool Success, string Message)> UserProfileAsync();
         public Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null);
         public Task<(bool Success, string Message)> ValidateOtpAsync(string otp);
+
+        public Task<Result<UserProfileDto>> EditUserProfileAsync(Guid Id, UserProfileEditDto editUserProfile);
 
 
     }

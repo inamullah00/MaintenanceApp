@@ -1,4 +1,6 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
+using Application.Dto_s.UserDto_s;
+using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.Client;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -13,44 +15,22 @@ namespace Application.Dto_s.ClientDto_s
     public class OfferedServiceResponseDto
     {
 
-        public Guid Id { get; set; } // Unique identifier for the service
-
-        public string Title { get; set; } // Service title
-
-        public string Description { get; set; } // Detailed description of the service
-
-        public string ServiceTime { get; set; } // Estimated time to deliver the service
-
-        public string Location { get; set; } // Service location details
-
-        public List<string> VideoUrls { get; set; }
-        public List<string> AudioUrls { get; set; }
-
-        public List<string> ImageUrls { get; set; } = new(); // Store file paths/URLs
-
-
-        public DateTime? PreferredTime { get; set; } // Client's preferred time for service delivery
-
-        public DateTime CreatedAt { get; set; } // Date and time when the service was created
-
-        public DateTime? UpdatedAt { get; set; } // Date and time of the last update
-
-        public string CategoryName { get; set; } // Name of the category the service belongs to
-
-        public string CategoryDescription { get; set; } // Description of the service category
-
+        public Guid Id { get; set; }
+        public string ClientId { get; set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Location { get; set; }
+        public DateTime? PreferredTime { get; set; }
         public string Building { get; set; }
         public string Apartment { get; set; }
         public string Floor { get; set; }
         public string Street { get; set; }
+        public bool SetAsCurrentHomeAddress { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
 
-        public string ClientId { get; set; } // ID of the freelancer offering the service
 
-        // Navigation Properties
-        [ForeignKey("CategoryID")]
-        public OfferedServiceCategory Category { get; set; } // Associated category for the service
-
-        [ForeignKey("ClientId")]
-        public ApplicationUser Client { get; set; } // Associated freelancer
+        public OfferedServiceCategoryResponseDto Category { get; set; }
+        public ApplicationUsersResponseDto Client { get; set; }
     }
 }

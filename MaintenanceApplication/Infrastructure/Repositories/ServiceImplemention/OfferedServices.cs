@@ -4,6 +4,7 @@ using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Ardalis.Specification;
 using AutoMapper;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Client;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories.ServiceImplemention
@@ -38,7 +40,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!uploadSuccess)
             {
-                return Result<string>.Failure(uploadMessage, 400);
+                return Result<string>.Failure(uploadMessage, HttpResponseCodes.BadRequest);
             }
 
             // Store the uploaded image URLs in the entity
@@ -49,7 +51,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!videoUploadSuccess)
             {
-                return Result<string>.Failure(videoUploadMessage, 400);
+                return Result<string>.Failure(videoUploadMessage, HttpResponseCodes.BadRequest);
             }
 
             // Store the uploaded video URLs in the entity
@@ -60,7 +62,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!audioUploadSuccess)
             {
-                return Result<string>.Failure(audioUploadMessage, 400);
+                return Result<string>.Failure(audioUploadMessage, HttpResponseCodes.BadRequest);
             }
 
             // Store the uploaded audio URLs in the entity
@@ -70,56 +72,56 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (entity == null)
             {
-                return Result<string>.Failure("An error occurred while adding the service.", 400);
+                return Result<string>.Failure("An error occurred while adding the service.", HttpResponseCodes.NotFound);
             }
 
-            return Result<string>.Success(entity.Id.ToString(),"Service added successfully!", 201);
+            return Result<string>.Success(entity.Id.ToString(),"Service added successfully!", HttpResponseCodes.Created);
         }
 
 
         public async Task<Result<string>> DeleteServiceAsync(Guid serviceId)
         {
-            // Validate the serviceId (Check if it's empty or null)
             if (serviceId == Guid.Empty)
             {
-                return Result<string>.Failure("Invalid Id", 400);
+                return Result<string>.Failure(ErrorMessages.ValidationError, HttpResponseCodes.BadRequest);
             }
 
-            // Fetch the service from the repository by Id
             var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
 
-            // Check if the service exists
             if (service == null)
             {
-                return Result<string>.Failure("Service Not Found", 404);
+                return Result<string>.Failure(ErrorMessages.ResourceNotFound, HttpResponseCodes.NotFound);
             }
 
-            // Delete the service using the repository
-            var isDeleted = await _unitOfWork.OfferedServiceRepository.RemoveAsync(service);
+            var serviceEntity = _mapper.Map<OfferedService>(service);
 
-            // If deletion fails, return an error message
+            var isDeleted = await _unitOfWork.OfferedServiceRepository.RemoveAsync(serviceEntity);
+
             if (!isDeleted)
             {
-                return Result<string>.Failure("An Error Occurred While Deleting the Service", 400);
+                return Result<string>.Failure(ErrorMessages.DeletingResourceError, HttpResponseCodes.InternalServerError);
             }
 
-            // Successfully deleted the service, return a success message
-            return Result<string>.Success("Service Deleted Successfully!",200);
+            return Result<string>.Success(SuccessMessages.DeleteOperationSuccessfully, HttpResponseCodes.OK);
         }
 
 
         public async Task<Result<OfferedServiceResponseDto>> GetServiceAsync(Guid serviceId)
-        {
-            var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
 
-            if (service == null)
+        {
+            if (serviceId == Guid.Empty)
             {
-                return Result<OfferedServiceResponseDto>.Failure("Service Not Found", 404);
+                return Result<OfferedServiceResponseDto>.Failure(
+                 ErrorMessages.InvalidOrEmptyId,
+                 HttpResponseCodes.BadRequest
+             );
             }
+
+            var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
 
             var offeredService = _mapper.Map<OfferedServiceResponseDto>(service);
 
-            return Result<OfferedServiceResponseDto>.Success(offeredService, "Service Found",200);
+            return Result<OfferedServiceResponseDto>.Success(offeredService, ErrorMessages.OperationSuccess, HttpResponseCodes.OK);
         }
 
 
@@ -129,23 +131,39 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             var res = _mapper.Map<List<OfferedServiceResponseDto>>(services);
 
-            if (res == null || !res.Any())
-            {
-                return Result<List<OfferedServiceResponseDto>>.Failure("No services found.",404);
-            }
-
-            return Result<List<OfferedServiceResponseDto>>.Success(res, $"{res.Count} service(s) found.",200);
+            return Result<List<OfferedServiceResponseDto>>.Success(res, $"{res.Count} service(s) found.",HttpResponseCodes.OK);
         }
 
 
-        //public async Task<(bool Success, string Message)> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updatedRequest)
-        //{
-        //    //var service = _mapper.Map<OfferedService>(updatedRequest);
-        //    //await _genericRepository.UpdateAsync(serviceId,service);
-        //    //return (true, "Service Updated Successfully!");
+        public async Task<Result<OfferedServiceResponseDto>> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updateRequest)
+        {
+         
+            if(serviceId == Guid.Empty || updateRequest == null)
+            {
+                return Result<OfferedServiceResponseDto>.Failure(
+                 ErrorMessages.InvalidOrEmpty,
+                 HttpResponseCodes.BadRequest
+             );
+            }
+            
+            var service = _mapper.Map<OfferedService>(updateRequest);
+            var (res,data) = await _unitOfWork.OfferedServiceRepository.UpdateAsync(service, serviceId);
+            if (!res)
+            {
 
-        //    return (false, "");
-        //}
+                return Result<OfferedServiceResponseDto>.Failure(
+                  ErrorMessages.InternalServerError,
+                  HttpResponseCodes.InternalServerError
+              );
+
+            }
+            return Result<OfferedServiceResponseDto>.Success(
+            _mapper.Map<OfferedServiceResponseDto>(data),
+            SuccessMessages.OperationSuccessful,
+            HttpResponseCodes.OK );
+
+
+        }
 
 
 

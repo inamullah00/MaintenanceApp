@@ -6,10 +6,12 @@ using System.Threading.Tasks;
 
 namespace Application.Dto_s.UserDto_s
 {
-    public class AllUsersResponseDto
+    public class ApplicationUsersResponseDto
     {
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string Email { get; set; }
+        public string Location { get; set; }
+        public string Address { get; set; }
     }
 }

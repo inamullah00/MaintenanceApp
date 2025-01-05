@@ -1,4 +1,5 @@
 ﻿using Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
@@ -48,7 +49,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -91,7 +97,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -124,7 +135,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -157,7 +173,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -200,7 +221,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -238,7 +264,12 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { StatusCode = 500, Success = false, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion

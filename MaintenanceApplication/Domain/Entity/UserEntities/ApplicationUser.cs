@@ -29,16 +29,17 @@ namespace Domain.Entity.UserEntities
 
         // Freelancer Fields
         public string? ExpertiseArea { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
-        public float? Rating { get; set; }  
-        public string? Bio { get; set; }  
-        public DateTime? ApprovedDate { get; set; } // When the freelancer was approved by the admin
+        public float? Rating { get; set; } = 0;
+        public string? Bio { get; set; }
+        public string? Experience { get; set; }
+        public DateTime? ApprovedDate { get; set; } = DateTime.UtcNow; // When the freelancer was approved by the admin
         public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
 
         // Optional Fields
         public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
         public decimal? HourlyRate { get; set; }  // Freelancer's hourly or project rate
-        public bool? IsVerified { get; set; }  // Whether the freelancer is verified by the admi
-        public bool IsSuspended { get; set; }
+        public bool? IsVerified { get; set; } = false; // Whether the freelancer is verified by the admin
+        public bool IsSuspended { get; set; } = false;
 
 
         // Navigation Properties

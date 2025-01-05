@@ -15,7 +15,7 @@ namespace Maintenance.Application.Services.Client
         Task<Result<string>> AddServiceAsync(OfferedServiceRequestDto request);
 
         // Updating an existing service post
-        //Task<Result<OfferedServiceResponseDto>> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updatedRequest);
+        Task<Result<OfferedServiceResponseDto>> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updatedRequest);
 
         // Deleting a service post
         Task<Result<string>> DeleteServiceAsync(Guid serviceId);

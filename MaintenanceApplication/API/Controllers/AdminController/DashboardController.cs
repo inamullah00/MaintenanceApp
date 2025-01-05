@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+﻿using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin;
 using Maintenance.Application.Services.Admin.Specification;
 using Maintenance.Application.Wrapper;
@@ -21,7 +22,7 @@ namespace Maintenance.API.Controllers.AdminController
         #region Order Management
 
         #region Get All Orders
-        [HttpGet]
+        [HttpGet("Order")]
         public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken , string Keyword = "")
         {
             try
@@ -47,11 +48,11 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -63,15 +64,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                if (Id == Guid.Empty)
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Message = "Invalid or Empty Order Id."
-                    });
-                }
+               
                 var result = await _orderService.GetOrderByIdAsync(Id,cancellationToken);
 
                 if (result.IsSuccess)
@@ -94,11 +87,11 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -111,10 +104,6 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                if (createOrderDto == null) 
-                {
-                    return BadRequest(new { StatusCode = 400, Message = "Invalid data." });
-                }
 
                 var result = await _orderService.CreateOrderAsync(createOrderDto, cancellationToken);
 
@@ -138,11 +127,11 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -154,19 +143,20 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                if (id == Guid.Empty || assignOrderDto == null)
-                {
-                    return BadRequest(new { StatusCode = 400, Message = "Invalid data." });
-                }
                 var result = await _orderService.AssignOrderAsync(id, assignOrderDto, cancellationToken);
 
                 return result.IsSuccess
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { StatusCode = 500, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -177,18 +167,20 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                if (id == Guid.Empty || updateOrderStatusDto == null)
-                    return BadRequest(new { StatusCode = 400, Message = "Invalid data." });
-
                 var result = await _orderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
 
                 return result.IsSuccess
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { StatusCode = 500, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion
@@ -200,17 +192,22 @@ namespace Maintenance.API.Controllers.AdminController
             try
             {
                 if (id == Guid.Empty || resolveDisputeDto == null)
-                    return BadRequest(new { StatusCode = 400, Message = "Invalid data." });
+                    return BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Message = ErrorMessages.ValidationError });
 
                 var result = await _orderService.ResolveDisputeAsync(id, resolveDisputeDto, cancellationToken);
 
                 return result.IsSuccess
-                    ? Ok(new { StatusCode = 200, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = 400, Success = false, Message = result.Message });
+                    ? Ok(new { StatusCode = HttpResponseCodes.OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { StatusCode = 500, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(HttpResponseCodes.InternalServerError, new
+                {
+                    StatusCode = HttpResponseCodes.InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
             }
         }
         #endregion

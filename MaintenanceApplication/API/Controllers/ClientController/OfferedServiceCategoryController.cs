@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Services.OffereServiceCategory;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -44,11 +45,11 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(HttpResponseCodes.InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = HttpResponseCodes.InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -81,11 +82,11 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(HttpResponseCodes.InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = HttpResponseCodes.InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -118,11 +119,11 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(HttpResponseCodes.InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = HttpResponseCodes.InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -158,11 +159,11 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(HttpResponseCodes.InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = HttpResponseCodes.InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
@@ -195,11 +196,11 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new
+                return StatusCode(HttpResponseCodes.InternalServerError, new
                 {
-                    StatusCode = 500,
+                    StatusCode = HttpResponseCodes.InternalServerError,
                     Success = false,
-                    Message = $"Internal server error: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
             }
         }
