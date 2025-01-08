@@ -32,7 +32,7 @@ namespace Infrastructure.Data
         public DbSet<Bid> Bids { get; set; }
         public DbSet<Order> Orders { get; set; }
         //public DbSet<Notification> Notifications { get; set; }
-        //public DbSet<Dispute> Disputes { get; set; }
+        public DbSet<Dispute> Disputes { get; set; }
         //public DbSet<Payment> Payments { get; set; }
 
 
@@ -42,7 +42,7 @@ namespace Infrastructure.Data
 
 
 
-            //// Cascade delete from Order to Client (no change)
+            // Cascade delete from Order to Client (no change)
             builder.Entity<Order>()
                 .HasOne(o => o.Client)
                 .WithMany(o => o.ClientOrders)
@@ -78,54 +78,20 @@ namespace Infrastructure.Data
                 .OnDelete(DeleteBehavior.Restrict); // Changed to Restrict
 
 
-
-            //// Cascade delete from Notification to ApplicationUser
-            //builder.Entity<Notification>()
-            //    .HasOne(n => n.User)  // Notification has one User
-            //    .WithMany(u => u.Notifications)  // User has many Notifications
-            //    .HasForeignKey(n => n.UserId)  // ForeignKey: UserId in Notification
-            //    .OnDelete(DeleteBehavior.Cascade); // Cascade delete when User is deleted
-
-            //// Cascade delete from Dispute to Order
-            //builder.Entity<Dispute>()
-            //    .HasOne(d => d.Order)  // Dispute has one Order
-            //    .WithMany(o => o.Disputes)  // Order has many Disputes
-            //    .HasForeignKey(d => d.OrderId)  // ForeignKey: OrderId in Dispute
-            //    .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Order is deleted
-
-            //// Cascade delete from Dispute to ApplicationUser (RaisedByUser)
-            //builder.Entity<Dispute>()
-            //    .HasOne(d => d.RaisedByUser)  // Dispute has one User who raised it
-            //    .WithMany(u => u.Disputes)  // User has many Disputes
-            //    .HasForeignKey(d => d.RaisedByUserId)  // ForeignKey: RaisedByUserId in Dispute
-            //    .OnDelete(DeleteBehavior.Cascade); // Cascade delete when User is deleted
+            // Relationship between Order and Dispute
+            builder.Entity<Dispute>()
+                .HasOne(d => d.Order)         // A Dispute belongs to an Order
+                .WithMany(o => o.Disputes)    // An Order can have many Disputes
+                .HasForeignKey(d => d.OrderId) // Foreign Key: Dispute's OrderId
+                .OnDelete(DeleteBehavior.Restrict); // Prevent cascading delete from Order to Dispute (disputes should remain even if the order is deleted)
 
 
-
-            //// Cascade delete for PerformanceReport when Freelancer is deleted
-            //builder.Entity<PerformanceReport>()
-            //    .HasOne(pr => pr.Freelancer)  // PerformanceReport has one Freelancer
-            //    .WithMany(f => f.PerformanceReports)  // Freelancer has many PerformanceReports
-            //    .HasForeignKey(pr => pr.FreelancerId)  // ForeignKey: FreelancerId in PerformanceReport
-            //    .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Freelancer is deleted
-
-
-
-            //// Cascade delete for OfferedService when Client is deleted
-            //builder.Entity<OfferedService>()
-            //    .HasOne(os => os.Client)  // OfferedService has one Client
-            //    .WithMany(u => u.OfferedServices)  // Client has many OfferedServices
-            //    .HasForeignKey(os => os.ClientId)  // ForeignKey: ClientId in OfferedService
-            //    .OnDelete(DeleteBehavior.Cascade); // Cascade delete when Client is deleted
-
-            //// Restrict delete for OfferedServiceCategory, don't allow deleting a category if services are linked
-            //builder.Entity<OfferedService>()
-            //    .HasOne(os => os.Category)  // OfferedService has one Category
-            //    .WithMany(c => c.OfferedServices)  // Category has many OfferedServices
-            //    .HasForeignKey(os => os.CategoryID)  // ForeignKey: CategoryID in OfferedService
-            //    .OnDelete(DeleteBehavior.Restrict); // Restrict delete when Category has services linked
-
-
+            // Relationship between Dispute and ApplicationUser (ResolvedBy)
+            builder.Entity<Dispute>()
+                .HasOne(d => d.ResolvedByUser)         // A Dispute has one ResolvedBy (Admin)
+                .WithMany()                            // Admin can resolve many Disputes (no need for a navigation property in ApplicationUser)
+                .HasForeignKey(d => d.ResolvedBy)      // Foreign Key: Dispute's ResolvedBy (AdminId)
+                .OnDelete(DeleteBehavior.SetNull);     // If an admin is deleted, set ResolvedBy to null (dispute can still exist without the admin)
 
 
 

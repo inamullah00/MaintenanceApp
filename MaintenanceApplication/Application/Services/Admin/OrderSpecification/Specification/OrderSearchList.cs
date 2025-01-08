@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maintenance.Application.Services.Admin.Specification
+namespace Maintenance.Application.Services.Admin.OrderSpecification.Specification
 {
-    public class OrderSearchList:Specification<Order>
+    public class OrderSearchList : Specification<Order>
     {
 
         public OrderSearchList(string? Keyword = "")
@@ -28,9 +28,9 @@ namespace Maintenance.Application.Services.Admin.Specification
         public OrderSearchList(Guid OrderId)
         {
 
-            if (!(OrderId ==Guid.Empty))
+            if (!(OrderId == Guid.Empty))
             {
-               _ = Query.Where( x => x.Id == OrderId);
+                _ = Query.Where(x => x.Id == OrderId);
             }
         }
 

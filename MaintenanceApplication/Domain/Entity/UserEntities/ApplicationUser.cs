@@ -47,7 +47,7 @@ namespace Domain.Entity.UserEntities
         public ICollection<Order> FreelancerOrders { get; set; } // Orders completed by the freelancer
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
         //public ICollection<Notification> Notifications { get; set; } // Notifications for the user
-        //public ICollection<Dispute> Disputes { get; set; } // Disputes raised by the user
+        public ICollection<Dispute> DisputesResolved { get; set; } // Disputes Resolved by the Admin
         //public ICollection<PerformanceReport> PerformanceReports { get; set; } // Performance reports for the freelancer
         public ICollection<OfferedService> OfferedServices { get; set; } // Services offered by the freelancer
     }

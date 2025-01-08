@@ -4,6 +4,7 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.Offere
 using Infrastructure.Data;
 using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplementation;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.DisputeInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Infrastructure.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
@@ -26,6 +27,7 @@ namespace Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplemen
 
        public IOrderRepository OrderRepository {  get; private set; }
 
+        public IDisputeRepository DisputeRepository { get; }
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -33,6 +35,7 @@ namespace Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplemen
             OfferedServiceRepository = new OfferedServiceRepository(dbContext);
             FreelancerRepository = new FreelancerRepository(dbContext);
             OrderRepository = new OrderRepository(dbContext);
+            DisputeRepository = new DisputeRepository(dbContext);
         }
 
         public void Dispose()

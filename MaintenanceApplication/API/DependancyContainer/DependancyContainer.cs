@@ -7,7 +7,8 @@ using Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImplemen
 using Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplementation;
 using Infrastructure.Repositories.ServiceImplemention;
 using Maintenance.Application.Services.Account;
-using Maintenance.Application.Services.Admin;
+using Maintenance.Application.Services.Admin.DisputeSpecification;
+using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.OffereServiceCategory;
@@ -28,6 +29,7 @@ namespace API.DependancyContainer
             services.AddScoped<IOfferedServiceCategory,OfferedServiceCategory>();
             services.AddScoped<IFreelancerService,FreelancerService>();
             services.AddScoped<IOrderService,OrderService>();
+            services.AddScoped<IDisputeService,DisputeService>();
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
             services.AddEndpointsApiExplorer();

@@ -40,7 +40,7 @@ namespace Maintenance.Domain.Entity.Dashboard
 
         [ForeignKey("ServiceId")]
         public OfferedService Service { get; set; }
-        //public ICollection<Dispute> Disputes { get; set; }
+        public ICollection<Dispute> Disputes { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 

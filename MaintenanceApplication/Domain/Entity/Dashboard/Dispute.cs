@@ -7,30 +7,41 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Dispute
-    {
-        public Guid Id { get; set; } // Unique identifier for the dispute
-        public Guid OrderId { get; set; } // Foreign key for the associated order
-        public string RaisedByUserId { get; set; } // Foreign key for the user who raised the dispute
 
-        public string Details { get; set; } // Detailed description of the dispute
-
-        public DisputeStatus Status { get; set; } // Current status of the dispute
-
-        public DateTime CreatedAt { get; set; } // Timestamp when the dispute was created
-        public DateTime? ResolvedAt { get; set; } // Timestamp when the dispute was resolved (nullable)
-
-        // Navigation Properties
-        public Order Order { get; set; } // Navigation property for the associated order
-        public ApplicationUser RaisedByUser { get; set; } // Navigation property for the user who raised the dispute
-    }
-
-    // Enum for Dispute Status
+    #region Enums
     public enum DisputeStatus
     {
-        Open,       // Dispute has been raised but not yet acted upon
-        InProgress, // Dispute is being resolved
-        Resolved,   // Dispute has been resolved
-        Rejected    // Dispute was reviewed and rejected
+        Open = 1,
+        InProgress = 2,
+        Resolved = 3,
+        Rejected = 4
     }
+
+    public enum DisputeType
+    {
+        Service = 1,
+        Quality = 2,
+        Payment = 3
+    }
+
+    #endregion
+
+    public class Dispute
+    {
+        public Guid Id { get; set; }
+        public Guid OrderId { get; set; }
+        public DisputeType DisputeType { get; set; } // Service, Quality, Payment
+        public string DisputeDescription { get; set; }
+        public DisputeStatus DisputeStatus { get; set; } // Pending, Resolved, Closed
+        public string ResolutionDetails { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime? ResolvedAt { get; set; }
+        public string? ResolvedBy { get; set; } // AdminId
+        public string CreatedBy { get; set; } // The ID or Username of the user who created the dispute
+        public virtual Order Order { get; set; }
+        public virtual ApplicationUser ResolvedByUser { get; set; }
+
+    }
+
+   
 }

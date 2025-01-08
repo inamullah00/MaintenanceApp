@@ -4,8 +4,8 @@ using AutoMapper;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
-using Maintenance.Application.Services.Admin;
-using Maintenance.Application.Services.Admin.Specification;
+using Maintenance.Application.Services.Admin.OrderSpecification;
+using Maintenance.Application.Services.Admin.OrderSpecification.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
 using Microsoft.AspNetCore.Http;
@@ -155,34 +155,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         }
         #endregion
 
-        #region Resolve Order Dispute
-        public async Task<Result<string>> ResolveDisputeAsync(Guid id, ResolveDisputeDto resolveDisputeDto, CancellationToken cancellationToken)
-        {
-            try
-            {
-                // Fetch the order by ID
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
-                if (order == null)
-                {
-                    return Result<string>.Failure("Order not found", "Order not found", 404); // HTTP 404 Not Found
-                }
-
-                // Logic to resolve the dispute (you can uncomment and add your business logic here)
-                // order.DisputeResolved = true;
-                // order.DisputeResolutionDetails = resolveDisputeDto.ResolutionDetails;
-                // await _unitOfWork.OrderRepository.UpdateAsync(order);
-
-                // Return success result with a message
-                return Result<string>.Success("Order dispute resolved successfully.", "Dispute resolved", 200); // HTTP 200 OK
-            }
-            catch (Exception ex)
-            {
-                // Return failure result with the error message
-                return Result<string>.Failure($"Error resolving dispute: {ex.Message}", "An error occurred", 500); // HTTP 500 Internal Server Error
-            }
-        }
-
-
+        #region Create Order
         public async Task<Result<OrderResponseDto>> CreateOrderAsync(CreateOrderRequestDto createOrderRequestDto, CancellationToken cancellationToken)
         {
             try
