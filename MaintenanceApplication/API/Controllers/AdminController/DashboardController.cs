@@ -1,7 +1,9 @@
 ﻿using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
-using Maintenance.Application.Services.Admin;
-using Maintenance.Application.Services.Admin.Specification;
+using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos.DisputeResolvedDto;
+using Maintenance.Application.Services.Admin.DisputeSpecification;
+using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -14,9 +16,12 @@ namespace Maintenance.API.Controllers.AdminController
     public class DashboardController : ControllerBase
     {
         private readonly IOrderService _orderService;
-        public DashboardController(IOrderService orderService)
+        private readonly IDisputeService _disputeService;
+
+        public DashboardController(IOrderService orderService , IDisputeService disputeService)
         {
             _orderService = orderService;
+            _disputeService = disputeService;
         }
 
         #region Order Management
@@ -185,16 +190,132 @@ namespace Maintenance.API.Controllers.AdminController
         }
         #endregion
 
-        #region Resolve Order Dispute
-        [HttpPost("{id:guid}/resolve-dispute")]
-        public async Task<IActionResult> ResolveOrderDispute(Guid id, [FromBody] ResolveDisputeDto resolveDisputeDto, CancellationToken cancellationToken)
+        #endregion
+
+
+        #region Order Dispute Management
+
+        #region Get All Disputes
+        [HttpGet("Disputes")]
+        public async Task<IActionResult> GetAllDisputes(CancellationToken cancellationToken, string Keyword = "")
         {
             try
             {
-                if (id == Guid.Empty || resolveDisputeDto == null)
-                    return BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Message = ErrorMessages.ValidationError });
+                var result = await _disputeService.GetAllDisputesAsync(cancellationToken, Keyword);
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
 
-                var result = await _orderService.ResolveDisputeAsync(id, resolveDisputeDto, cancellationToken);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Get Dispute by ID
+        [HttpGet("Dispute/{id:guid}")]
+        public async Task<IActionResult> GetDisputeById(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _disputeService.GetDisputeByIdAsync(id, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Create Dispute
+        [HttpPost("Dispute")]
+        public async Task<IActionResult> CreateDispute([FromBody] CreateDisputeRequest createDisputeDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _disputeService.CreateDisputeAsync(createDisputeDto, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Resolve Dispute
+        [HttpPost("Resolve-Dispute/{id:guid}")]
+        public async Task<IActionResult> ResolveDispute(Guid id, [FromBody] CreateDisputeResolveDto DisputeResolveRequest, CancellationToken cancellationToken)
+        {
+            try
+            {
+
+                var result = await _disputeService.ResolveDisputeAsync(id, DisputeResolveRequest, cancellationToken);
 
                 return result.IsSuccess
                     ? Ok(new { StatusCode = HttpResponseCodes.OK, Success = true, Message = result.Message })
@@ -202,9 +323,33 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Delete Dispute
+        [HttpDelete("Dispute/{id:guid}")]
+        public async Task<IActionResult> DeleteDispute(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _disputeService.DeleteDisputeAsync(id, cancellationToken);
+
+                return result.IsSuccess
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });

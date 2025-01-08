@@ -4,6 +4,7 @@ using Application.Dto_s.UserDto_s;
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Domain.Entity.Client;
@@ -47,6 +48,12 @@ namespace Application.Mapper
             #region Account Mapping
             CreateMap<ApplicationUser, UserProfileDto>().ReverseMap();
             CreateMap<ApplicationUser, UserProfileEditDto>().ReverseMap();
+            #endregion
+
+            #region Dispute Mapping
+            CreateMap<Dispute, DisputeResponseDto>().ReverseMap();
+            CreateMap<CreateDisputeRequest, Dispute>().ReverseMap();
+            CreateMap<UpdateDisputeRequest, Dispute>().ReverseMap();
             #endregion
         }
     }
