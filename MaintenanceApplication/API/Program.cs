@@ -1,6 +1,7 @@
 using API.DependancyContainer;
 using Domain.Entity.UserEntities;
 using Infrastructure.Data;
+using Maintenance.API.Filters;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,8 +15,10 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers()
- .AddNewtonsoftJson(options =>
+builder.Services.AddControllers(option =>
+{
+    option.Filters.Add(typeof(ValidateModelStateAttribute));
+}).AddNewtonsoftJson(options =>
  {
      options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
  });
