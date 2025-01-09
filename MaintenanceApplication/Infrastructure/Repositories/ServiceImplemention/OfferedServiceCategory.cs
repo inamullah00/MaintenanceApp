@@ -4,8 +4,10 @@ using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using AutoMapper;
 using Domain.Common;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Services.OffereServiceCategory;
 using Maintenance.Application.Wrapper;
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,15 +29,21 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
         public async Task<Result<OfferedServiceCategoryResponseDto>> AddServiceCategoryAsync(OfferedServiceCategoryRequestDto requestDto)
         {
+           
+            if(requestDto == null)
+            {
+                return Result<OfferedServiceCategoryResponseDto>.Failure(ErrorMessages.InvalidCategoryData, StatusCodes.Status400BadRequest);
+            }
+            
             var serviceCategory = _mapper.Map<Maintenance.Domain.Entity.Client.OfferedServiceCategory>(requestDto);
             var category = await _unitOfWork.OfferedServiceCategoryRepository.CreateAsync(serviceCategory);
             if (category == null)
             {
-                return Result<OfferedServiceCategoryResponseDto>.Failure("An error occurred while adding the service category.", 400 );
+                return Result<OfferedServiceCategoryResponseDto>.Failure(ErrorMessages.CategoryCreationFailed, StatusCodes.Status500InternalServerError);
             }
 
             var responseDto = _mapper.Map<OfferedServiceCategoryResponseDto>(category);
-            return Result<OfferedServiceCategoryResponseDto>.Success(responseDto, "Service category added successfully.", 201); // Created
+            return Result<OfferedServiceCategoryResponseDto>.Success(responseDto, SuccessMessages.CategoryCreated, StatusCodes.Status201Created); // Created
         }
 
 
@@ -43,16 +51,16 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
             if (categoryId == Guid.Empty)
             {
-                return Result<string>.Failure( "The provided category ID is not valid or Empty", 400 );
+                return Result<string>.Failure( ErrorMessages.InvalidCategoryId, StatusCodes.Status400BadRequest);
             }
             var isDeleted = await _unitOfWork.OfferedServiceCategoryRepository.RemoveAsync(categoryId);
 
             if (!isDeleted)
             {
-                return Result<string>.Failure("Failed to delete the category. It may not exist or any other Server error.", 404);
+                return Result<string>.Failure(ErrorMessages.CategoryDeletionFailed, StatusCodes.Status500InternalServerError);
             }
 
-            return Result<string>.Success("Category deleted successfully.", 200);
+            return Result<string>.Success(SuccessMessages.CategoryDeleted, StatusCodes.Status200OK);
         }
 
 
@@ -62,12 +70,12 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (offeredServiceCategories == null || !offeredServiceCategories.Any())
             {
-                return Result<List<OfferedServiceCategoryResponseDto>>.Failure( "No service categories found.",404);
+                return Result<List<OfferedServiceCategoryResponseDto>>.Failure( ErrorMessages.CategoryNotFound,StatusCodes.Status404NotFound);
             }
 
             var res = _mapper.Map<List<OfferedServiceCategoryResponseDto>>(offeredServiceCategories);
 
-            return Result<List<OfferedServiceCategoryResponseDto>>.Success( res,"Service categories retrieved successfully.",200);
+            return Result<List<OfferedServiceCategoryResponseDto>>.Success( res,SuccessMessages.CategoryCreated,StatusCodes.Status200OK);
         }
 
 
@@ -76,36 +84,36 @@ namespace Infrastructure.Repositories.ServiceImplemention
        
             if (categoryId == Guid.Empty)
             {
-                return Result<OfferedServiceCategoryResponseDto>.Failure( "The provided category ID is not valid or Empty",400 );
+                return Result<OfferedServiceCategoryResponseDto>.Failure( ErrorMessages.InvalidCategoryId, StatusCodes.Status400BadRequest);
             }
             var offeredServiceCategory = await _unitOfWork.OfferedServiceCategoryRepository.GetByIdAsync(categoryId);
 
             if (offeredServiceCategory == null)
             {
-                return Result<OfferedServiceCategoryResponseDto>.Failure("No category found with the provided ID.",404);
+                return Result<OfferedServiceCategoryResponseDto>.Failure(ErrorMessages.CategoryNotFound, StatusCodes.Status404NotFound);
             }
 
             var res = _mapper.Map<OfferedServiceCategoryResponseDto>(offeredServiceCategory);
 
-            return Result<OfferedServiceCategoryResponseDto>.Success(res,"Service category retrieved successfully.",200);
+            return Result<OfferedServiceCategoryResponseDto>.Success(res,SuccessMessages.CategoryFetched, StatusCodes.Status200OK);
         }
 
 
         public async Task<Result<OfferedServiceCategoryResponseDto>> UpdateServiceCategoryAsync(Guid id, OfferedServiceCategoryUpdateDto requestDto)
         {
-            if (id == Guid.Empty)
+            if (id == Guid.Empty || requestDto ==null)
             {
-                return Result<OfferedServiceCategoryResponseDto>.Failure("The provided category ID is not valid or Empty.", 400);
+                return Result<OfferedServiceCategoryResponseDto>.Failure(ErrorMessages.InvalidCategoryId, StatusCodes.Status400BadRequest);
             }
             var entity = _mapper.Map<Maintenance.Domain.Entity.Client.OfferedServiceCategory>(requestDto);
             var (isUpdated, updatedEntity) = await _unitOfWork.OfferedServiceCategoryRepository.UpdateAsync(entity, id);
             if (!isUpdated || updatedEntity == null)
             {
-                return Result<OfferedServiceCategoryResponseDto>.Failure("Failed to update the service category.", 400);
+                return Result<OfferedServiceCategoryResponseDto>.Failure(ErrorMessages.CategoryUpdateFailed, StatusCodes.Status500InternalServerError);
             }
             var res = _mapper.Map<OfferedServiceCategoryResponseDto>(updatedEntity);
 
-            return Result<OfferedServiceCategoryResponseDto>.Success(res,"Service category updated successfully.",200);
+            return Result<OfferedServiceCategoryResponseDto>.Success(res,SuccessMessages.CategoryUpdated, StatusCodes.Status200OK);
         }
 
     }

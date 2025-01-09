@@ -29,6 +29,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
             await _dbContext.SaveChangesAsync(cancellationToken);
             return dispute;
         }
+
         #endregion
 
         #region Get All Disputes

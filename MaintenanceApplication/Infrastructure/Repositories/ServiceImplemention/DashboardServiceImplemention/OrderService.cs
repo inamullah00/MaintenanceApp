@@ -35,67 +35,49 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         #region Get All Orders
         public async Task<Result<List<OrderResponseDto>>> GetAllOrdersAsync(CancellationToken cancellationToken, string? Keyword = "")
         {
-            try
-            {
                 OrderSearchList Specification = new(Keyword);
                 var orders = await _unitOfWork.OrderRepository.GetAllAsync(cancellationToken, Specification);
                 var orderDtos = _mapper.Map<List<OrderResponseDto>>(orders); 
-                return Result<List<OrderResponseDto>>.Success(orderDtos, SuccessMessages.OperationSuccessful, StatusCodes.Status200OK); 
-            }
-            catch (Exception ex)
-            {
-                return Result<List<OrderResponseDto>>.Failure($"Error fetching orders: {ex.Message}", "An error occurred", StatusCodes.Status500InternalServerError); 
-            }
+                return Result<List<OrderResponseDto>>.Success(orderDtos, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK); 
         }
         #endregion
 
         #region Get Order by ID
         public async Task<Result<OrderResponseDto>> GetOrderByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            try
-            {
                 if (id == Guid.Empty)
                 {
-                    return Result<OrderResponseDto>.Failure(
-                     ErrorMessages.InvalidOrEmptyId,
-                     HttpResponseCodes.BadRequest
-                 );
+                    return Result<OrderResponseDto>.Failure( ErrorMessages.InvalidOrderId, StatusCodes.Status400BadRequest);
                 }
 
                 var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
                 if (order == null)
                 {
-                    return Result<OrderResponseDto>.Failure(ErrorMessages.ResourceNotFound, StatusCodes.Status404NotFound);
+                    return Result<OrderResponseDto>.Failure(ErrorMessages.OrderNotFound, StatusCodes.Status404NotFound);
                 }
                 var orderDto = _mapper.Map<OrderResponseDto>(order); 
-                return Result<OrderResponseDto>.Success(orderDto, SuccessMessages.OperationSuccessful, StatusCodes.Status200OK);
-            }
-            catch (Exception ex)
-            {
-                return Result<OrderResponseDto>.Failure($"Error fetching order by ID: {ex.Message}", "An error occurred", StatusCodes.Status500InternalServerError); 
-            }
+                return Result<OrderResponseDto>.Success(orderDto, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
+        
         }
         #endregion
 
         #region Assign Order
         public async Task<Result<string>> AssignOrderAsync(Guid id, AssignOrderRequestDto assignOrderDto, CancellationToken cancellationToken)
         {
-            try
-            {
                 if (id == Guid.Empty || assignOrderDto == null)
                 {
-                    return Result<string>.Failure( ErrorMessages.InvalidOrEmpty, StatusCodes.Status400BadRequest);
+                    return Result<string>.Failure( ErrorMessages.InvalidOrderData, StatusCodes.Status400BadRequest);
                 }
 
                 var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
                 if (order == null)
                 {
-                    return Result<string>.Failure(ErrorMessages.ResourceNotFound, StatusCodes.Status404NotFound);
+                    return Result<string>.Failure(ErrorMessages.OrderNotFound, StatusCodes.Status404NotFound);
                 }
 
                 if (order.Status != OrderStatus.Pending)
                 {
-                    return Result<string>.Failure("Cannot assign this order.", "The order is not in a pending state.", HttpResponseCodes.BadRequest);
+                    return Result<string>.Failure(ErrorMessages.OrderAssignmentFailed, StatusCodes.Status400BadRequest);
                 }
 
 
@@ -111,12 +93,8 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                     cancellationToken
                 );
 
-                return Result<string>.Success(SuccessMessages.OrderAssignedSuccessfully, HttpResponseCodes.OK); 
-            }
-            catch (Exception ex)
-            {
-                return Result<string>.Failure($"Error assigning order: {ex.Message}", "An error occurred", HttpResponseCodes.InternalServerError); // HTTP 500 Internal Server Error
-            }
+                return Result<string>.Success(SuccessMessages.OrderAssignedSuccessfully, StatusCodes.Status200OK); 
+      
         }
 
         #endregion
@@ -158,37 +136,24 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         #region Create Order
         public async Task<Result<OrderResponseDto>> CreateOrderAsync(CreateOrderRequestDto createOrderRequestDto, CancellationToken cancellationToken)
         {
-            try
-            {
-
+      
                 if (createOrderRequestDto == null)
                 {
-                    return Result<OrderResponseDto>.Failure(
-                     ErrorMessages.InvalidOrEmpty,
-                     HttpResponseCodes.BadRequest
-                 );
+                    return Result<OrderResponseDto>.Failure( ErrorMessages.InvalidOrderData,StatusCodes.Status400BadRequest );
                 }
 
                 var order = _mapper.Map<Order>(createOrderRequestDto);
 
                 var orderRes = await _unitOfWork.OrderRepository.CreateAsync(order, cancellationToken);
 
+                if(!orderRes)
+                {
+                    return Result<OrderResponseDto>.Failure(ErrorMessages.OrderCreationFailed, StatusCodes.Status500InternalServerError);
+                }
+
                 var orderResponse = _mapper.Map<OrderResponseDto>(order);
 
-                return Result<OrderResponseDto>.Success(
-                    orderResponse,
-                   SuccessMessages.OrderPlacedSuccessfully,
-                    StatusCodes.Status201Created
-                );
-            }
-            catch (Exception ex)
-            {
-                return Result<OrderResponseDto>.Failure(
-                    $"Error placing order: {ex.Message}",
-                    "An error occurred while placing the order",
-                   StatusCodes.Status500InternalServerError
-                );
-            }
+                return Result<OrderResponseDto>.Success( orderResponse,SuccessMessages.OrderCreatedSuccessfully,StatusCodes.Status201Created);
         }
 
 

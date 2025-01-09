@@ -49,9 +49,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -64,18 +64,8 @@ namespace Maintenance.API.Controllers.FreelancerController
         public async Task<IActionResult> GetBidsByFreelancer(Guid freelancerId)
         {
             try
-            {
-
-                if (freelancerId == Guid.Empty)
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Message = "Invalid or Empty Freelancer Id."
-                    });
-                }
-                    var result = await _freelancerService.GetBidsByFreelancerAsync(freelancerId);
+            {               
+                 var result = await _freelancerService.GetBidsByFreelancerAsync(freelancerId);
 
                 if (result.IsSuccess)
                 {
@@ -97,9 +87,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -135,9 +125,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -173,9 +163,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -189,17 +179,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         {
             try
             {
-
-                if (bidId == Guid.Empty)
-                {
-                    return BadRequest(new
-                    {
-                        StatusCode = 400,
-                        Success = false,
-                        Message = "Invalid or Empty Bid Id."
-                    });
-                }
-
                 var result = await _freelancerService.DeleteBidAsync(bidId);
                 if (result.IsSuccess)
                 {
@@ -221,9 +200,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -235,11 +214,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         [HttpPatch("Bids/{id:guid}")]
         public async Task<IActionResult> ApproveBid(Guid id, [FromBody] ApproveBidRequestDto bidRequestDto)
         {
-            if (bidRequestDto == null || id == Guid.Empty)
-            {
-                return BadRequest(new { StatusCode = 400, Success = false, Message = "Invalid request data." });
-            }
-
             try
             {
                 var result = await _freelancerService.ApproveBidAsync(id, bidRequestDto);
@@ -264,9 +238,9 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });

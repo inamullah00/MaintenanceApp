@@ -38,7 +38,7 @@ namespace Maintenance.Application.Common.Constants
 
 
         // System errors
-        public const string InternalServerError = "An error occurred while processing the request";
+        public const string InternalServerError = "An unexpected error occurred. Please try again later.";
             public const string ServiceUnavailable = "The service is currently unavailable, please try again later";
             public const string UnknownError = "An unknown error occurred";
             public const string NetworkError = "A network error occurred, please check your connection";
@@ -74,5 +74,110 @@ namespace Maintenance.Application.Common.Constants
             // General operation error messages
             public const string ActionFailed = "The action could not be completed, please try again";
             public const string RequestFailed = "The request could not be processed at this time";
-        }
+
+        #region Category Messages
+        // General Category Errors
+        public const string CategoryNotFound = "No category found with the provided ID.";
+        public const string CategoryAlreadyExists = "Category already exists.";
+        public const string CategoryCreationFailed = "An error occurred while adding the category.";
+        public const string CategoryUpdateFailed = "An error occurred while update the category.";
+        public const string CategoryDeletionFailed = "Failed To Delete Category.It may not exist or any other Server error";
+        public const string InvalidCategoryId = "The provided  category ID is invalid or Empty.";
+        public const string InvalidCategoryData = "The provided category data is invalid.";
+
+        // Category Status Errors
+        public const string CategoryInactive = "The category is inactive.";
+        public const string CategoryAlreadyInactive = "The category is already inactive.";
+        public const string CategoryAlreadyActive = "The category is already active.";
+
+        // Category Validation Errors
+        public const string CategoryNameRequired = "Category name is required.";
+        public const string CategoryNameTooShort = "Category name is too short.";
+        public const string CategoryNameTooLong = "Category name is too long.";
+        public const string InvalidCategoryType = "The provided category type is invalid.";
+
+        #endregion
+
+
+        #region Service Messages
+        // General Service Errors
+        public const string ServiceNotFound = "No service found with the provided ID.";
+        public const string ServiceAlreadyExists = "Service already exists.";
+        public const string ServiceCreationFailed = "An error occurred while adding the service.";
+        public const string ServiceUpdateFailed = "An error occurred while updating the service.";
+        public const string ServiceDeletionFailed = "Failed to delete service. It may not exist or another server error occurred.";
+        public const string InvalidServiceId = "The provided service ID is invalid or empty.";
+        public const string InvalidServiceData = "The provided service data is invalid.";
+
+        // Service Status Errors
+        public const string ServiceInactive = "The service is inactive.";
+        public const string ServiceAlreadyInactive = "The service is already inactive.";
+        public const string ServiceAlreadyActive = "The service is already active.";
+        #endregion
+
+
+        #region Freelancer Bid Messages
+        // General Freelancer Bid Errors
+        public const string BidNotFound = "No bid found with the provided ID.";
+        public const string FreelancerBidAlreadyExists = "A bid from the freelancer already exists for this job.";
+        public const string FreelancerBidCreationFailed = "An error occurred while Submiting the bid.Please Try again later";
+        public const string FreelancerBidApprovalFailed = "An error occurred while Approve the bid.Please Try again later";
+        public const string FreelancerBidUpdateFailed = "An error occurred while updating the bid.";
+        public const string FreelancerBidDeletionFailed = "Failed to delete the bid. It may not exist or another server error occurred.";
+        public const string FreelancerBidAlreadyAccepted = "The bid has already been accepted.";
+        public const string FreelancerBidExpired = "The bid has expired and can no longer be modified.";
+        public const string InvalidFreelancerId = "The provided freelancer ID Aagainst Bid is invalid or empty.";
+        public const string InvalidFreelancerBidId = "The provided Bid ID is Invalid or empty.";
+        public const string InvalidFreelancerBidData = "The provided bid data is invalid.";
+        public const string FreelancerBidAlreadyAssigned = "The bid has already been assigned to another freelancer.";
+        public const string FreelancerBidNotFound = "No bid found for the provided freelancer ID.";
+
+        // Freelancer Bid Validation Errors
+        public const string FreelancerBidAmountTooLow = "The bid amount is too low for this job.";
+        public const string FreelancerBidAmountTooHigh = "The bid amount is too high for this job.";
+        public const string FreelancerBidDescriptionRequired = "The bid description is required.";
+        public const string FreelancerBidDescriptionTooShort = "The bid description is too short.";
+        public const string FreelancerBidDescriptionTooLong = "The bid description is too long.";
+
+        // Freelancer Bid Status Errors
+        public const string FreelancerBidNotInPendingStatus = "The bid is not in a pending status and cannot be updated.";
+        public const string FreelancerBidAlreadyClosed = "The bid has already been closed and cannot be modified.";
+        #endregion
+
+
+
+        #region Order Messages
+        // General Order Errors
+        public const string OrderNotFound = "No order found with the provided ID.";
+        public const string OrderAlreadyExists = "An order with the provided details already exists.";
+        public const string OrderCreationFailed = "An error occurred while placing the order. Please try again later.";
+        public const string OrderUpdateFailed = "An error occurred while updating the order. Please try again later.";
+        public const string OrderDeletionFailed = "Failed to delete the order. It may not exist or another server error occurred.";
+        public const string OrderAlreadyAssigned = "The order has already been assigned to a freelancer.";
+        public const string OrderAlreadyCompleted = "The order has already been completed and cannot be modified.";
+        public const string InvalidOrderId = "The provided order ID is invalid or empty.";
+        public const string InvalidOrderData = "The provided order data is invalid.";
+        public const string OrderNotAssigned = "The order has not been assigned to any freelancer.";
+        public const string OrderStatusUpdateFailed = "Failed to update the status of the order.";
+        public const string OrderNotFoundForFreelancer = "No order found for the provided freelancer ID.";
+        public const string OrderAssignmentFailed = "Cannot assign this order.The order is not in a pending state.";
+
+        // Order Validation Errors
+        public const string OrderAmountTooLow = "The order amount is too low.";
+        public const string OrderAmountTooHigh = "The order amount is too high.";
+        public const string OrderDescriptionRequired = "The order description is required.";
+        public const string OrderDescriptionTooShort = "The order description is too short.";
+        public const string OrderDescriptionTooLong = "The order description is too long.";
+        public const string OrderBudgetRequired = "The order budget is required.";
+        public const string InvalidOrderBudget = "The provided order budget is invalid.";
+
+        // Order Status Errors
+        public const string OrderNotInPendingStatus = "The order is not in a pending status and cannot be updated.";
+        public const string OrderAlreadyClosed = "The order has already been closed and cannot be modified.";
+        public const string OrderAlreadyInProgress = "The order is already in progress and cannot be assigned.";
+        public const string OrderAlreadyResolved = "The order has already been resolved and cannot be modified.";
+        #endregion
+
+
+    }
 }
