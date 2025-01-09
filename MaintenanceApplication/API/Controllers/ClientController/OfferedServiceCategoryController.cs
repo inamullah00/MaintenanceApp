@@ -45,9 +45,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -82,9 +82,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -119,9 +119,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -135,8 +135,6 @@ namespace API.Controllers.ClientController
         {
             try
             {
-               
-
                 var result = await _offeredServiceCategory.UpdateServiceCategoryAsync(Id,requestDto);
 
                 if (result.IsSuccess)
@@ -159,9 +157,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -196,9 +194,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });

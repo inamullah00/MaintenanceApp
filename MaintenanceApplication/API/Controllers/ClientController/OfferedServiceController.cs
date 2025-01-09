@@ -86,9 +86,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -126,9 +126,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });
@@ -166,7 +166,7 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new { Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
 
@@ -201,9 +201,9 @@ namespace API.Controllers.ClientController
             }
             catch (Exception ex)
             {
-                return StatusCode(HttpResponseCodes.InternalServerError, new
+                return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
-                    StatusCode = HttpResponseCodes.InternalServerError,
+                    StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
                     Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
                 });

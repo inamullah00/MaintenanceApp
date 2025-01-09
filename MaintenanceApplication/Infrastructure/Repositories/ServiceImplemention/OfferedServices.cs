@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!uploadSuccess)
             {
-                return Result<string>.Failure(uploadMessage, HttpResponseCodes.BadRequest);
+                return Result<string>.Failure(uploadMessage, StatusCodes.Status400BadRequest);
             }
 
             // Store the uploaded image URLs in the entity
@@ -62,7 +62,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!audioUploadSuccess)
             {
-                return Result<string>.Failure(audioUploadMessage, HttpResponseCodes.BadRequest);
+                return Result<string>.Failure(audioUploadMessage, StatusCodes.Status400BadRequest);
             }
 
             // Store the uploaded audio URLs in the entity
@@ -72,10 +72,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (entity == null)
             {
-                return Result<string>.Failure("An error occurred while adding the service.", HttpResponseCodes.NotFound);
+                return Result<string>.Failure(ErrorMessages.ServiceCreationFailed, StatusCodes.Status500InternalServerError);
             }
 
-            return Result<string>.Success(entity.Id.ToString(),"Service added successfully!", HttpResponseCodes.Created);
+            return Result<string>.Success(entity.Id.ToString(),SuccessMessages.ServiceCreated, StatusCodes.Status201Created);
         }
 
 
@@ -83,14 +83,14 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
             if (serviceId == Guid.Empty)
             {
-                return Result<string>.Failure(ErrorMessages.ValidationError, HttpResponseCodes.BadRequest);
+                return Result<string>.Failure(ErrorMessages.InvalidServiceId, StatusCodes.Status400BadRequest);
             }
 
             var service = await _unitOfWork.OfferedServiceRepository.GetByIdAsync(serviceId);
 
             if (service == null)
             {
-                return Result<string>.Failure(ErrorMessages.ResourceNotFound, HttpResponseCodes.NotFound);
+                return Result<string>.Failure(ErrorMessages.ServiceNotFound, StatusCodes.Status404NotFound);
             }
 
             var serviceEntity = _mapper.Map<OfferedService>(service);
@@ -99,10 +99,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             if (!isDeleted)
             {
-                return Result<string>.Failure(ErrorMessages.DeletingResourceError, HttpResponseCodes.InternalServerError);
+                return Result<string>.Failure(ErrorMessages.ServiceDeletionFailed, StatusCodes.Status500InternalServerError);
             }
 
-            return Result<string>.Success(SuccessMessages.DeleteOperationSuccessfully, HttpResponseCodes.OK);
+            return Result<string>.Success(SuccessMessages.ServiceDeleted, StatusCodes.Status200OK);
         }
 
 
@@ -112,8 +112,8 @@ namespace Infrastructure.Repositories.ServiceImplemention
             if (serviceId == Guid.Empty)
             {
                 return Result<OfferedServiceResponseDto>.Failure(
-                 ErrorMessages.InvalidOrEmptyId,
-                 HttpResponseCodes.BadRequest
+                 ErrorMessages.InvalidServiceId,
+                 StatusCodes.Status400BadRequest
              );
             }
 
@@ -121,7 +121,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             var offeredService = _mapper.Map<OfferedServiceResponseDto>(service);
 
-            return Result<OfferedServiceResponseDto>.Success(offeredService, ErrorMessages.OperationSuccess, HttpResponseCodes.OK);
+            return Result<OfferedServiceResponseDto>.Success(offeredService, ErrorMessages.OperationSuccess, StatusCodes.Status200OK);
         }
 
 
@@ -131,7 +131,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             var res = _mapper.Map<List<OfferedServiceResponseDto>>(services);
 
-            return Result<List<OfferedServiceResponseDto>>.Success(res, $"{res.Count} service(s) found.",HttpResponseCodes.OK);
+            return Result<List<OfferedServiceResponseDto>>.Success(res, $"{res.Count} service(s) found.", StatusCodes.Status200OK);
         }
 
 
@@ -141,8 +141,8 @@ namespace Infrastructure.Repositories.ServiceImplemention
             if(serviceId == Guid.Empty || updateRequest == null)
             {
                 return Result<OfferedServiceResponseDto>.Failure(
-                 ErrorMessages.InvalidOrEmpty,
-                 HttpResponseCodes.BadRequest
+                 ErrorMessages.InvalidServiceData,
+                 StatusCodes.Status400BadRequest
              );
             }
             
@@ -152,15 +152,15 @@ namespace Infrastructure.Repositories.ServiceImplemention
             {
 
                 return Result<OfferedServiceResponseDto>.Failure(
-                  ErrorMessages.InternalServerError,
-                  HttpResponseCodes.InternalServerError
+                  ErrorMessages.ServiceUpdateFailed,
+                  StatusCodes.Status500InternalServerError
               );
 
             }
             return Result<OfferedServiceResponseDto>.Success(
             _mapper.Map<OfferedServiceResponseDto>(data),
-            SuccessMessages.OperationSuccessful,
-            HttpResponseCodes.OK );
+            SuccessMessages.ServiceUpdated,
+            StatusCodes.Status200OK );
 
 
         }
