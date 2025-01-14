@@ -144,8 +144,6 @@ namespace Maintenance.Application.Common.Constants
         public const string FreelancerBidAlreadyClosed = "The bid has already been closed and cannot be modified.";
         #endregion
 
-
-
         #region Order Messages
         // General Order Errors
         public const string OrderNotFound = "No order found with the provided ID.";
@@ -178,6 +176,18 @@ namespace Maintenance.Application.Common.Constants
         public const string OrderAlreadyResolved = "The order has already been resolved and cannot be modified.";
         #endregion
 
+        #region Feedback Error Messages
+
+        public const string FeedbackCreationFailed = "Failed to create feedback.";
+        public const string FeedbackUpdateFailed = "Failed to update feedback.";
+        public const string FeedbackDeletionFailed = "Failed to delete feedback.";
+        public const string FeedbackNotFound = "Feedback not found.";
+        public const string FeedbackInvalidOrEmpty = "Invalid or empty feedback data.";
+        public const string FeedbackStatusUpdateFailed = "Failed to update feedback status.";
+        public const string FeedbackActivationFailed = "Failed to activate feedback.";
+        public const string FeedbackDeactivationFailed = "Failed to deactivate feedback.";
+
+        #endregion
 
     }
 }

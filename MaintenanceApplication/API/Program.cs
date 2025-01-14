@@ -32,14 +32,12 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.RegistrationServices(builder.Configuration);
 
 // Identity Setup
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("MaintenanceApp")
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
 // Db Setup 
-
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => options.EnableRetryOnFailure());

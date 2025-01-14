@@ -9,9 +9,9 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Maintenance.Application.Services.Admin.DisputeSpecification.Specification
 {
-    public class DisputeSearchList : Specification<Dispute>
+    public class ContentSearchList : Specification<Dispute>
     {
-        public DisputeSearchList(string? Keyword = "")
+        public ContentSearchList(string? Keyword = "")
         {
             if (!string.IsNullOrWhiteSpace(Keyword))
             {

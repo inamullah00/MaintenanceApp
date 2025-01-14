@@ -3,7 +3,9 @@ using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Application.Dto_s.UserDto_s;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.ContentDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.UserDto_s;
@@ -54,6 +56,18 @@ namespace Application.Mapper
             CreateMap<Dispute, DisputeResponseDto>().ReverseMap();
             CreateMap<CreateDisputeRequest, Dispute>().ReverseMap();
             CreateMap<UpdateDisputeRequest, Dispute>().ReverseMap();
+            #endregion
+
+            #region Content Mapping
+            CreateMap<Content, ContentResponseDto>().ReverseMap();
+            CreateMap<CreateContentRequestDto, Content>().ReverseMap();
+            CreateMap<UpdateContentRequestDto, Content>().ReverseMap();
+            #endregion   
+            
+            #region Content Mapping
+            CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
+            CreateMap<CreateFeedbackRequestDto, Feedback>().ReverseMap();
+            CreateMap<UpdateFeedbackRequestDto, Feedback>().ReverseMap();
             #endregion
         }
     }

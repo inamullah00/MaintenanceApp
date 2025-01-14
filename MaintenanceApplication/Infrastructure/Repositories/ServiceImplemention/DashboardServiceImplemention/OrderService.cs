@@ -1,8 +1,11 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
+using MailKit.Search;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification.Specification;
@@ -110,7 +113,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                    
                 }
 
-                var order = await _unitOfWork.OrderRepository.GetByIdAsync(id, cancellationToken);
+                var order = await _unitOfWork.OrderRepository.GetEntityByIdAsync(id, cancellationToken);
                 if (order ==null)
                 {
                     return Result<string>.Failure(
@@ -120,8 +123,8 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                 }
 
                 // Update the order status (you can uncomment and add your business logic here)
-                // order.Status = updateOrderStatusDto.Status;
-                // await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
+                order.Status = updateOrderStatusDto.OrderStatus;
+                await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
 
                 // Return success result with a message
                 return Result<string>.Success(SuccessMessages.OrderStatusUpdatedSuccessfully, StatusCodes.Status200OK);
@@ -156,8 +159,133 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
                 return Result<OrderResponseDto>.Success( orderResponse,SuccessMessages.OrderCreatedSuccessfully,StatusCodes.Status201Created);
         }
 
-
         #endregion
+
+
+       public async Task<Result<string>> CompleteWorkAsync(Guid id, CompleteWorkDTORequest WorkDTORequest, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderRepository.GetEntityByIdAsync(id, cancellationToken);
+
+                if (order == null)
+                {
+                    return Result<string>.Failure(
+                        ErrorMessages.ResourceNotFound,
+                        StatusCodes.Status404NotFound
+                    );
+                }
+
+                // Mark the order as completed
+                order.Status = OrderStatus.Completed;  // Assuming `Completed` is a status in your Order entity
+                order.CompletedDate = WorkDTORequest.CompletionDate;  // You can add a completion date here
+
+
+                // Update the order in the database
+              var isSuccess=  await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
+
+                if (!isSuccess) 
+                {
+               
+                   return Result<string>.Failure(ErrorMessages.OrderStatusUpdateFailed, StatusCodes.Status500InternalServerError);
+                    
+                }
+
+                var orderResponse = _mapper.Map<OrderResponseDto>(order);  // Map order to the DTO
+
+                return Result<string>.Success(orderResponse.Id.ToString(), StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(
+                    $"Error completing work: {ex.Message}",
+                    StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+
+      public async Task<Result<string>> ApproveOrderAsync(Guid orderId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderRepository.GetEntityByIdAsync(orderId, cancellationToken);
+
+                if (order == null)
+                {
+                    return Result<string>.Failure(
+                        ErrorMessages.ResourceNotFound,
+                        StatusCodes.Status404NotFound
+                    );
+                }
+
+                // Mark the order as completed
+                //order.IsOrdeCompleted = true;
+
+
+                // Update the order in the database
+                var isSuccess = await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
+
+                if (!isSuccess)
+                {
+
+                    return Result<string>.Failure(ErrorMessages.OrderStatusUpdateFailed, StatusCodes.Status500InternalServerError);
+
+                }
+
+                var orderResponse = _mapper.Map<OrderResponseDto>(order);  // Map order to the DTO
+
+                return Result<string>.Success(orderResponse.Id.ToString(), StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(
+                    $"Error completing work: {ex.Message}",
+                    StatusCodes.Status500InternalServerError
+                );
+            }
+        }
+
+        public async Task<Result<string>> RejectOrderAsync(Guid id, RejectOrderRequestDTO RejectOrderRequest, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var order = await _unitOfWork.OrderRepository.GetEntityByIdAsync(id, cancellationToken);
+
+                if (order == null)
+                {
+                    return Result<string>.Failure(
+                        ErrorMessages.ResourceNotFound,
+                        StatusCodes.Status404NotFound
+                    );
+                }
+
+                // Mark the order as completed
+                order.Status = RejectOrderRequest.OrderStatus;
+              
+
+
+                // Update the order in the database
+                var isSuccess = await _unitOfWork.OrderRepository.UpdateAsync(order, cancellationToken);
+
+                if (!isSuccess)
+                {
+
+                    return Result<string>.Failure(ErrorMessages.OrderStatusUpdateFailed, StatusCodes.Status500InternalServerError);
+
+                }
+
+                var orderResponse = _mapper.Map<OrderResponseDto>(order);  // Map order to the DTO
+
+                return Result<string>.Success(orderResponse.Id.ToString(), StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure(
+                    $"Error completing work: {ex.Message}",
+                    StatusCodes.Status500InternalServerError
+                );
+            }
+        }
 
         #endregion
 

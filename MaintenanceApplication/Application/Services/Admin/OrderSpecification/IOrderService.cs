@@ -1,4 +1,6 @@
-﻿using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+﻿using Maintenance.Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
 using System;
@@ -16,5 +18,10 @@ namespace Maintenance.Application.Services.Admin.OrderSpecification
         public Task<Result<string>> AssignOrderAsync(Guid id, AssignOrderRequestDto assignOrderDto, CancellationToken cancellationToken);
         public Task<Result<OrderResponseDto>> CreateOrderAsync(CreateOrderRequestDto createOrderRequestDto, CancellationToken cancellationToken);
         public Task<Result<string>> UpdateOrderStatusAsync(Guid id, UpdateOrderStatusDto updateOrderStatusDto, CancellationToken cancellationToken);
+        public Task<Result<string>> RejectOrderAsync(Guid id, RejectOrderRequestDTO RejectOrderRequest, CancellationToken cancellationToken);
+        public Task<Result<string>> CompleteWorkAsync(Guid orderId, CompleteWorkDTORequest WorkDTORequest, CancellationToken cancellationToken);
+        public Task<Result<string>> ApproveOrderAsync(Guid orderId, CancellationToken cancellationToken);
+    
+    
     }
 }

@@ -2,6 +2,7 @@
 using Maintenance.Domain.Entity.Client;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -14,7 +15,9 @@ namespace Maintenance.Domain.Entity.Freelancer
         public Guid Id { get; set; }
         public decimal BidAmount { get; set; }
         public string Status { get; set; } = "Pending"; // Pending, Accepted, Rejected
+        [Required]
         public Guid OfferedServiceId { get; set; }
+        [Required]
         public string FreelancerId { get; set; }
         public DateTime CreatedAt { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Entity.UserEntities;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -24,3 +25,16 @@ namespace Maintenance.Domain.Entity.Dashboard
         public Order Order { get; set; }
     }
 }
+
+
+//public class Payment
+//{
+//    public Guid Id { get; set; }
+//    public Guid FreelancerId { get; set; }
+//    public decimal Amount { get; set; }
+//    public DateTime PaymentDate { get; set; }
+
+//    // Navigation property
+//    public ApplicationUser Freelancer { get; set; }
+//}
+

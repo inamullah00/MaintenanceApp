@@ -1,6 +1,8 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
 using Microsoft.AspNetCore.Http;
@@ -13,10 +15,12 @@ namespace Maintenance.API.Controllers.FreelancerController
     public class FreelancerController : ControllerBase
     {
         private readonly IFreelancerService _freelancerService;
+        private readonly IOrderService _orderService;
 
-        public FreelancerController(IFreelancerService freelancerService)
+        public FreelancerController(IFreelancerService freelancerService , IOrderService orderService)
         {
             _freelancerService = freelancerService;
+            _orderService = orderService;
         }
 
 
@@ -210,7 +214,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
         #endregion
 
-        #region Approve Bid Request
+        #region Approve Bid Request by Client
         [HttpPatch("Bids/{id:guid}")]
         public async Task<IActionResult> ApproveBid(Guid id, [FromBody] ApproveBidRequestDto bidRequestDto)
         {
@@ -248,5 +252,90 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
         #endregion
 
+
+
+        #region Assigned Order To Freelancer and they start work on
+
+        #region StartWork
+        [HttpPut("Orders/{orderId:guid}/Start")]
+        public async Task<IActionResult> StartWork(Guid orderId, [FromBody] UpdateOrderStatusDto startWorkDTO , CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _orderService.UpdateOrderStatusAsync(orderId, startWorkDTO, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value // Updated order details
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #region MarkOrderAsCompleted
+
+        [HttpPut("Orders/{orderId:guid}/Complete")]
+        public async Task<IActionResult> MarkOrderAsCompleted(Guid orderId, [FromBody] CompleteWorkDTORequest completeWorkDTO , CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _orderService.CompleteWorkAsync(orderId, completeWorkDTO, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value // Updated order details with completed status
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #endregion
     }
+    
 }

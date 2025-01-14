@@ -33,13 +33,20 @@ namespace Domain.Entity.UserEntities
         public string? Bio { get; set; }
         public string? Experience { get; set; }
         public DateTime? ApprovedDate { get; set; } = DateTime.UtcNow; // When the freelancer was approved by the admin
-        public DateTime RegistrationDate { get; set; } = DateTime.UtcNow;
+        public DateTime? RegistrationDate { get; set; } = DateTime.UtcNow;
 
-        // Optional Fields
         public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
         public decimal? HourlyRate { get; set; }  // Freelancer's hourly or project rate
         public bool? IsVerified { get; set; } = false; // Whether the freelancer is verified by the admin
         public bool IsSuspended { get; set; } = false;
+
+
+        // Freelancer Related Fields
+
+        public int? MonthlyLimit { get; set; } // Maximum number of orders the freelancer can complete in a month
+        public int? OrdersCompleted { get; set; } // Number of orders completed by the freelancer in the specified month
+        public decimal? TotalEarnings { get; set; } // Total earnings of the freelancer for the month
+        public DateTime ReportMonth { get; set; } // Specifies the month being tracked (typically the first day of the month)
 
 
         // Navigation Properties
@@ -48,8 +55,11 @@ namespace Domain.Entity.UserEntities
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
         //public ICollection<Notification> Notifications { get; set; } // Notifications for the user
         public ICollection<Dispute> DisputesResolved { get; set; } // Disputes Resolved by the Admin
-        //public ICollection<PerformanceReport> PerformanceReports { get; set; } // Performance reports for the freelancer
         public ICollection<OfferedService> OfferedServices { get; set; } // Services offered by the freelancer
+
+        // Navigation properties for the feedback given by this user (Client or Freelancer)
+        public ICollection<Feedback> FeedbackGivenByClient { get; set; } // Feedback given by this user as a Client
+        public ICollection<Feedback> FeedbackGivenByFreelancer { get; set; } // Feedback given by this user as a Freelancer
     }
 
 
