@@ -80,21 +80,11 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
         {
             try
             {
-                // Query the orders based on freelancer and date range
-                //var orders = await _context.Orders
-                //    .Where(o => o.FreelancerId == freelancerId && o.CompletedDate >= startDate && o.CompletedDate <= endDate)
-                //    .ToListAsync(cancellationToken);
-
-                //if (orders == null || orders.Count == 0)
-                //{
-                //    return null; // No orders found for the freelancer in the specified date range
-                //}
-
 
                 var performanceReport = await (from FreelancerOrders in _context.Orders
                                                join Freelancer in _context.Users
                                                on FreelancerOrders.FreelancerId equals Freelancer.Id
-                                               where FreelancerOrders.CompletedDate >= startDate && FreelancerOrders.CompletedDate <= endDate
+                                               where FreelancerOrders.CreatedAt >= startDate && FreelancerOrders.CompletedDate <= endDate && FreelancerOrders.CompletedDate != null
                                                group FreelancerOrders by Freelancer.Id into g
                                                select new FreelancerPerformanceReportResponseDto
                                                {
@@ -109,37 +99,6 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
                                                }).ToListAsync(cancellationToken);
 
                 return performanceReport;
-
-
-
-
-
-                // Query feedback related to these orders
-                //var feedbacks = await _context.Feedbacks
-                //    .Where(f => orders.Select(o => o.Id).Contains(f.OrderId))
-                //    .ToListAsync(cancellationToken);
-
-                //// Calculate total earnings, total completed orders, total pending orders
-                //var totalEarnings = orders.Sum(o => o.TotalAmount);
-                //var totalCompleted = orders.Count(o => o.Status == OrderStatus.Completed);
-                //var totalPending = orders.Count(o => o.Status == OrderStatus.Pending);
-
-                //// Calculate average rating from the feedbacks (only consider feedback with a rating)
-                //var averageRating = feedbacks.Count > 0
-                //    ? feedbacks.Average(f => f.Rating)
-                //    : 0;  // Default to 0 if no feedback is available
-
-                //// Create and return the performance report response
-                //return new FreelancerPerformanceReportResponseDto
-                //{
-                //    TotalOrdersCompleted = totalCompleted,
-                //    TotalEarnings = totalEarnings,
-                //    AverageRating = averageRating,
-                //    CompletedOrders = totalCompleted,
-                //    PendingOrders = totalPending
-                //};
-                return null;
-
             }
             catch (Exception ex)
             {
