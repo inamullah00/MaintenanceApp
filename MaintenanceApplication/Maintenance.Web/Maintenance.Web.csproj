@@ -6,4 +6,10 @@
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\API\Maintenance.API.csproj" />
+    <ProjectReference Include="..\Application\Maintenance.Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Maintenance.Infrastructure.csproj" />
+  </ItemGroup>
+
 </Project>
