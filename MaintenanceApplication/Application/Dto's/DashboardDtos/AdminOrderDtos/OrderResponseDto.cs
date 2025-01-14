@@ -13,7 +13,7 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
             public string ClientId { get; set; } // Client's ID
             public string FreelancerId { get; set; } // Freelancer ID
 
-        public string ClientFirstName { get; set; } // Client's first name
+            public string ClientFirstName { get; set; } // Client's first name
             public string ClientLastName { get; set; } // Client's last name
             public string ClientLocation { get; set; } // Client's location
 
@@ -29,7 +29,8 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
 
             // Order status and timestamps
             public OrderStatus Status { get; set; } // Current status of the order
-            public DateTime CreatedAt { get; set; } // Date and time the order was created
+            public DateTime CreatedAt { get; set; }  // Date and time the order was created
+            public DateTime? CompletedDate { get; set; } // Date and time the order was Completed
             public DateTime UpdatedAt { get; set; } // Last updated time of the order
 
             // Payment details

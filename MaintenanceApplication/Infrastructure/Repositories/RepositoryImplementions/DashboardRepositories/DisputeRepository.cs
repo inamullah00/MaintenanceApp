@@ -49,7 +49,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
                           select new DisputeResponseDto
                           {
                               Id = disputes.Id,
-                              OrderId = disputes.OrderId,
+                              OrderId = disputes.OrderId.Value,
                               DisputeType = disputes.DisputeType,
                               DisputeDescription = disputes.DisputeDescription,
                               DisputeStatus = disputes.DisputeStatus,
@@ -74,7 +74,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
                           select new DisputeResponseDto
                           {
                               Id = disputes.Id,
-                              OrderId = disputes.OrderId,
+                              OrderId = disputes.OrderId.Value,
                               DisputeType = disputes.DisputeType,
                               DisputeDescription = disputes.DisputeDescription,
                               DisputeStatus = disputes.DisputeStatus,

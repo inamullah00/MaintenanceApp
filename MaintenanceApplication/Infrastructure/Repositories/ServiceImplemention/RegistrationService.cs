@@ -132,7 +132,11 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 RegistrationDate = DateTime.UtcNow,
                 Skills = request.Skills,
                 HourlyRate = request.HourlyRate,
-                IsVerified =false
+                IsVerified =false,
+                TotalEarnings = 0,
+                MonthlyLimit = 0,
+                OrdersCompleted =0,
+                ReportMonth = DateTime.UtcNow,
             };
 
             // Register the user with the password
@@ -202,6 +206,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
                              Address = user.Address,
                              ExpertiseArea = user.ExpertiseArea,
                              Rating = user.Rating.ToString(),
+                             MonthlyLimit = user.MonthlyLimit,
+                             OrdersCompleted = user.OrdersCompleted,
+                             TotalEarnings = user.TotalEarnings,
+                             ReportMonth = user.ReportMonth,
                              Bio = user.Bio,
                              ApprovedDate = user.ApprovedDate,
                              RegistrationDate = user.RegistrationDate,
@@ -237,6 +245,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
                                    Location = AppUsers.Location,
                                    Address = AppUsers.Address,
                                    ExpertiseArea = AppUsers.ExpertiseArea,
+                                   MonthlyLimit = AppUsers.MonthlyLimit,
+                                   OrdersCompleted = AppUsers.OrdersCompleted,
+                                   TotalEarnings = AppUsers.TotalEarnings,
+                                   ReportMonth = AppUsers.ReportMonth,
                                    Rating = AppUsers.Rating.ToString(),
                                    Bio = AppUsers.Bio,
                                    ApprovedDate = AppUsers.ApprovedDate,

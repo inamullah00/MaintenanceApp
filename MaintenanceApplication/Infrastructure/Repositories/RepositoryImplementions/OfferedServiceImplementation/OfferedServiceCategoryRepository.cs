@@ -41,25 +41,49 @@ namespace Infrastructure.Repositories.RepositoryImplementions.OfferedServiceImpl
      
         public async Task<List<OfferedServiceCategoryResponseDto>> GetAllAsync(CancellationToken cancellationToken = default)
         {
-            return await (from category in _dbContext.OfferedServiceCategories
-                          join service in _dbContext.OfferedServices
-                          on category.Id equals service.CategoryID
-                          select new OfferedServiceCategoryResponseDto
-                          {
-                              Id = category.Id,
-                              CategoryName = category.CategoryName,
-                              IsActive = category.IsActive,
-                              OfferedServices = category.OfferedServices.Select(s => new OfferedServiceResponseDto
-                              {
-                                  Id = s.Id,
-                                  ClientId = s.ClientId,
-                                  Title = s.Title,
-                                  Description = s.Description,
-                                  Location = s.Location,
-                                  CreatedAt = s.CreatedAt,
-                                  UpdatedAt = s.UpdatedAt
-                              }).ToList()
-                          }).ToListAsync(cancellationToken);
+            //var res =  await (from category in _dbContext.OfferedServiceCategories
+            //              join service in _dbContext.OfferedServices
+            //              on category.Id equals service.CategoryID
+            //              select new OfferedServiceCategoryResponseDto
+            //              {
+            //                  Id = category.Id,
+            //                  CategoryName = category.CategoryName,
+            //                  IsActive = category.IsActive,
+            //                  OfferedServices = category.OfferedServices.Select(s => new OfferedServiceResponseDto
+            //                  {
+            //                      Id = s.Id,
+            //                      ClientId = s.ClientId,
+            //                      Title = s.Title,
+            //                      Description = s.Description,
+            //                      Location = s.Location,
+            //                      CreatedAt = s.CreatedAt,
+            //                      UpdatedAt = s.UpdatedAt
+            //                  }).ToList()
+            //              }).ToListAsync(cancellationToken);
+
+            //return res;
+
+            var res = await (from category in _dbContext.OfferedServiceCategories
+                             select new OfferedServiceCategoryResponseDto
+                             {
+                                 Id = category.Id,
+                                 CategoryName = category.CategoryName,
+                                 IsActive = category.IsActive,
+                                 OfferedServices = _dbContext.OfferedServices
+                                    .Where(s => s.CategoryID == category.Id)
+                                    .Select(s => new OfferedServiceResponseDto
+                                    {
+                                        Id = s.Id,
+                                        ClientId = s.ClientId,
+                                        Title = s.Title,
+                                        Description = s.Description,
+                                        Location = s.Location,
+                                        CreatedAt = s.CreatedAt,
+                                        UpdatedAt = s.UpdatedAt
+                                    }).ToList()
+                             }).ToListAsync(cancellationToken);
+
+            return res;
 
         }
 

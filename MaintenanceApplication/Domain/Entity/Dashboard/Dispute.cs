@@ -1,6 +1,7 @@
 ﻿using Domain.Entity.UserEntities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace Maintenance.Domain.Entity.Dashboard
     public class Dispute
     {
         public Guid Id { get; set; }
-        public Guid OrderId { get; set; }
+        public Guid? OrderId { get; set; }
         public DisputeType DisputeType { get; set; } // Service, Quality, Payment
         public string DisputeDescription { get; set; }
         public DisputeStatus DisputeStatus { get; set; } // Pending, Resolved, Closed

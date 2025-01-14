@@ -90,6 +90,31 @@ namespace Maintenance.Application.Common.Constants
         #endregion
 
 
+        #region Content Messages
+
+        public const string ContentCreated = "Content has been created successfully.";
+        public const string ContentUpdated = "Content has been updated successfully.";
+        public const string ContentDeleted = "Content has been deleted successfully.";
+        public const string ContentFetched = "Content found successfully.";
+        public const string ContentStatusUpdated = "Content status has been updated successfully.";
+        public const string ContentActivated = "Content has been activated successfully.";
+        public const string ContentDeactivated = "Content has been deactivated successfully.";
+
+        #endregion
+
+        #region Feedback Success Messages
+
+        public const string FeedbackCreated = "Feedback has been created successfully.";
+        public const string FeedbackUpdated = "Feedback has been updated successfully.";
+        public const string FeedbackDeleted = "Feedback has been deleted successfully.";
+        public const string FeedbackFetched = "Feedback retrieved successfully.";
+        public const string FeedbackStatusUpdated = "Feedback status has been updated successfully.";
+        public const string FeedbackActivated = "Feedback has been activated successfully.";
+        public const string FeedbackDeactivated = "Feedback has been deactivated successfully.";
+
+        #endregion
+
+
     }
 
 }

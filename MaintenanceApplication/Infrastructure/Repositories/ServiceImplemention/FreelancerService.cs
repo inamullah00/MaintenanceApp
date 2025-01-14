@@ -24,7 +24,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
         private readonly IMapper _mapper;
         private readonly IUnitOfWork _unitOfWork;
 
-        public FreelancerService(IMapper mapper , IUnitOfWork unitOfWork)
+        public FreelancerService(IMapper mapper , IUnitOfWork unitOfWork )
         {
             _mapper = mapper;
             _unitOfWork = unitOfWork;
@@ -175,6 +175,8 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention
             {
                 return Result<string>.Failure(ErrorMessages.FreelancerBidApprovalFailed, StatusCodes.Status500InternalServerError);
             }
+
+            
             await _unitOfWork.SaveChangesAsync();
 
             return Result<string>.Success(SuccessMessages.FreelancerBidAccepted, StatusCodes.Status200OK);

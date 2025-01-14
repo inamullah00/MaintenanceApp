@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -15,12 +16,8 @@ namespace Maintenance.Domain.Entity.Client
     public class OfferedService
     {
         public Guid Id { get; set; }
-
-        [Required]
         public string ClientId { get; set; }
-
-        [Required]
-        public Guid CategoryID { get; set; }
+        public Guid? CategoryID { get; set; }
 
         [Required]
         public string Title { get; set; }
@@ -43,6 +40,7 @@ namespace Maintenance.Domain.Entity.Client
         public bool SetAsCurrentHomeAddress { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Order> Orders { get; set; }  // List of orders related to this service
+        public ICollection<Bid> Bids { get; set; }  // List of Bids related to this service
         public DateTime? UpdatedAt { get; set; }
 
         // Navigation Properties

@@ -38,7 +38,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
             try
             {
                 // Create the specification for fetching disputes based on keyword
-                DisputeSearchList specification = new(Keyword);
+                ContentSearchList specification = new(Keyword);
 
                 var disputes = await _unitOfWork.DisputeRepository.GetAllAsync(cancellationToken, specification);
 
