@@ -1,0 +1,108 @@
+﻿<nav class="navbar">
+    <a href="#" class="sidebar-toggler">
+        <i data-feather="menu"></i>
+    </a>
+    <div class="navbar-content">
+        <ul class="navbar-nav">
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i class="flag-icon flag-icon-LanguageFlag mt-1" title="Language"></i> <span class="ms-1 me-1 d-none d-md-inline-block">Language</span>
+                </a>
+                <div class="dropdown-menu" aria-labelledby="languageDropdown">
+                    <a href="@Url.Action("SetCulture", "Base", new { culture = "en-US"})" class="dropdown-item py-2"><i class="flag-icon flag-icon-us" title="us" id="us"></i> <span class="ms-1"> English </span></a>
+                    <a href="@Url.Action("SetCulture", "Base", new { culture = "ar-SA"})" class="dropdown-item py-2"><i class="flag-icon flag-icon-kw" title="ar" id="ar"></i> <span class="ms-1"> Arabic </span></a>
+                </div>
+            </li>
+
+
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="appsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <i data-feather="settings"></i>
+                </a>
+                <div class="dropdown-menu p-0" aria-labelledby="appsDropdown">
+
+                    <ul class="list-unstyled p-1">
+ 
+
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Setting" asp-action="TermsAndCondition" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="settings"></i>
+                                <span> "TermAndCondition </span>
+                            </a>
+                        </li>
+
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Setting" asp-action="AboutUs" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="settings"></i>
+                                <span> "AboutUs </span>
+                            </a>
+                        </li>
+
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Setting" asp-action="CompanyContactSetup" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="settings"></i>
+                                <span> "CompanyContactSetup </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+            </li>
+
+
+            <li class="nav-item dropdown-notifications navbar-dropdown  dropdown me-3 me-xl-1" asp-authorize-any="Notification-View">
+                <a class="nav-link dropdown-toggle hide-arrow notificationButton position-relative" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
+                    <i data-feather="bell"></i>
+                    <span class="badge bg-danger rounded-pill badge-notifications position-absolute" id="notification-count">0</span>
+                </a>
+
+                <ul class="dropdown-menu dropdown-menu-end py-0">
+                    <li class="dropdown-menu-header border-bottom">
+                        <div class="dropdown-header d-flex align-items-center py-3">
+                            <h5 class="text-body mb-0 me-auto">Notification</h5>
+                            <a href="/ContactUs/Index" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" title="View all notifications"><i data-feather="mail"></i></a>
+                        </div>
+                    </li>
+                    <li class="dropdown-notifications-list scrollable-container">
+                        <ul class="list-group list-group-flush" id="notificationsList" style="width:400px; max-height:250px;overflow-y:auto;">
+                        </ul>
+                    </li>
+                    <li class="dropdown-menu-footer border-top">
+                        <a href="/ContactUs/Index" class="dropdown-item d-flex justify-content-center text-primary p-2 h-px-40 mb-1">
+                            View all notifications
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="wd-30 ht-30 rounded-circle" src="/images/others/placeholder.jpg" alt="profile"> <span class="text-primary">Admin</span>
+                </a>
+                <div class="dropdown-menu " aria-labelledby="profileDropdown">
+
+                    <ul class="list-unstyled p-1">
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Users" asp-action="Edit" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="user"></i>
+                                <span> Profile </span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Users" asp-action="ChangePassword" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="key"></i>
+                                <span> ChangePassword </span>
+                            </a>
+                        </li>
+                        <li class="dropdown-item py-2">
+                            <a asp-controller="Account" asp-action="Logout" class="text-body ms-0">
+                                <i class="me-2 icon-md" data-feather="log-out"></i>
+                                <span> LogOut </span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>
