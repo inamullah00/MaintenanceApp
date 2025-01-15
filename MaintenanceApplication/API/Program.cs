@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 
@@ -36,6 +37,16 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("MaintenanceApp")
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
+
+//Configure Logging 
+
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
 
 // Db Setup 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

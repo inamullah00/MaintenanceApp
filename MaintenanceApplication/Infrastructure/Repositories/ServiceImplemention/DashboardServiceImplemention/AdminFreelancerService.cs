@@ -137,24 +137,12 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardS
         {
             try
             {
-                // Fetch performance data from the repository
                 var reportData = await _unitOfWork.AdminFreelancerRepository.GeneratePerformanceReportAsync(freelancerId, startDate,endDate, cancellationToken);
 
                 if (reportData == null)
                 {
                     return Result<List<FreelancerPerformanceReportResponseDto>>.Failure("No data found for the specified freelancer and month.", StatusCodes.Status404NotFound);
                 }
-
-                // Map the data to the response DTO
-                //var reportResponse = new FreelancerPerformanceReportResponseDto
-                //{
-                //    FreelancerId = freelancerId,
-                //    TotalOrdersCompleted = reportData.TotalOrdersCompleted,
-                //    TotalEarnings = reportData.TotalEarnings,
-                //    AverageRating = reportData.AverageRating,
-                //    CompletedOrders = reportData.CompletedOrders,
-                //    PendingOrders = reportData.PendingOrders
-                //};
 
                 return Result<List<FreelancerPerformanceReportResponseDto>>.Success(reportData, "Performance report generated successfully.");
             }
