@@ -12,10 +12,11 @@ namespace Maintenance.API.Controllers.ClientController
     public class ClientOrderController : ControllerBase
     {
         private readonly IOrderService _orderService;
-
-        public ClientOrderController(IOrderService orderService)
+        private readonly ILogger<ClientOrderController> _logger;
+        public ClientOrderController(IOrderService orderService , ILogger<ClientOrderController> logger)
         {
             _orderService = orderService;
+            _logger = logger;
         }
 
         #region Get All Orders
@@ -24,6 +25,8 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
+                _logger.LogInformation("Fetching all orders with keyword: {Keyword}", Keyword);
+
                 var result = await _orderService.GetAllOrdersAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
@@ -35,7 +38,7 @@ namespace Maintenance.API.Controllers.ClientController
                         Data = result.Value
                     });
                 }
-
+                _logger.LogWarning("Failed to fetch orders. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
                 return StatusCode(result.StatusCode, new
                 {
                     StatusCode = result.StatusCode,
@@ -45,6 +48,7 @@ namespace Maintenance.API.Controllers.ClientController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while fetching orders.");
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -61,11 +65,12 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
-
+                _logger.LogInformation("Fetching order with ID: {Id}", Id);
                 var result = await _orderService.GetOrderByIdAsync(Id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully fetched order with ID: {Id}", Id);
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -74,7 +79,7 @@ namespace Maintenance.API.Controllers.ClientController
                         Data = result.Value
                     });
                 }
-
+                _logger.LogWarning("Order with ID: {Id} not found. StatusCode: {StatusCode}, Message: {Message}", Id, result.StatusCode, result.Message);
                 return StatusCode(result.StatusCode, new
                 {
                     StatusCode = result.StatusCode,
@@ -84,6 +89,7 @@ namespace Maintenance.API.Controllers.ClientController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while fetching order with ID: {Id}", Id);
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -101,11 +107,12 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
-
+                _logger.LogInformation("Creating a new order.");
                 var result = await _orderService.CreateOrderAsync(createOrderDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Order created successfully.");
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -114,7 +121,7 @@ namespace Maintenance.API.Controllers.ClientController
                         Data = result.Value
                     });
                 }
-
+                _logger.LogWarning("Failed to create order. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
                 return StatusCode(result.StatusCode, new
                 {
                     StatusCode = result.StatusCode,
@@ -124,6 +131,7 @@ namespace Maintenance.API.Controllers.ClientController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while creating a new order.");
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -140,14 +148,31 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
+                _logger.LogInformation("Updating order status for Order ID: {OrderId}", id);
                 var result = await _orderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
-
-                return result.IsSuccess
-                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+                _logger.LogInformation("Order status updated successfully for Order ID: {OrderId}", id);
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Order status updated successfully for Order ID: {OrderId}", id);
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+                _logger.LogWarning("Failed to update order status for Order ID: {OrderId}. Reason: {Message}", id, result.Message);
+                return BadRequest(new
+                {
+                    StatusCode = HttpResponseCodes.BadRequest,
+                    Success = false,
+                    Message = result.Message
+                });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while updating order status for Order ID: {OrderId}", id);
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -164,10 +189,12 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
+                _logger.LogInformation("Client attempting to approve order with Order ID: {OrderId}", orderId);
                 var result = await _orderService.ApproveOrderAsync(orderId, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Order approved successfully. Order ID: {OrderId}", orderId);
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -176,7 +203,7 @@ namespace Maintenance.API.Controllers.ClientController
                         Data = result.Value // Updated order details with approved status
                     });
                 }
-
+                _logger.LogWarning("Failed to approve order with Order ID: {OrderId}. Reason: {Message}", orderId, result.Message);
                 return StatusCode(result.StatusCode, new
                 {
                     StatusCode = result.StatusCode,
@@ -186,6 +213,7 @@ namespace Maintenance.API.Controllers.ClientController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while approving order with Order ID: {OrderId}", orderId);
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -203,10 +231,12 @@ namespace Maintenance.API.Controllers.ClientController
         {
             try
             {
+                _logger.LogInformation("Client attempting to reject order with Order ID: {OrderId}. Reason: {Reason}", orderId, rejectOrderDTO.OrderStatus);
                 var result = await _orderService.RejectOrderAsync(orderId, rejectOrderDTO, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Order rejected successfully. Order ID: {OrderId}", orderId);
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -215,7 +245,7 @@ namespace Maintenance.API.Controllers.ClientController
                         Data = result.Value // Order status updated to rejected with comments
                     });
                 }
-
+                _logger.LogWarning("Failed to reject order with Order ID: {OrderId}. Reason: {Message}", orderId, result.Message);
                 return StatusCode(result.StatusCode, new
                 {
                     StatusCode = result.StatusCode,
@@ -225,6 +255,7 @@ namespace Maintenance.API.Controllers.ClientController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "An error occurred while rejecting order with Order ID: {OrderId}", orderId);
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,

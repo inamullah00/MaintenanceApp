@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250113175429_Db init")]
-    partial class Dbinit
+    [Migration("20250115165918_Db Init")]
+    partial class DbInit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -441,19 +441,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "21f9289f-6c59-47b7-a015-a451c91849bd",
+                            Id = "99505351-4074-46b5-be7c-c952acd27cea",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "b1166e8d-9ba9-4b6e-9ecc-3e958ff42f70",
+                            Id = "ab1f0864-3c2a-4f94-a0d7-9265567457d6",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         },
                         new
                         {
-                            Id = "c289f90a-829b-4eec-bae4-c28f49838549",
+                            Id = "5541acb1-1995-430d-9f16-1e2035e3271b",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         });
