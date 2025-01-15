@@ -21,6 +21,7 @@ namespace Maintenance.Application.Services.Freelance
         Task<Result<string>> DeleteBidAsync(Guid bidId);
         Task<Result<string>> ApproveBidAsync(Guid Id, ApproveBidRequestDto ApproveBidRequestDto);
 
-        //Task<List<OfferedServiceResponseDto>> GetAvailableServiceRequestsAsync(Guid? categoryId = null);
+ 
+
     }
 }

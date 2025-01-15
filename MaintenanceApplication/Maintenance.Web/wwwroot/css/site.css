@@ -1,17 +1,17 @@
 html {
-    font-size: 14px;
+  font-size: 14px;
     position: relative;
     min-height: 100%;
 }
 
 @media (min-width: 768px) {
-    html {
-        font-size: 16px;
-    }
+  html {
+    font-size: 16px;
+  }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 body {
@@ -108,7 +108,7 @@ body {
 }
 
 .heading-line {
-    position: relative;
+  position: relative;
     display: inline-block; 
     padding-bottom: 10px;
 }
@@ -121,4 +121,4 @@ body {
         position: absolute;
         bottom: 0;
         left: 0;
-    }
+}

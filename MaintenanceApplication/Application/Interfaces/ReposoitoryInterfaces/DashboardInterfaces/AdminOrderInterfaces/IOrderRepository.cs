@@ -14,6 +14,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
     {
         public Task<List<OrderResponseDto>> GetAllAsync(CancellationToken cancellationToken, ISpecification<Order>? specification = null);
         public Task<OrderResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken);
+        public Task<Order?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken);
         public Task<bool> CreateAsync(Order order, CancellationToken cancellationToken);
         public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken);
         public Task<bool> UpdateFieldsAsync(Order order, string[] fieldsToUpdate, CancellationToken cancellationToken = default);

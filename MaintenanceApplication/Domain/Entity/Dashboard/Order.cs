@@ -13,9 +13,9 @@ namespace Maintenance.Domain.Entity.Dashboard
     {
 
         public Guid Id { get; set; }
-        public string ClientId { get; set; } 
+        public string? ClientId { get; set; } 
         public string? FreelancerId { get; set; } 
-        public Guid ServiceId { get; set; } // Foreign key for Service (like plumbing, electrical)
+        public Guid? ServiceId { get; set; } // Foreign key for Service (like plumbing, electrical)
 
         // Order details
         public string Description { get; set; } // Description of the issue or service request
@@ -25,6 +25,7 @@ namespace Maintenance.Domain.Entity.Dashboard
         public OrderStatus Status { get; set; } = OrderStatus.Pending; // Current status of the order (Pending, In Progress, Completed, etc.)
         public DateTime CreatedAt { get; set; } = DateTime.Now; // Date and time when the order was created
 
+        public DateTime? CompletedDate { get; set; } // Date when the order was completed
         // Payment details
         public decimal TotalAmount { get; set; } // Total amount for the order, including freelancer's earnings and platform commission
         public decimal FreelancerAmount { get; set; } // Freelancer's earnings from the order after platform commission
@@ -32,6 +33,8 @@ namespace Maintenance.Domain.Entity.Dashboard
 
 
         // Navigation Properties
+        public ICollection<Feedback> Feedbacks { get; set; }  // Freelancer's feedback on orders
+
         [ForeignKey("FreelancerId")] 
         public ApplicationUser? Freelancer { get; set; }
 

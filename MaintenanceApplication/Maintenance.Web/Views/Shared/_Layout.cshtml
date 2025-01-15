@@ -55,16 +55,21 @@
                         </li>
 
                     </ol>
-                </nav>
+        </nav>
 
-                @RenderBody()
+            @RenderBody()
+        </main>
+    </div>
 
-            </div>
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2025 - Maintenance.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
             <!-- partial:partials/_footer.html -->
             <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
                 <p class="text-muted mb-1 mb-md-0">Copyright © @DateTime.Now.Year <a href="https://www.nobleui.com" target="_blank">MaintenanceApp</a>.</p>
                 <p class="text-muted">CloudVision <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
-            </footer>
+    </footer>
         </div>
     </div>
 
@@ -79,4 +84,4 @@
     @await RenderSectionAsync("Scripts", false)
 
 </body>
-</html>    
+</html>

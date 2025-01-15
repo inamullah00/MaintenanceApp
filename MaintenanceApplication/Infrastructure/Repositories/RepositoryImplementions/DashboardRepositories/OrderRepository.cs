@@ -89,7 +89,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
                              ClientLastName = orders.Client.LastName,
                              ClientLocation = orders.Client.Location,
 
-                             ServiceId = orders.ServiceId,
+                             ServiceId = orders.ServiceId.Value,
                              ServiceTitle = orders.Service.Title,
                              ServiceDescription = orders.Service.Description,
                              ServiceLocation = orders.Service.Location,
@@ -125,11 +125,22 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Dashbo
             return changes > 0;
         }
 
-        public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken)
+        public async Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            // Update the order
+            _dbContext.Orders.Update(order);
+
+            // Save changes
+            await _dbContext.SaveChangesAsync(cancellationToken);
+
+            // Return true to indicate the update was successful
+            return true;
         }
 
-      
+        public async Task<Order?> GetEntityByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+
+            return await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == id, cancellationToken); ;
+        }
     }
 }

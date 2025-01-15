@@ -18,11 +18,15 @@ namespace Application.Dto_s.UserDto_s
         public string Rating { get; set; }
         public string Bio { get; set; }
         public DateTime? ApprovedDate { get; set; }
-        public DateTime RegistrationDate { get; set; }
+        public DateTime? RegistrationDate { get; set; }
         public string Skills { get; set; }
         public decimal? HourlyRate { get; set; }
         public bool? IsVerified { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
+        public int? MonthlyLimit { get; set; } 
+        public int? OrdersCompleted { get; set; } 
+        public decimal? TotalEarnings { get; set; }
+        public DateTime? ReportMonth { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
+using Serilog;
 using System.Text;
 
 
@@ -32,14 +33,22 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.RegistrationServices(builder.Configuration);
 
 // Identity Setup
-
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("MaintenanceApp")
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-// Db Setup 
+//Configure Logging 
 
+var logger = new LoggerConfiguration()
+  .ReadFrom.Configuration(builder.Configuration)
+  .Enrich.FromLogContext()
+  .CreateLogger();
+
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog(logger);
+
+// Db Setup 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => options.EnableRetryOnFailure());
