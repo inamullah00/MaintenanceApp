@@ -15,7 +15,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Infrastructure"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.API", "API\Maintenance.API.csproj", "{C6922DA4-8CB2-49B8-A888-DA5313734EA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Web", "Maintenance.Web\Maintenance.Web.csproj", "{2BA805E3-3C21-47B2-94FA-592CC795B3E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Maintenance.Web", "Web\Maintenance.Web.csproj", "{2BA805E3-3C21-47B2-94FA-592CC795B3E9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
