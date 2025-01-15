@@ -1,38 +1,24 @@
 ﻿using Application.Dto_s.UserDto_s;
-
-using AutoMapper.Internal;
-using Azure.Core;
+using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using AutoMapper;
 using Domain.Entity.UserEntities;
+using Infrastructure.Data;
+using MailKit.Net.Smtp;
 using MailKit.Security;
+using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.Services.Account;
+using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using MimeKit;
-using System;
-using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
-using MailKit.Net.Smtp;
-using MimeKit;
-
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
-using System.Security.Policy;
-using System.Text.Encodings.Web;
-using Microsoft.Extensions.Caching.Memory;
-using Application.Interfaces.ReposoitoryInterfaces;
-using Microsoft.EntityFrameworkCore;
-using Infrastructure.Data;
-using Maintenance.Application.Wrapper;
-using Maintenance.Application.Services.Account;
-using Ardalis.Specification;
-using Ardalis.Specification.EntityFrameworkCore;
-using System.Threading;
-using Maintenance.Application.Dto_s.UserDto_s;
-using AutoMapper;
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
@@ -51,10 +37,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager ,
-            SignInManager<ApplicationUser> signInManager, IConfiguration configuration, 
-            IHttpContextAccessor httpContextAccessor, 
-            IMemoryCache cache  , ApplicationDbContext dbContext, IMapper mapper)
+        public RegistrationService(UserManager<ApplicationUser> userManager, RoleManager<IdentityRole> roleManager,
+            SignInManager<ApplicationUser> signInManager, IConfiguration configuration,
+            IHttpContextAccessor httpContextAccessor,
+            IMemoryCache cache, ApplicationDbContext dbContext, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -132,7 +118,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 RegistrationDate = DateTime.UtcNow,
                 Skills = request.Skills,
                 HourlyRate = request.HourlyRate,
-                IsVerified =false
+                IsVerified = false
             };
 
             // Register the user with the password
@@ -186,7 +172,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         {
             var queryResult = SpecificationEvaluator.Default.GetQuery(
 
-                query : _dbContext.Users.AsQueryable(),
+                query: _dbContext.Users.AsQueryable(),
                 specification: specification
                 );
 
@@ -213,21 +199,21 @@ namespace Infrastructure.Repositories.ServiceImplemention
                          }).FirstOrDefaultAsync();
 
             if (result == null)
-                {
-                    return Result<UserDetailsResponseDto>.Failure("User with the given ID does not exist.", 404);
-                }
-                return Result<UserDetailsResponseDto>.Success(result, "User found.", 200);
+            {
+                return Result<UserDetailsResponseDto>.Failure("User with the given ID does not exist.", 404);
+            }
+            return Result<UserDetailsResponseDto>.Success(result, "User found.", 200);
         }
 
 
-        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification =null)
+        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null)
         {
-              var queryResult = SpecificationEvaluator.Default.GetQuery(
-                            query: _dbContext.Users.AsQueryable(),
-                            specification: specification
-                             );
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                          query: _dbContext.Users.AsQueryable(),
+                          specification: specification
+                           );
 
-              var users = await (from AppUsers in queryResult
+            var users = await (from AppUsers in queryResult
                                select new UserDetailsResponseDto
                                {
                                    Id = AppUsers.Id,
@@ -264,7 +250,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             var user = await _userManager.FindByEmailAsync(emailOrPhone);
             if (user == null)
             {
-                return(false,"0", "User with this email does not exist.");
+                return (false, "0", "User with this email does not exist.");
             }
 
             // Generate a numeric OTP
@@ -280,7 +266,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 IsUsed = false
             };
 
-           //await _genericRepository.OtpAsync<UserOtp,Guid>(userOtp);
+            //await _genericRepository.OtpAsync<UserOtp,Guid>(userOtp);
 
 
             // Send the OTP to the user
@@ -302,7 +288,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
-        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email , string newPassword)
+        public async Task<(bool Success, string Message)> ResetPasswordAsync(string email, string newPassword)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -345,7 +331,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 var errors = string.Join(", ", result.Errors.Select(e => e.Description));
                 return Result<string>.Failure($"Failed to update user status. {errors}", "An error occurred while updating the user status.", 500);
             }
-            return Result<string>.Success("User has been blocked successfully.",200);
+            return Result<string>.Success("User has been blocked successfully.", 200);
         }
 
 
@@ -370,7 +356,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
 
         public async Task<(bool Success, string Message)> ValidateOtpAsync(string otp)
-        {          
+        {
             //// Retrieve the OTP from the database
             // var userOtp = await _genericRepository.GetOtpAsync<UserOtp,Guid>(otp);
 
@@ -500,18 +486,18 @@ namespace Infrastructure.Repositories.ServiceImplemention
         #endregion
 
         #region Mail
-        public async Task SendEmailAsync(string ToEmail, string Subject , string Body )
+        public async Task SendEmailAsync(string ToEmail, string Subject, string Body)
         {
             var email = new MimeMessage();
 
-            email.Sender =MailboxAddress.Parse(_configuration.GetSection("MailSettings:Mail").Value);
+            email.Sender = MailboxAddress.Parse(_configuration.GetSection("MailSettings:Mail").Value);
             email.To.Add(MailboxAddress.Parse(ToEmail));
-            email.Subject = Subject;    
+            email.Subject = Subject;
 
 
             // Load Email Template 
 
-            var RootPath  = Path.Combine(Directory.GetCurrentDirectory(),"wwwroot/Templates/EmailTemplate");
+            var RootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Templates/EmailTemplate");
             var FullPath = Path.Combine(RootPath, "Welcome_EmailTemplate.html");
 
             if (!File.Exists(FullPath))
@@ -522,7 +508,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
             var EmailBody = await File.ReadAllTextAsync(FullPath);
 
             var builder = new BodyBuilder();
-           
+
 
             builder.HtmlBody = EmailBody;
             email.Body = builder.ToMessageBody();
@@ -545,7 +531,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             // Disconnect
             await smtp.DisconnectAsync(true);
-    
+
         }
         #endregion
 

@@ -1,22 +1,124 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
+    position: relative;
+    min-height: 100%;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+
+.class-white {
+    color: #fff
+}
+
+.feather-16 {
+    width: 16px !important;
+    height: 16px !important;
+}
+
+.table > :not(caption) > * > * {
+    padding: 0.45rem 0.85rem !important;
+}
+
+
+
+.Status-Accepted {
+    color: #2E7D32;
+}
+
+.Status-Cancelled {
+    color: #D32F2F;
+}
+
+.Status-InProcess {
+    color: #F9A825; 
+}
+
+.Status-Completed {
+    color: #00C853; 
+}
+
+.Status-Pending {
+    color: #1E88E5; 
+}
+
+
+.disablePointerEvents {
+    background: #404040;
+    pointer-events: none
+}
+
+
+
+.buttons-excel {
+    background-color: #28a327 !important
+}
+
+.buttons-pdf {
+    background-color: #cd1616 !important
+}
+
+.buttons-copy {
+    background-color: #727272 !important
+}
+
+.buttons-print {
+    background-color: #b7a904 !important;
+    margin-right: 5px;
+    margin-bottom: 2px
+}
+
+.buttons-html5 {
+    margin-right: 5px;
+    margin-bottom: 2px
+}
+
+.odd:hover, .even:hover {
+    background: #474646;
+}
+
+
+.hidden {
+    display: none;
+}
+
+
+.tox .tox-tbtn  {
+    background: #ffffff00 !important;
+}
+
+.tox-statusbar {
+    display: none !important;
+}
+
+.select2-selection__clear{
+    color :white !important;
+}
+
+.heading-line {
+    position: relative;
+    display: inline-block; 
+    padding-bottom: 10px;
+}
+
+.heading-line:after {
+        content: "";
+        height: 4px;
+        width: 25px;
+        background-color: #29B6F6;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+    }

@@ -1,49 +1,82 @@
 ﻿<!DOCTYPE html>
-<html lang="en">
+<html lang="LanguageCode" dir=Dir>
+
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Maintenance.Web</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/Maintenance.Web.styles.css" asp-append-version="true" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="MaintenanceApp">
+    <meta name="author" content="MaintenanceApp">
+    <meta name="keywords" content="MaintenanceApp">
+
+    <title>MaintenanceApp</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- End fonts -->
+    <link rel="shortcut icon" href="~/images/favicon.png" />
+
+    @await Html.PartialAsync("_vendorStylesPartial")
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="~/css/style.css" asp-append-version="true">
+    <!-- End layout styles -->
+    @await Html.PartialAsync("_customStylesPartial")
+    @await RenderSectionAsync("Styles", false)
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Maintenance.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+    <div class="main-wrapper">
+
+        <!-- partial:partials/_sidebar.html -->
+        @await Html.PartialAsync("_Sidebar")
+        <!-- partial -->
+
+        <div class="page-wrapper">
+            <!-- partial:partials/_navbar.html -->
+            @await Html.PartialAsync("_Navbar")
+            <!-- partial -->
+            <div class="page-content">
+                <nav class="page-breadcrumb">
+                    <ol class="breadcrumb">
+
+                        <li class="breadcrumb-item">
+                            <h5>
+                                @if (!string.IsNullOrEmpty(ViewBag.ModuleIcon))
+                                {
+                                    <span class="heading-line">
+                                        <i data-feather="@ViewBag.ModuleIcon"></i>
+                                    </span>
+                                }
+                                <span class="">
+                                    @ViewBag.ModuleName
+                                </span>
+                            </h5>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+
+                    </ol>
+                </nav>
+
+                @RenderBody()
+
             </div>
-        </nav>
-    </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+            <!-- partial:partials/_footer.html -->
+            <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+                <p class="text-muted mb-1 mb-md-0">Copyright © @DateTime.Now.Year <a href="https://www.nobleui.com" target="_blank">MaintenanceApp</a>.</p>
+                <p class="text-muted">CloudVision <i class="mb-1 text-primary ms-1 icon-sm" data-feather="heart"></i></p>
+            </footer>
+        </div>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Maintenance.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
+    <!-- core:js -->
+    <script src="~/vendors/core/core.js"></script>
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    @await Html.PartialAsync("_vendorScriptsPartial")
+    @await Html.PartialAsync("_customScriptsPartial")
+
+    <!-- End custom js for this page -->
+    @await Html.PartialAsync("_notificationPartial")
+    @await RenderSectionAsync("Scripts", false)
+
 </body>
-</html>
+</html>    
