@@ -13,23 +13,19 @@ namespace Maintenance.Domain.Entity.Freelancer
     public class Bid
     {
         public Guid Id { get; set; }
-        public decimal BidAmount { get; set; }
+        public decimal CustomPrice { get; set; }
         public string Status { get; set; } = "Pending"; // Pending, Accepted, Rejected
-        [Required]
         public Guid OfferedServiceId { get; set; }
-        [Required]
         public string FreelancerId { get; set; }
+        public double CurrentRating { get; set; } // Average rating (e.g., 4.5 out of 5)
         public DateTime CreatedAt { get; set; }
 
-
-
-        // Navigation properties to related entities
 
         [ForeignKey(nameof(OfferedServiceId))]
         public OfferedService OfferedService { get; set; }
 
         [ForeignKey(nameof(FreelancerId))]
-      public  ApplicationUser Freelancer { get; set; }
+        public  ApplicationUser Freelancer { get; set; }
     }
 
 }

@@ -46,12 +46,13 @@ namespace Maintenance.Infrastructure.Migrations
                     RegistrationDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Skills = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     HourlyRate = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: true),
-                    IsVerified = table.Column<bool>(type: "bit", nullable: true),
+                    IsApprove = table.Column<bool>(type: "bit", nullable: true),
                     IsSuspended = table.Column<bool>(type: "bit", nullable: true),
                     MonthlyLimit = table.Column<int>(type: "int", nullable: true),
                     OrdersCompleted = table.Column<int>(type: "int", nullable: true),
                     TotalEarnings = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: true),
                     ReportMonth = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CurrentRating = table.Column<double>(type: "float", nullable: true),
                     UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
@@ -288,10 +289,11 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    BidAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    CustomPrice = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    CurrentRating = table.Column<double>(type: "float", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     OfferedServiceId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
@@ -462,10 +464,20 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "5541acb1-1995-430d-9f16-1e2035e3271b", null, "Client", "CLIENT" },
-                    { "99505351-4074-46b5-be7c-c952acd27cea", null, "Admin", "ADMIN" },
-                    { "ab1f0864-3c2a-4f94-a0d7-9265567457d6", null, "Freelancer", "FREELANCER" }
+                    { "76b27261-fa15-4127-bd22-b6ca5c8f2295", null, "Freelancer", "FREELANCER" },
+                    { "accca322-5e9b-4e5f-9466-a05f6c180686", null, "Client", "CLIENT" },
+                    { "c174fd9f-2478-4e55-b50e-0353be8a3247", null, "Admin", "ADMIN" }
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "Address", "ApprovedDate", "Bio", "ConcurrencyStamp", "CurrentRating", "Discriminator", "Email", "EmailConfirmed", "Experience", "ExpertiseArea", "FirstName", "HourlyRate", "IsApprove", "IsSuspended", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "MonthlyLimit", "NormalizedEmail", "NormalizedUserName", "OrdersCompleted", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Rating", "RegistrationDate", "ReportMonth", "SecurityStamp", "Skills", "Status", "TotalEarnings", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "f459384b-c9c0-4f4b-849b-5d45fb06183b", 0, "123 Admin Street", null, null, "edceeb13-83ad-4177-a01f-322de19aa231", 0.0, "ApplicationUser", "admin@gmail.com", true, null, null, "System", null, null, false, "Administrator", "Head Office", false, null, null, "ADMIN@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEMZzWYC6Nd6Bx+gye2TwhM8f5IWgcipvvnO9VAz3PctLTVXHwFmvuLcKjDlgfqqb7Q==", null, false, 0f, null, null, "b5f264b6-d07e-44a4-83dd-03bc96ae3661", null, 2, null, false, "admin" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "c174fd9f-2478-4e55-b50e-0353be8a3247", "f459384b-c9c0-4f4b-849b-5d45fb06183b" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

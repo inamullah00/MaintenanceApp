@@ -32,6 +32,7 @@ namespace Maintenance.Domain.Entity.Client
 
         public DateTime? PreferredTime { get; set; }
 
+        // Additional Info in Figma
         public string Building { get; set; }
         public string Apartment { get; set; }
         public string Floor { get; set; }
