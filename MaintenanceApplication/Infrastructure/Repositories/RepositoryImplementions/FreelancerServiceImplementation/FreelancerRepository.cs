@@ -83,7 +83,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                                     FreelancerId = bid.FreelancerId,
                                     FreelancerName = freelancer.FirstName,
                                     ServiceTitle = service.Title,
-                                    BidAmount = bid.BidAmount,
+                                    BidAmount = bid.CustomPrice,
                                     Status = bid.Status,
                                     CreatedAt = bid.CreatedAt,
                                     ClientId = service.ClientId,
@@ -128,7 +128,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                               FreelancerId = Bid.FreelancerId,
                               FreelancerName = Freelancer.FirstName,
                               ServiceTitle = OfferedService.Title,
-                              BidAmount = Bid.BidAmount,
+                              BidAmount = Bid.CustomPrice,
                               Status = Bid.Status,
                               CreatedAt = Bid.CreatedAt,
                               ClientId = OfferedService.ClientId,
@@ -164,7 +164,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                 return (false, null);
             }
 
-             existingEntity.BidAmount = entity.BidAmount;
+             existingEntity.CustomPrice = entity.CustomPrice;
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
             return (true, existingEntity);

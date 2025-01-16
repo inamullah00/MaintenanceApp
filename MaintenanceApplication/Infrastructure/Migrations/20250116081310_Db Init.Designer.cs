@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250115165918_Db Init")]
+    [Migration("20250116081310_Db Init")]
     partial class DbInit
     {
         /// <inheritdoc />
@@ -379,11 +379,14 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<decimal>("BidAmount")
-                        .HasColumnType("DECIMAL(18,2)");
-
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<double>("CurrentRating")
+                        .HasColumnType("float");
+
+                    b.Property<decimal>("CustomPrice")
+                        .HasColumnType("DECIMAL(18,2)");
 
                     b.Property<string>("FreelancerId")
                         .IsRequired()
@@ -441,21 +444,21 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "99505351-4074-46b5-be7c-c952acd27cea",
+                            Id = "c174fd9f-2478-4e55-b50e-0353be8a3247",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "ab1f0864-3c2a-4f94-a0d7-9265567457d6",
-                            Name = "Freelancer",
-                            NormalizedName = "FREELANCER"
+                            Id = "accca322-5e9b-4e5f-9466-a05f6c180686",
+                            Name = "Client",
+                            NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "5541acb1-1995-430d-9f16-1e2035e3271b",
-                            Name = "Client",
-                            NormalizedName = "CLIENT"
+                            Id = "76b27261-fa15-4127-bd22-b6ca5c8f2295",
+                            Name = "Freelancer",
+                            NormalizedName = "FREELANCER"
                         });
                 });
 
@@ -618,6 +621,13 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "f459384b-c9c0-4f4b-849b-5d45fb06183b",
+                            RoleId = "c174fd9f-2478-4e55-b50e-0353be8a3247"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -652,6 +662,9 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<double?>("CurrentRating")
+                        .HasColumnType("float");
+
                     b.Property<string>("Experience")
                         .HasColumnType("nvarchar(max)");
 
@@ -664,10 +677,10 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<decimal?>("HourlyRate")
                         .HasColumnType("DECIMAL(18,2)");
 
-                    b.Property<bool>("IsSuspended")
+                    b.Property<bool?>("IsApprove")
                         .HasColumnType("bit");
 
-                    b.Property<bool?>("IsVerified")
+                    b.Property<bool>("IsSuspended")
                         .HasColumnType("bit");
 
                     b.Property<string>("LastName")
@@ -688,19 +701,45 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<DateTime?>("RegistrationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("ReportMonth")
+                    b.Property<DateTime?>("ReportMonth")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Skills")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("Status")
+                    b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<decimal?>("TotalEarnings")
                         .HasColumnType("DECIMAL(18,2)");
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "f459384b-c9c0-4f4b-849b-5d45fb06183b",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "edceeb13-83ad-4177-a01f-322de19aa231",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMZzWYC6Nd6Bx+gye2TwhM8f5IWgcipvvnO9VAz3PctLTVXHwFmvuLcKjDlgfqqb7Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "b5f264b6-d07e-44a4-83dd-03bc96ae3661",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            Address = "123 Admin Street",
+                            CurrentRating = 0.0,
+                            FirstName = "System",
+                            IsSuspended = false,
+                            LastName = "Administrator",
+                            Location = "Head Office",
+                            Rating = 0f,
+                            Status = 2
+                        });
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.Client.OfferedService", b =>

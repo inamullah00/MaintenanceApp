@@ -107,7 +107,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 FirstName = request.FirstName,
                 LastName = request.LastName,
                 PhoneNumber = request.PhoneNumber,
-                Status = request.Status,
+                Status = request.Status.Value,
                 Location = request.Location,
                 Address = request.Address,
                 ExpertiseArea = request.ExpertiseArea,
@@ -118,7 +118,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 RegistrationDate = DateTime.UtcNow,
                 Skills = request.Skills,
                 HourlyRate = request.HourlyRate,
-                IsVerified =false,
+                IsApprove =false,
                 TotalEarnings = 0,
                 MonthlyLimit = 0,
                 OrdersCompleted =0,
@@ -201,7 +201,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                              RegistrationDate = user.RegistrationDate,
                              Skills = user.Skills,
                              HourlyRate = user.HourlyRate,
-                             IsVerified = user.IsVerified,
+                             IsVerified = user.IsApprove,
                              Email = user.Email,
                              EmailConfirmed = user.EmailConfirmed
                          }).FirstOrDefaultAsync();
@@ -241,7 +241,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                                    RegistrationDate = AppUsers.RegistrationDate,
                                    Skills = AppUsers.Skills,
                                    HourlyRate = AppUsers.HourlyRate,
-                                   IsVerified = AppUsers.IsVerified,
+                                   IsVerified = AppUsers.IsApprove,
                                    Email = AppUsers.Email,
                                    EmailConfirmed = AppUsers.EmailConfirmed
                                }).ToListAsync();

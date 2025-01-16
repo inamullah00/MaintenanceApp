@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entity.UserEntities;
+using Domain.Enums;
 using Maintenance.Domain.Entity.Client;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.Freelancer;
@@ -256,7 +257,7 @@ namespace Infrastructure.Data
             .HasColumnType("DECIMAL(18,2)");
 
             builder.Entity<Bid>()
-              .Property(u => u.BidAmount)
+              .Property(u => u.CustomPrice)
               .HasColumnType("DECIMAL(18,2)");
 
 
@@ -291,13 +292,88 @@ namespace Infrastructure.Data
             #endregion
 
             #region Data Seeding
-            var roleManager = builder.Entity<IdentityRole>();
 
-            roleManager.HasData(
-                new IdentityRole { Name = "Admin", NormalizedName = "ADMIN" },
-                new IdentityRole { Name = "Freelancer", NormalizedName = "FREELANCER" },
-                new IdentityRole { Name = "Client", NormalizedName = "CLIENT" }
+            // Seeding roles
+
+            var AdminRoleId = Guid.NewGuid().ToString();
+            var FreelancerRoleId = Guid.NewGuid().ToString();
+            var ClientRoleId = Guid.NewGuid().ToString();
+
+
+            builder.Entity<IdentityRole>().HasData(
+                new IdentityRole
+                {
+                    Id = AdminRoleId,
+                    Name = "Admin",
+                    NormalizedName = "ADMIN"
+                },
+                new IdentityRole
+                {
+                    Id = ClientRoleId,
+                    Name = "Client",
+                    NormalizedName = "CLIENT"
+                },
+                new IdentityRole
+                {
+                    Id = FreelancerRoleId,
+                    Name = "Freelancer",
+                    NormalizedName = "FREELANCER"
+                }
             );
+
+
+
+            // Seeding For Admin
+            var Admin = new ApplicationUser
+            {
+                Id = Guid.NewGuid().ToString(),
+                UserName = "admin",
+                NormalizedUserName = "ADMIN",
+                Email = "admin@gmail.com",
+                NormalizedEmail = "ADMIN@GMAIL.COM",
+                EmailConfirmed = true,
+                FirstName = "System",
+                LastName = "Administrator",
+                Status = UserStatus.Approved,
+                Location = "Head Office",
+                Address = "123 Admin Street",
+                SecurityStamp = Guid.NewGuid().ToString(),
+
+                // Freelancer Fields (set to null for Admin)
+                ExpertiseArea = null,
+                Rating = 0,
+                Bio = null,
+                Experience = null,
+                ApprovedDate = null, // Admin doesn't have this field
+                RegistrationDate = null, // Admin doesn't have this field
+
+                Skills = null,
+                HourlyRate = null,
+                IsApprove = null, // Admin doesn't have this field
+                IsSuspended = false,
+
+                // Freelancer Related Fields (set to null for Admin)
+                MonthlyLimit = null,
+                OrdersCompleted = null,
+                TotalEarnings = null,
+                ReportMonth = null, // Admin doesn't have this field
+
+                CurrentRating = 0, // Default value
+            };
+
+            var AdminPassword = "Admin@123";
+            var PasswordHasher = new PasswordHasher<ApplicationUser>();
+           Admin.PasswordHash = PasswordHasher.HashPassword(Admin,AdminPassword);
+
+            builder.Entity<ApplicationUser>().HasData( Admin );
+
+            // Assign Admin role to the Admin user
+            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            {
+                RoleId = AdminRoleId,
+                UserId = Admin.Id.ToString()
+            });
+            builder.Entity<IdentityUserRole<string>>().HasKey(iur => new { iur.UserId, iur.RoleId });
             #endregion
         }
     }

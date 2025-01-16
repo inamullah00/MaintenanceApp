@@ -22,7 +22,7 @@ namespace Domain.Entity.UserEntities
         public string? LastName { get; set; }
      
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
-        public UserStatus? Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
+        public UserStatus Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
        
         public string? Location { get; set; } 
         public string? Address { get; set; }  
@@ -37,7 +37,7 @@ namespace Domain.Entity.UserEntities
 
         public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
         public decimal? HourlyRate { get; set; }  // Freelancer's hourly or project rate
-        public bool? IsVerified { get; set; } = false; // Whether the freelancer is verified by the admin
+        public bool? IsApprove { get; set; } = false; // Whether the freelancer is Approve by the admin
         public bool IsSuspended { get; set; } = false;
 
 
@@ -46,7 +46,9 @@ namespace Domain.Entity.UserEntities
         public int? MonthlyLimit { get; set; } // Maximum number of orders the freelancer can complete in a month
         public int? OrdersCompleted { get; set; } // Number of orders completed by the freelancer in the specified month
         public decimal? TotalEarnings { get; set; } // Total earnings of the freelancer for the month
-        public DateTime ReportMonth { get; set; } // Specifies the month being tracked (typically the first day of the month)
+        public DateTime? ReportMonth { get; set; } // Specifies the month being tracked (typically the first day of the month)
+
+        public double? CurrentRating { get; set; } // Average rating (e.g., 4.5 out of 5)
 
 
         // Navigation Properties
