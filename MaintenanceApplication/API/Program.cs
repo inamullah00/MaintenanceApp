@@ -6,8 +6,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Text;
 
@@ -31,6 +29,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.RegistrationServices(builder.Configuration);
+
+
+
 
 // Identity Setup
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -59,7 +60,8 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 
 //JWT Token
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+{
     options.TokenValidationParameters = new TokenValidationParameters
     {
         ValidateIssuer = true,
