@@ -1,0 +1,57 @@
+﻿.notification-list {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    padding: 20px;
+    margin-bottom: 2px;
+    border-bottom: 2px solid #2e2c3f;
+    border-right: 2px solid #2e2c3f;
+    background: #091223;
+    -webkit-box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+}
+
+    .notification-list:hover {
+        background: #04091f;
+    }
+
+.notification-list--unread {
+    border-left: 2px solid #ffd600;
+}
+
+.notification-list--read {
+    border-left: 2px solid green;
+}
+
+.notification-list .notification-list_content {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+}
+
+    .notification-list .notification-list_content .notification-list_img img {
+        height: 48px;
+        width: 48px;
+        border-radius: 50px;
+        margin-right: 20px;
+    }
+
+    .notification-list .notification-list_content .notification-list_detail p {
+        margin-bottom: 5px;
+        line-height: 1.2;
+    }
+
+
+#notification-count {    
+    top: -8px; 
+    left: 12px; 
+    font-size: 0.6rem; 
+    height: 20px;
+    min-width: 20px;
+    line-height: 18px;
+    text-align: center;
+    padding: 2px;
+}
