@@ -3,13 +3,17 @@ using Domain.Entity.UserEntities;
 using Infrastructure.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Globalization;
 using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddViewLocalization().AddDataAnnotationsLocalization();
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.RegistrationServices(builder.Configuration);
 
 // Identity Setup
@@ -53,7 +57,21 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 });
 
 var app = builder.Build();
-// Configure the HTTP request pipeline.
+
+// localization setup
+var supportedCultures = new List<CultureInfo>
+            {
+                new CultureInfo("en-US"),
+                new CultureInfo("ar-SA")
+            };
+
+supportedCultures.ForEach(culture => culture.NumberFormat.NumberDecimalSeparator = ".");
+
+app.UseRequestLocalization(new RequestLocalizationOptions
+{
+    DefaultRequestCulture = new RequestCulture("en-US"),
+    SupportedUICultures = supportedCultures
+});
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
