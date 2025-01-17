@@ -118,654 +118,657 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AdTypeQuestion" xml:space="preserve">
-    <value>سؤال نوع الإعلان</value>
+    <value />
   </data>
   <data name="All" xml:space="preserve">
-    <value>الجميع</value>
+    <value />
   </data>
   <data name="Approved" xml:space="preserve">
-    <value>موافقة</value>
+    <value />
   </data>
   <data name="Approve" xml:space="preserve">
-    <value>يعتمد</value>
+    <value />
   </data>
   <data name="Reject" xml:space="preserve">
-    <value>يرفض</value>
+    <value />
   </data>
   <data name="ApprovedBy" xml:space="preserve">
-    <value>تمت الموافقة عليها من قبل</value>
+    <value />
   </data>
   <data name="RejectedBy" xml:space="preserve">
-    <value>مرفوض من قبل</value>
+    <value />
   </data>
   <data name="CreatedBy" xml:space="preserve">
-    <value>تم إنشاؤها بواسطة</value>
+    <value />
   </data>
   <data name="CelebrityDetails" xml:space="preserve">
-    <value>تفاصيل المشاهير</value>
+    <value />
   </data>
   <data name="Details" xml:space="preserve">
-    <value>تفاصيل</value>
+    <value />
   </data>
   <data name="Comment" xml:space="preserve">
-    <value>تعليق</value>
+    <value />
   </data>
   <data name="Celebrity" xml:space="preserve">
-    <value>المشاهير</value>
+    <value />
   </data>
   <data name="CelebrityLocation" xml:space="preserve">
-    <value>موقع المشاهير</value>
+    <value />
   </data>
   <data name="CelebritySchedule" xml:space="preserve">
-    <value>جدول المشاهير</value>
+    <value />
   </data>
   <data name="CelebrityType" xml:space="preserve">
-    <value>نوع المشاهير</value>
+    <value />
   </data>
   <data name="CompanyType" xml:space="preserve">
-    <value>نوع الشركة</value>
+    <value />
   </data>
   <data name="CoreStyle" xml:space="preserve">
-    <value>style-rtl</value>
+    <value />
   </data>
   <data name="Country" xml:space="preserve">
-    <value>دولة</value>
+    <value />
   </data>
   <data name="Name" xml:space="preserve">
-    <value>اسم</value>
+    <value />
   </data>
   <data name="Create" xml:space="preserve">
-    <value>يخلق</value>
+    <value />
   </data>
   <data name="Customer" xml:space="preserve">
-    <value>عميل</value>
+    <value />
   </data>
   <data name="Dir" xml:space="preserve">
-    <value>rtl</value>
+    <value />
   </data>
   <data name="EmailSetting" xml:space="preserve">
-    <value>إعداد البريد الإلكتروني</value>
+    <value />
   </data>
   <data name="Home" xml:space="preserve">
-    <value>بيت</value>
+    <value />
   </data>
   <data name="Language" xml:space="preserve">
-    <value>العربية</value>
+    <value />
   </data>
   <data name="LanguageCode" xml:space="preserve">
-    <value>ar</value>
+    <value />
   </data>
   <data name="LanguageFlag" xml:space="preserve">
-    <value>kw</value>
+    <value />
   </data>
   <data name="Pending" xml:space="preserve">
-    <value>قيد الانتظار</value>
+    <value />
   </data>
   <data name="Rejected" xml:space="preserve">
-    <value>مرفوض</value>
+    <value />
   </data>
   <data name="User" xml:space="preserve">
-    <value>مستخدم</value>
+    <value />
   </data>
   <data name="Image" xml:space="preserve">
-    <value>صورة</value>
+    <value />
   </data>
   <data name="FullName" xml:space="preserve">
-    <value>الاسم الكامل</value>
+    <value />
   </data>
   <data name="Email" xml:space="preserve">
-    <value>البريد الإلكتروني </value>
+    <value />
   </data>
   <data name="Gender" xml:space="preserve">
-    <value>جنس</value>
+    <value />
   </data>
   <data name="Type" xml:space="preserve">
-    <value>نوع</value>
+    <value />
   </data>
   <data name="Mobile" xml:space="preserve">
-    <value>جوال</value>
+    <value />
   </data>
   <data name="TimeToCall" xml:space="preserve">
-    <value>وقت الاتصال</value>
+    <value />
   </data>
   <data name="Price/Post" xml:space="preserve">
-    <value>السعر / لكل منشور</value>
+    <value />
   </data>
   <data name="Price/Event" xml:space="preserve">
-    <value>السعر / لكل حدث</value>
+    <value />
   </data>
   <data name="Price/Delivery" xml:space="preserve">
-    <value>السعر / لكل تسليم</value>
+    <value />
   </data>
   <data name="PriceRange" xml:space="preserve">
-    <value>نطاق السعر</value>
+    <value />
   </data>
   <data name="Password" xml:space="preserve">
-    <value>شعار</value>
+    <value />
   </data>
   <data name="ConfirmPassword" xml:space="preserve">
-    <value>تأكيد كلمة المرور</value>
+    <value />
   </data>
   <data name="Description" xml:space="preserve">
-    <value>وصف</value>
+    <value />
   </data>
   <data name="BD" xml:space="preserve">
-    <value>التفاصيل الأساسية</value>
+    <value />
   </data>
   <data name="Socials" xml:space="preserve">
-    <value>الروابط الاجتماعية</value>
+    <value />
   </data>
   <data name="Attachments" xml:space="preserve">
-    <value>المرفقات</value>
+    <value />
   </data>
   <data name="FbLink" xml:space="preserve">
-    <value>رابط الفيسبوك</value>
+    <value />
   </data>
   <data name="InstLink" xml:space="preserve">
-    <value>رابط انستغرام</value>
+    <value />
   </data>
   <data name="SCLink" xml:space="preserve">
-    <value>رابط سناب شات</value>
+    <value />
   </data>
   <data name="TwitLink" xml:space="preserve">
-    <value>رابط تويتر</value>
+    <value />
   </data>
   <data name="ThreadsLink" xml:space="preserve">
-    <value>رابط المواضيع</value>
+    <value />
   </data>
   <data name="YTLink" xml:space="preserve">
-    <value>رابط يوتيوب</value>
+    <value />
   </data>
   <data name="CivId" xml:space="preserve">
-    <value>البطاقة المدنية</value>
+    <value />
   </data>
   <data name="Contract" xml:space="preserve">
-    <value>ورقة العقد</value>
+    <value />
   </data>
   <data name="SaveBtn" xml:space="preserve">
-    <value>أنقذ </value>
+    <value />
   </data>
   <data name="CancelBtn" xml:space="preserve">
-    <value>يلغي</value>
+    <value />
   </data>
   <data name="CloudVision" xml:space="preserve">
-    <value>تم التطوير بواسطة Cloud Visions</value>
+    <value />
   </data>
   <data name="StarBooker" xml:space="preserve">
-    <value>ستار بوكر</value>
+    <value />
   </data>
   <data name="Copyright" xml:space="preserve">
-    <value>حقوق النشر</value>
+    <value />
   </data>
   <data name="Welcome" xml:space="preserve">
-    <value>مرحباً</value>
+    <value />
   </data>
   <data name="TSB" xml:space="preserve">
-    <value>لنجم بوكر</value>
+    <value />
   </data>
   <data name="Search" xml:space="preserve">
-    <value>يبحث</value>
+    <value />
   </data>
   <data name="Filter" xml:space="preserve">
-    <value>فلتر</value>
+    <value />
   </data>
   <data name="Status" xml:space="preserve">
-    <value>حالة</value>
+    <value />
   </data>
   <data name="FromPrice" xml:space="preserve">
-    <value>من السعر</value>
+    <value />
   </data>
   <data name="ToPrice" xml:space="preserve">
-    <value>إلى السعر</value>
+    <value />
   </data>
   <data name="IsActive" xml:space="preserve">
-    <value>نشط</value>
+    <value />
   </data>
   <data name="Action" xml:space="preserve">
-    <value>فعل</value>
+    <value />
   </data>
   <data name="Profile" xml:space="preserve">
-    <value>حساب تعريفي</value>
+    <value />
   </data>
   <data name="ChangePassword" xml:space="preserve">
-    <value>تغيير كلمة المرور</value>
+    <value />
   </data>
   <data name="LogOut" xml:space="preserve">
-    <value>تسجيل الخروج</value>
+    <value />
   </data>
   <data name="Date" xml:space="preserve">
-    <value>تاريخ</value>
+    <value />
   </data>
   <data name="Schedule" xml:space="preserve">
-    <value>جدول</value>
+    <value />
   </data>
   <data name="Fromime" xml:space="preserve">
-    <value>من وقت</value>
+    <value />
   </data>
   <data name="ToTime" xml:space="preserve">
-    <value>إلى الوقت</value>
+    <value />
   </data>
   <data name="Active" xml:space="preserve">
-    <value>نشيط</value>
+    <value />
   </data>
   <data name="InActive" xml:space="preserve">
-    <value>غير نشط</value>
+    <value />
   </data>
   <data name="NoRecords" xml:space="preserve">
-    <value>لم يتم العثور على سجلات</value>
+    <value />
   </data>
   <data name="Location" xml:space="preserve">
-    <value>موقع</value>
+    <value />
   </data>
   <data name="Latitude" xml:space="preserve">
-    <value>خط العرض</value>
+    <value />
   </data>
   <data name="Longitude" xml:space="preserve">
-    <value>خط الطول</value>
+    <value />
   </data>
   <data name="Governorate" xml:space="preserve">
-    <value>محافظة</value>
+    <value />
   </data>
   <data name="Area" xml:space="preserve">
-    <value>منطقة</value>
+    <value />
   </data>
   <data name="Block" xml:space="preserve">
-    <value>حاجز</value>
+    <value />
   </data>
   <data name="GooglePlusCode" xml:space="preserve">
-    <value>رمز GooglePlus</value>
+    <value />
   </data>
   <data name="Street" xml:space="preserve">
-    <value>شارع</value>
+    <value />
   </data>
   <data name="Note" xml:space="preserve">
-    <value>ملحوظة</value>
+    <value />
   </data>
   <data name="Code" xml:space="preserve">
-    <value>شفرة</value>
+    <value />
   </data>
   <data name="DialCode" xml:space="preserve">
-    <value>رمز الطلب</value>
+    <value />
   </data>
   <data name="InterestedCelebrityTypes" xml:space="preserve">
-    <value>أنواع المشاهير المهتمة </value>
+    <value />
   </data>
   <data name="Interests" xml:space="preserve">
-    <value>المصالح</value>
+    <value />
   </data>
   <data name="CustomerDetails" xml:space="preserve">
-    <value>تفاصيل العميل</value>
+    <value />
   </data>
   <data name="Question" xml:space="preserve">
-    <value>سؤال</value>
+    <value />
   </data>
   <data name="AnsType" xml:space="preserve">
-    <value>نوع الإجابة</value>
+    <value />
   </data>
   <data name="DelType" xml:space="preserve">
-    <value>نوع التسليم</value>
+    <value />
   </data>
   <data name="AddOpt" xml:space="preserve">
-    <value>إضافة خيار</value>
+    <value />
   </data>
   <data name="Remove" xml:space="preserve">
-    <value>يزيل</value>
+    <value />
   </data>
   <data name="HostServer" xml:space="preserve">
-    <value>الخادم المضيف</value>
+    <value />
   </data>
   <data name="UserName" xml:space="preserve">
-    <value>اسم المستخدم</value>
+    <value />
   </data>
   <data name="Port" xml:space="preserve">
-    <value>ميناء</value>
+    <value />
   </data>
   <data name="FromEmail" xml:space="preserve">
-    <value>من البريد الإلكتروني</value>
+    <value />
   </data>
   <data name="FromName" xml:space="preserve">
-    <value>من الاسم</value>
+    <value />
   </data>
   <data name="Role" xml:space="preserve">
-    <value>دور</value>
+    <value />
   </data>
   <data name="NewPassword" xml:space="preserve">
-    <value>كلمة المرور الجديدة</value>
+    <value />
   </data>
   <data name="OldPassword" xml:space="preserve">
-    <value>كلمة المرور القديمة</value>
+    <value />
   </data>
   <data name="ResetPassword" xml:space="preserve">
-    <value>إعادة تعيين كلمة المرور</value>
+    <value />
   </data>
   <data name="AccountLocked" xml:space="preserve">
-    <value>الحساب مغلق</value>
+    <value />
   </data>
   <data name="AdminMessage" xml:space="preserve">
-    <value>يرجى الاتصال بالمسؤول</value>
+    <value />
   </data>
   <data name="Login" xml:space="preserve">
-    <value>تسجيل الدخول</value>
+    <value />
   </data>
   <data name="LoginMsg" xml:space="preserve">
-    <value>مرحبًا بعودتك! قم بتسجيل الدخول إلى حسابك.</value>
+    <value />
   </data>
   <data name="CelebrityReviews" xml:space="preserve">
-    <value>تقييمات المشاهير</value>
+    <value />
   </data>
   <data name="Ratings" xml:space="preserve">
-    <value>التقييمات</value>
+    <value />
   </data>
   <data name="ReviewText" xml:space="preserve">
-    <value>نص المراجعة</value>
+    <value />
   </data>
   <data name="Edit" xml:space="preserve">
-    <value>يحرر</value>
+    <value />
   </data>
   <data name="Select" xml:space="preserve">
-    <value>يختار</value>
+    <value />
   </data>
   <data name="AdminTransaction" xml:space="preserve">
-    <value>معاملة المشرف</value>
+    <value />
   </data>
   <data name="Amount" xml:space="preserve">
-    <value>كمية</value>
+    <value />
   </data>
   <data name="Balance" xml:space="preserve">
-    <value>توازن</value>
+    <value />
   </data>
   <data name="CelebrityTransaction" xml:space="preserve">
-    <value>صفقة المشاهير</value>
+    <value />
   </data>
   <data name="CustomerTransaction" xml:space="preserve">
-    <value>معاملة العملاء</value>
+    <value />
   </data>
   <data name="FromDate" xml:space="preserve">
-    <value>من التاريخ</value>
+    <value />
   </data>
   <data name="Particulars" xml:space="preserve">
-    <value>تفاصيل</value>
+    <value />
   </data>
   <data name="ToDate" xml:space="preserve">
-    <value>حتى الآن</value>
+    <value />
   </data>
   <data name="CelebrityWallet" xml:space="preserve">
-    <value>محفظة المشاهير</value>
+    <value />
   </data>
   <data name="CustomerWallet" xml:space="preserve">
-    <value>محفظة العملاء</value>
+    <value />
   </data>
   <data name="LoadWallet" xml:space="preserve">
-    <value>تحميل المحفظة</value>
+    <value />
   </data>
   <data name="Transaction" xml:space="preserve">
-    <value>عملية</value>
+    <value />
   </data>
   <data name="Wallet" xml:space="preserve">
-    <value>محفظة</value>
+    <value />
   </data>
   <data name="Withdraw" xml:space="preserve">
-    <value>ينسحب</value>
+    <value />
   </data>
   <data name="AboutUs" xml:space="preserve">
-    <value>معلومات عنا</value>
+    <value />
   </data>
   <data name="AboutUsArabic" xml:space="preserve">
-    <value>معلومات عنا (عربي)</value>
+    <value />
   </data>
   <data name="AboutUsEnglish" xml:space="preserve">
-    <value>معلومات عنا (الإنجليزية)</value>
+    <value />
   </data>
   <data name="Address" xml:space="preserve">
-    <value>عنوان</value>
+    <value />
   </data>
   <data name="CompanyContactSetup" xml:space="preserve">
-    <value>إعداد الاتصال بالشركة</value>
+    <value />
   </data>
   <data name="TermAndCondition" xml:space="preserve">
-    <value>المصطلح والشرط</value>
+    <value />
   </data>
   <data name="TermAndConditionArabic" xml:space="preserve">
-    <value>المصطلح والشرط (عربي)</value>
+    <value />
   </data>
   <data name="TermAndConditionEng" xml:space="preserve">
-    <value>المصطلح والشرط (الإنجليزية)</value>
+    <value />
   </data>
   <data name="Whatsapp" xml:space="preserve">
-    <value>واتس اب</value>
+    <value />
   </data>
   <data name="FAQ" xml:space="preserve">
-    <value>سُؤال يُسأل بِشَكل مُتَكَرِّر</value>
+    <value />
   </data>
   <data name="Question(Arabic)" xml:space="preserve">
-    <value>سؤال (عربي)</value>
+    <value />
   </data>
   <data name="Question(English)" xml:space="preserve">
-    <value>السؤال (الإنجليزية)</value>
+    <value />
   </data>
   <data name="AdvertisementCount" xml:space="preserve">
-    <value>عدد الإعلانات</value>
+    <value />
   </data>
   <data name="AdvertisementSetup" xml:space="preserve">
-    <value>إعداد الإعلان</value>
+    <value />
   </data>
   <data name="CelebrityScheduleSettings" xml:space="preserve">
-    <value>إعدادات جدول المشاهير</value>
+    <value />
   </data>
   <data name="CelebrityScheduleSetup" xml:space="preserve">
-    <value>إعداد جدول المشاهير</value>
+    <value />
   </data>
   <data name="FAQManagement" xml:space="preserve">
-    <value>إدارة الأسئلة الشائعة</value>
+    <value />
   </data>
   <data name="ScheduleCount" xml:space="preserve">
-    <value>عدد الجدول الزمني</value>
+    <value />
   </data>
   <data name="ScheduleTimeLimit" xml:space="preserve">
-    <value>الجدول الزمنيالحد</value>
+    <value />
   </data>
   <data name="Answer" xml:space="preserve">
-    <value>إجابة</value>
+    <value />
   </data>
   <data name="DeliveryType" xml:space="preserve">
-    <value>نوع التسليم</value>
+    <value />
   </data>
   <data name="History" xml:space="preserve">
-    <value>تاريخ</value>
+    <value />
   </data>
   <data name="ManagerPhone" xml:space="preserve">
-    <value>هاتف المدير</value>
+    <value />
   </data>
   <data name="Total" xml:space="preserve">
-    <value>المجموع</value>
+    <value />
   </data>
   <data name="TrackingId" xml:space="preserve">
-    <value>معرف التتبع</value>
+    <value />
   </data>
   <data name="Add" xml:space="preserve">
-    <value>يضيف</value>
+    <value />
   </data>
   <data name="Advertisements" xml:space="preserve">
-    <value>إعلانات</value>
+    <value />
   </data>
   <data name="Cancel" xml:space="preserve">
-    <value>يلغي</value>
+    <value />
   </data>
   <data name="CompanyOrContactPersonName" xml:space="preserve">
-    <value>الشركة / جهة الاتصال</value>
+    <value />
   </data>
   <data name="SelectCustomerInfo" xml:space="preserve">
-    <value>الرجاء اختيار العميل لإضافة الإعلان</value>
+    <value />
   </data>
   <data name="Summary" xml:space="preserve">
-    <value>ملخص</value>
+    <value />
   </data>
   <data name="TotalAmount" xml:space="preserve">
-    <value>المبلغ الإجمالي</value>
+    <value />
   </data>
   <data name="Bookings" xml:space="preserve">
-    <value>الحجوزات</value>
+    <value />
   </data>
   <data name="Cancelled" xml:space="preserve">
-    <value>تم الإلغاء</value>
+    <value />
   </data>
   <data name="Completed" xml:space="preserve">
-    <value>مكتمل</value>
+    <value />
   </data>
   <data name="InProcess" xml:space="preserve">
-    <value>قيد المعالجة</value>
+    <value />
   </data>
   <data name="Price" xml:space="preserve">
-    <value>سعر</value>
+    <value />
   </data>
   <data name="AdvertisementDetails" xml:space="preserve">
-    <value>تفاصيل الإعلان</value>
+    <value />
   </data>
   <data name="BookingSetups" xml:space="preserve">
-    <value>إعدادات الحجز</value>
+    <value />
   </data>
   <data name="GlobalSettings" xml:space="preserve">
-    <value>الإعدادات العالمية</value>
+    <value />
   </data>
   <data name="MaxAdvertisementCountPerBooking" xml:space="preserve">
-    <value>الحد الأقصى لعدد الإعلانات لكل حجز</value>
+    <value />
   </data>
   <data name="MaxDurationPerSchedule" xml:space="preserve">
-    <value>المدة القصوى لكل جدول زمني</value>
+    <value />
   </data>
   <data name="MaxScheduleCountPerDay" xml:space="preserve">
-    <value>الحد الأقصى لعدد الجدول الزمني في اليوم</value>
+    <value />
   </data>
   <data name="MaxAttachmentsPerPostTypeAdvertisement" xml:space="preserve">
-    <value>الحد الأقصى للمرفقات لكل نوع إعلان</value>
+    <value />
   </data>
   <data name="Posts" xml:space="preserve">
-    <value>دعامات</value>
+    <value />
   </data>
   <data name="Questions" xml:space="preserve">
-    <value>أسئلة</value>
+    <value />
   </data>
   <data name="UploadImagesForPost" xml:space="preserve">
-    <value>تحميل الصور للنشر</value>
+    <value />
   </data>
   <data name="GlobalSetting" xml:space="preserve">
-    <value>الإعداد العالمي</value>
+    <value />
   </data>
   <data name="AdInsights" xml:space="preserve">
-    <value>رؤى الإعلانية</value>
+    <value />
   </data>
   <data name="CancelledAds" xml:space="preserve">
-    <value>الإعلانات الملغاة</value>
+    <value />
   </data>
   <data name="Celebrities" xml:space="preserve">
-    <value>المشاهير</value>
+    <value />
   </data>
   <data name="CompletedAds" xml:space="preserve">
-    <value>الإعلانات المكتملة</value>
+    <value />
   </data>
   <data name="Customers" xml:space="preserve">
-    <value>عملاء</value>
+    <value />
   </data>
   <data name="DownloadReport" xml:space="preserve">
-    <value>تنزيل التقرير</value>
+    <value />
   </data>
   <data name="NewAds" xml:space="preserve">
-    <value>إعلانات جديدة</value>
+    <value />
   </data>
   <data name="Print" xml:space="preserve">
-    <value>مطبعة</value>
+    <value />
   </data>
   <data name="TotalAds" xml:space="preserve">
-    <value>إجمالي الإعلانات</value>
+    <value />
   </data>
   <data name="Transactions" xml:space="preserve">
-    <value>المعاملات</value>
+    <value />
   </data>
   <data name="View" xml:space="preserve">
-    <value>منظر</value>
+    <value />
   </data>
   <data name="AdminBalance" xml:space="preserve">
-    <value>الرصيد الاداري</value>
+    <value />
   </data>
   <data name="IncomingTransactions" xml:space="preserve">
-    <value>المعاملات الواردة</value>
+    <value />
   </data>
   <data name="OutgoingTransactions" xml:space="preserve">
-    <value>المعاملات الصادرة</value>
+    <value />
   </data>
   <data name="CelebrityInsights" xml:space="preserve">
-    <value>رؤى المشاهير</value>
+    <value />
   </data>
   <data name="CustomerInsights" xml:space="preserve">
-    <value>رؤى العملاء</value>
+    <value />
   </data>
   <data name="CelebrityReport" xml:space="preserve">
-    <value>تقرير المشاهير</value>
+    <value />
   </data>
   <data name="CustomerReport" xml:space="preserve">
-    <value>تقرير العملاء</value>
+    <value />
   </data>
   <data name="In-ProcessAds" xml:space="preserve">
-    <value>الإعلانات قيد المعالجة</value>
+    <value />
   </data>
   <data name="PendingAds" xml:space="preserve">
-    <value>الإعلانات المعلقة</value>
+    <value />
   </data>
   <data name="RejectedAds" xml:space="preserve">
-    <value>الإعلانات المرفوضة</value>
+    <value />
   </data>
   <data name="NotificationNotFound" xml:space="preserve">
-    <value>لم يتم العثور على أي إشعار</value>
+    <value />
   </data>
   <data name="Notifications" xml:space="preserve">
-    <value>إشعارات</value>
+    <value />
   </data>
   <data name="ApprovedReviews" xml:space="preserve">
-    <value>المراجعات المعتمدة</value>
+    <value />
   </data>
   <data name="PendingReviews" xml:space="preserve">
-    <value>في انتظار المراجعات</value>
+    <value />
   </data>
   <data name="RejectedReviews" xml:space="preserve">
-    <value>المراجعات المرفوضة</value>
+    <value />
   </data>
   <data name="CompleteSetup" xml:space="preserve">
-    <value>الإعداد الكامل</value>
+    <value />
   </data>
   <data name="InCompleteSetupInfo" xml:space="preserve">
-    <value>إعداد النظام الخاص بك غير مكتمل. يرجى التأكد من اكتمال كافة التكوينات المطلوبة</value>
+    <value />
   </data>
   <data name="CelebrityMetrics" xml:space="preserve">
-    <value>قياسات المشاهير</value>
+    <value />
   </data>
   <data name="CelebrityMetricsSetup" xml:space="preserve">
-    <value>إعداد مقاييس المشاهير</value>
+    <value />
   </data>
   <data name="MinScore" xml:space="preserve">
-    <value>الحد الأدنى من النقاط</value>
+    <value />
   </data>
   <data name="Score" xml:space="preserve">
-    <value>نتيجة</value>
+    <value />
   </data>
   <data name="TotalRatings" xml:space="preserve">
-    <value>إجمالي التقييمات</value>
+    <value />
   </data>
   <data name="TotalViews" xml:space="preserve">
-    <value>إجمالي المشاهدات</value>
+    <value />
   </data>
   <data name="ContactUs" xml:space="preserve">
-    <value>اتصل بنا</value>
+    <value />
   </data>
   <data name="Reports" xml:space="preserve">
-    <value>التقارير</value>
+    <value />
   </data>
   <data name="CommissionValue" xml:space="preserve">
-    <value>قيمة العمولة</value>
+    <value />
   </data>
   <data name="IsCommissionIn%" xml:space="preserve">
-    <value>هل العمولة في٪</value>
+    <value />
+  </data>
+  <data name="BookingDetails" xml:space="preserve">
+    <value />
   </data>
   <data name="Shtabi" xml:space="preserve">
-    <value>شتبي</value>
+    <value />
   </data>
 </root>

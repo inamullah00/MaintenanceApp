@@ -3,11 +3,15 @@ using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Domain.Enums;
 using Infrastructure.Data;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Specifications;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -52,6 +56,53 @@ namespace Infrastructure.Repositories.ServiceImplemention
             _mapper = mapper;
         }
 
+        #endregion
+
+
+        #region Admin Panel
+        public async Task<(bool Success, string Message)> CreateUser(CreateUserViewModel model)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
+            if (existingUser != null)
+            {
+                return (false, "User with this email already exists.");
+            }
+            var userIdentity = new ApplicationUser
+            {
+                UserName = model.EmailAddress,
+                Email = model.EmailAddress,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                PhoneNumber = model.PhoneNumber,
+                Status = UserStatus.Approved,
+                Location = model.Location,
+                Address = model.Address,
+                SecurityStamp = Guid.NewGuid().ToString(),
+            };
+
+            var registerResult = await _userManager.CreateAsync(userIdentity, model.Password);
+            if (!registerResult.Succeeded)
+            {
+                var errorMessage = string.Join(", ", registerResult.Errors.Select(e => e.Description));
+                return (false, $"User registration failed. {errorMessage}");
+            }
+
+            if (!string.IsNullOrEmpty(model.Role.ToString()))
+            {
+                var roleExists = await _roleManager.RoleExistsAsync(model.Role.ToString());
+                if (!roleExists)
+                {
+                    return (false, "The role specified does not exist.");
+                }
+
+                var assignedRole = await _userManager.AddToRoleAsync(userIdentity, model.Role.ToString());
+                if (!assignedRole.Succeeded)
+                {
+                    return (false, "Failed to assign role to the user.");
+                }
+            }
+            return (true, "User created successfully.");
+        }
         #endregion
 
         public async Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto request)
@@ -118,10 +169,10 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 RegistrationDate = DateTime.UtcNow,
                 Skills = request.Skills,
                 HourlyRate = request.HourlyRate,
-                IsApprove =false,
+                IsApprove = false,
                 TotalEarnings = 0,
                 MonthlyLimit = 0,
-                OrdersCompleted =0,
+                OrdersCompleted = 0,
                 ReportMonth = DateTime.UtcNow,
             };
 
@@ -163,8 +214,6 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 return (true, $"User registered successfully, but email sending failed: {ex.Message}");
             }
             return (true, "User registered successfully.");
-
-
         }
 
         public Task<(bool Success, string Message)> UserApprovalAsync()
@@ -214,40 +263,55 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
-        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null)
+        public async Task<Result<PagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10)
         {
+            specification ??= new DefaultSpecification<ApplicationUser>();
             var queryResult = SpecificationEvaluator.Default.GetQuery(
-                          query: _dbContext.Users.AsQueryable(),
-                          specification: specification
-                           );
+                query: _dbContext.Users.AsQueryable(),
+                specification: specification
+            );
 
-            var users = await (from AppUsers in queryResult
-                               select new UserDetailsResponseDto
-                               {
-                                   Id = AppUsers.Id,
-                                   FirstName = AppUsers.FirstName,
-                                   LastName = AppUsers.LastName,
-                                   Status = AppUsers.Status.ToString(),
-                                   Location = AppUsers.Location,
-                                   Address = AppUsers.Address,
-                                   ExpertiseArea = AppUsers.ExpertiseArea,
-                                   MonthlyLimit = AppUsers.MonthlyLimit,
-                                   OrdersCompleted = AppUsers.OrdersCompleted,
-                                   TotalEarnings = AppUsers.TotalEarnings,
-                                   ReportMonth = AppUsers.ReportMonth,
-                                   Rating = AppUsers.Rating.ToString(),
-                                   Bio = AppUsers.Bio,
-                                   ApprovedDate = AppUsers.ApprovedDate,
-                                   RegistrationDate = AppUsers.RegistrationDate,
-                                   Skills = AppUsers.Skills,
-                                   HourlyRate = AppUsers.HourlyRate,
-                                   IsVerified = AppUsers.IsApprove,
-                                   Email = AppUsers.Email,
-                                   EmailConfirmed = AppUsers.EmailConfirmed
-                               }).ToListAsync();
+            var totalCount = await queryResult.CountAsync();
 
-            return Result<List<UserDetailsResponseDto>>.Success(users, "User found.", 200);
+            var items = await queryResult
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(user => new UserDetailsResponseDto
+                {
+                    Id = user.Id,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
+                    Status = user.Status.ToString(),
+                    Location = user.Location,
+                    Address = user.Address,
+                    ExpertiseArea = user.ExpertiseArea,
+                    MonthlyLimit = user.MonthlyLimit,
+                    OrdersCompleted = user.OrdersCompleted,
+                    TotalEarnings = user.TotalEarnings,
+                    ReportMonth = user.ReportMonth,
+                    Rating = user.Rating.ToString(),
+                    Bio = user.Bio,
+                    ApprovedDate = user.ApprovedDate,
+                    RegistrationDate = user.RegistrationDate,
+                    Skills = user.Skills,
+                    HourlyRate = user.HourlyRate,
+                    IsVerified = user.IsApprove,
+                    Email = user.Email,
+                    EmailConfirmed = user.EmailConfirmed
+                })
+                .ToListAsync();
+
+            var pagedResult = new PagedResult<UserDetailsResponseDto>
+            {
+                Items = items,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+            };
+
+            return Result<PagedResult<UserDetailsResponseDto>>.Success(pagedResult, "Users retrieved successfully.");
         }
+
 
         public Task<(bool Success, string Message)> UserProfileAsync()
         {

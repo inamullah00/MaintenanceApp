@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Application.Dto_s.UserDto_s
+﻿namespace Application.Dto_s.UserDto_s
 {
     public class UserDetailsResponseDto
     {
@@ -24,8 +18,8 @@ namespace Application.Dto_s.UserDto_s
         public bool? IsVerified { get; set; }
         public string Email { get; set; }
         public bool EmailConfirmed { get; set; }
-        public int? MonthlyLimit { get; set; } 
-        public int? OrdersCompleted { get; set; } 
+        public int? MonthlyLimit { get; set; }
+        public int? OrdersCompleted { get; set; }
         public decimal? TotalEarnings { get; set; }
         public DateTime? ReportMonth { get; set; }
     }

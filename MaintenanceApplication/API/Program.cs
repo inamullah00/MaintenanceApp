@@ -30,9 +30,6 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.RegistrationServices(builder.Configuration);
 
-
-
-
 // Identity Setup
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
     .AddTokenProvider<DataProtectorTokenProvider<ApplicationUser>>("MaintenanceApp")

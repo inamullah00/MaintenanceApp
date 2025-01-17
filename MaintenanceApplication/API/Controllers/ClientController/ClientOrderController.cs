@@ -2,7 +2,6 @@
 using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.API.Controllers.ClientController
@@ -13,7 +12,7 @@ namespace Maintenance.API.Controllers.ClientController
     {
         private readonly IOrderService _orderService;
         private readonly ILogger<ClientOrderController> _logger;
-        public ClientOrderController(IOrderService orderService , ILogger<ClientOrderController> logger)
+        public ClientOrderController(IOrderService orderService, ILogger<ClientOrderController> logger)
         {
             _orderService = orderService;
             _logger = logger;
@@ -227,7 +226,7 @@ namespace Maintenance.API.Controllers.ClientController
         #region Client Rejects the Work 
 
         [HttpPut("Orders/{orderId:guid}/Reject")]
-        public async Task<IActionResult> RejectOrder(Guid orderId, [FromBody] RejectOrderRequestDTO rejectOrderDTO,CancellationToken cancellationToken)
+        public async Task<IActionResult> RejectOrder(Guid orderId, [FromBody] RejectOrderRequestDTO rejectOrderDTO, CancellationToken cancellationToken)
         {
             try
             {

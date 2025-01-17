@@ -1,13 +1,10 @@
 ﻿using Application.Dto_s.UserDto_s;
 using Ardalis.Specification;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Application.Services.Account
 {
@@ -24,11 +21,10 @@ namespace Maintenance.Application.Services.Account
         public Task<Result<string>> BlockUserAsync(Guid UserId);
         public Task<Result<string>> UnBlockUserAsync(Guid UserId);
         public Task<(bool Success, string Message)> UserProfileAsync();
-        public Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null);
         public Task<(bool Success, string Message)> ValidateOtpAsync(string otp);
 
         public Task<Result<UserProfileDto>> EditUserProfileAsync(Guid Id, UserProfileEditDto editUserProfile);
-
-
+        Task<(bool Success, string Message)> CreateUser(CreateUserViewModel model);
+        Task<Result<PagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10);
     }
 }

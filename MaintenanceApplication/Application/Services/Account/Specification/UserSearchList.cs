@@ -1,22 +1,17 @@
 ﻿using Ardalis.Specification;
 using Domain.Entity.UserEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Application.Services.Account.Specification
 {
     public class UserSearchList : Specification<ApplicationUser>
     {
-        public UserSearchList(string? keyword = "", string? role = "" )
+        public UserSearchList(string? keyword = "", string? role = "", int pageNumber = 1, int pageSize = 10)
         {
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-              _ = Query.Where(x => x.FirstName.Contains(keyword) ||
-                                 x.LastName.Contains(keyword) ||
-                                 x.Email.Contains(keyword));
+                _ = Query.Where(x => x.FirstName.Contains(keyword) ||
+                                   x.LastName.Contains(keyword) ||
+                                   x.Email.Contains(keyword));
             }
 
             if (!string.IsNullOrWhiteSpace(role))
@@ -24,6 +19,8 @@ namespace Maintenance.Application.Services.Account.Specification
                 //Query.Where(x => x.Role .Equals(role));
             }
             _ = Query.OrderBy(x => x.FirstName);
+
+            Query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
         }
 
         public UserSearchList(string UserId)

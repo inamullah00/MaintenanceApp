@@ -135,23 +135,23 @@
   <data name="ApprovedBy" xml:space="preserve">
     <value>ApprovedBy</value>
   </data>
-  <data name="CreatedBy" xml:space="preserve">
-    <value>Created By</value>
-  </data>
   <data name="RejectedBy" xml:space="preserve">
     <value>RejectedBy</value>
   </data>
-  <data name="Comment" xml:space="preserve">
-    <value>Comment</value>
-  </data>
-  <data name="Celebrity" xml:space="preserve">
-    <value>Celebrity</value>
+  <data name="CreatedBy" xml:space="preserve">
+    <value>Created By</value>
   </data>
   <data name="CelebrityDetails" xml:space="preserve">
     <value>Celebrity Details</value>
   </data>
   <data name="Details" xml:space="preserve">
     <value>Details</value>
+  </data>
+  <data name="Comment" xml:space="preserve">
+    <value>Comment</value>
+  </data>
+  <data name="Celebrity" xml:space="preserve">
+    <value>Celebrity</value>
   </data>
   <data name="CelebrityLocation" xml:space="preserve">
     <value>Celebrity Location</value>
@@ -534,6 +534,15 @@
   <data name="Whatsapp" xml:space="preserve">
     <value>Whatsapp</value>
   </data>
+  <data name="FAQ" xml:space="preserve">
+    <value>FAQ</value>
+  </data>
+  <data name="Question(Arabic)" xml:space="preserve">
+    <value>Question(Arabic)</value>
+  </data>
+  <data name="Question(English)" xml:space="preserve">
+    <value>Question (English)</value>
+  </data>
   <data name="AdvertisementCount" xml:space="preserve">
     <value>Advertisement Count</value>
   </data>
@@ -546,17 +555,8 @@
   <data name="CelebrityScheduleSetup" xml:space="preserve">
     <value>Celebrity Schedule Setup</value>
   </data>
-  <data name="FAQ" xml:space="preserve">
-    <value>FAQ</value>
-  </data>
   <data name="FAQManagement" xml:space="preserve">
     <value>FAQ Management</value>
-  </data>
-  <data name="Question(Arabic)" xml:space="preserve">
-    <value>Question(Arabic)</value>
-  </data>
-  <data name="Question(English)" xml:space="preserve">
-    <value>Question (English)</value>
   </data>
   <data name="ScheduleCount" xml:space="preserve">
     <value>Schedule Count</value>
@@ -588,9 +588,6 @@
   <data name="Advertisements" xml:space="preserve">
     <value>Advertisements</value>
   </data>
-  <data name="BookingDetails" xml:space="preserve">
-    <value>Booking Details</value>
-  </data>
   <data name="Cancel" xml:space="preserve">
     <value>Cancel</value>
   </data>
@@ -615,7 +612,7 @@
   <data name="Completed" xml:space="preserve">
     <value>Completed</value>
   </data>
-  <data name="Inprocess" xml:space="preserve">
+  <data name="InProcess" xml:space="preserve">
     <value>InProcess</value>
   </data>
   <data name="Price" xml:space="preserve">
@@ -767,5 +764,11 @@
   </data>
   <data name="IsCommissionIn%" xml:space="preserve">
     <value>Is Commission In %</value>
+  </data>
+  <data name="BookingDetails" xml:space="preserve">
+    <value>Booking Details</value>
+  </data>
+  <data name="Shtabi" xml:space="preserve">
+    <value>Shtabi</value>
   </data>
 </root>
