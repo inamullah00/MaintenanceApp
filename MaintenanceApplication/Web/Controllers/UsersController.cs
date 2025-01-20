@@ -1,5 +1,5 @@
 ﻿using Maintenance.Application.Exceptions;
-using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
 using Maintenance.Web.Extensions;
@@ -10,24 +10,29 @@ namespace Maintenance.Web.Controllers
 
     public class UsersController : Controller
     {
-        private readonly ILogger<IRegisterationService> _logger;
-        private readonly IRegisterationService _userService;
+        private readonly ILogger<IAdminService> _logger;
+        private readonly IAdminService _adminService;
 
-        public UsersController(ILogger<IRegisterationService> logger, IRegisterationService userService)
+        public UsersController(ILogger<IAdminService> logger, IAdminService adminService)
         {
             _logger = logger;
-            _userService = userService;
+            _adminService = adminService;
         }
         public async Task<IActionResult> Index()
         {
-            ViewBag.Users = await _userService.GetUsersForDropdown();
+            ViewBag.Users = await _adminService.GetUsersForDropdown();
             return View(new UsersDatatableFilterViewModel());
+        }
+
+        public IActionResult Create()
+        {
+            return View(new CreateUserViewModel());
         }
 
         [HttpPost]
         public async Task<IActionResult> GetFilteredUsers([FromForm] UsersDatatableFilterViewModel model)
         {
-            var response = await _userService.GetFilteredUsers(new UserFilterViewModel
+            var response = await _adminService.GetFilteredUsers(new UserFilterViewModel
             {
                 UserId = model.UserId,
                 Skip = model.start,
@@ -44,7 +49,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                var response = await _userService.CreateUser(model);
+                await _adminService.CreateAdmin(model);
                 this.NotifySuccess("User created Successfully");
                 return RedirectToAction(nameof(Index));
             }
@@ -55,73 +60,56 @@ namespace Maintenance.Web.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error on Creating User", ex);
+                _logger.LogError(ex, "Error on Creating User");
                 this.NotifyError("Something went wrong. Please contact to administrator");
                 return View(model);
             }
         }
 
-        //[HttpGet]
-        //public async Task<IActionResult> Edit(string id)
-        //{
-        //    try
-        //    {
+        [HttpGet]
+        public async Task<IActionResult> Edit(string id)
+        {
+            try
+            {
 
-        //        var userResponse = await _userService.GetById(id);
-        //        var editViewModel = new UpdateUserViewModel
-        //        {
-        //            Id = id,
-        //            FullName = userResponse.FullName,
-        //            EmailAddress = userResponse.EmailAddress,
-        //            PhoneNumber = userResponse.PhoneNumber,
-        //            UserName = userResponse.UserName,
-        //            RoleId = userResponse.RoleId
-        //        };
+                var userResponse = await _adminService.GetAdminById(id);
+                var editViewModel = new UpdateUserViewModel
+                {
+                    Id = id,
+                    FirstName = userResponse.FirstName,
+                    LastName = userResponse.LastName,
+                    EmailAddress = userResponse.EmailAddress,
+                    PhoneNumber = userResponse.PhoneNumber,
+                };
 
-        //        return View(editViewModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Update User", ex);
-        //        this.NotifyError("Something went wrong. Please contact to administrator");
-        //        return RedirectToAction(nameof(Index));
-        //    }
+                return View(editViewModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Update User");
+                this.NotifyError("Something went wrong. Please contact to administrator");
+                return RedirectToAction(nameof(Index));
+            }
 
-        //}
+        }
+        [HttpPost]
+        public async Task<IActionResult> Edit(UpdateUserViewModel model)
+        {
+            try
+            {
+                await _adminService.EditAdminProfileAsync(model);
 
+                this.NotifySuccess("User updated successfully");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Update User");
+                this.NotifyError($"Error: {ex.Message}");
+                return View(model);
+            }
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(UpdateUserViewModel model)
-        //{
-        //    try
-        //    {
-        //        var editDto = new UpdateUserViewModel
-        //        {
-        //            Id = model.Id,
-        //            FullName = model.FullName,
-        //            EmailAddress = model.EmailAddress,
-        //            PhoneNumber = model.PhoneNumber,
-        //            UserName = model.UserName,
-        //            RoleId = model.RoleId
-        //        };
-        //        await _userService.Edit(editDto);
-        //        this.NotifySuccess("User updated Successfully");
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        await SetRolesDropdown();
-        //        this.NotifyInfo(ex.Message);
-        //        return View(model);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Update User", ex);
-        //        await SetRolesDropdown();
-        //        this.NotifyError("Something went wrong. Please contact to administrator");
-        //        return View(model);
-        //    }
-        //}
 
         //[HttpPatch]
         //public async Task<IActionResult> BlockUser(string id)

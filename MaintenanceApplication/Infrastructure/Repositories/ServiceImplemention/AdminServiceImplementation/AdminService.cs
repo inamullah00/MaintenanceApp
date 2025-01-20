@@ -1,104 +1,195 @@
-﻿using Application.Dto_s.UserDto_s;
-using Application.Interfaces.IUnitOFWork;
+﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Domain.Enums;
+using Infrastructure.Data;
 using Maintenance.Application.Dto_s.Common;
-using Maintenance.Application.Dto_s.UserDto_s;
-using Maintenance.Application.Interfaces.ReposoitoryInterfaces.AdminInterfaces;
+using Maintenance.Application.Exceptions;
+using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
-using Maintenance.Application.Wrapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServiceImplementation
 {
-    public class AdminService
+    public class AdminService : IAdminService
     {
-        private readonly IAdminRepository _adminRepository;
+        private readonly UserManager<ApplicationUser> _userManager;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _dbContext;
 
-        public AdminService(IAdminRepository adminRepository, IUnitOfWork unitOfWork, IMapper mapper)
+        public AdminService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper, ApplicationDbContext dbContext)
         {
-            _adminRepository = adminRepository;
+            _userManager = userManager;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _dbContext = dbContext;
         }
 
-        public async Task<Result<UserProfileDto>> EditUserProfileAsync(Guid userId, UserProfileEditDto userUpdateRequestDto)
+        public async Task<List<DropdownDto>> GetUsersForDropdown()
         {
-            var user = await _adminRepository.GetByIdAsync(userId);
-            if (user == null)
+            var customers = await _dbContext.Users.Select(a => new DropdownDto
             {
-                return Result<UserProfileDto>.Failure("User not found", 404);
-            }
-
-            if (!string.IsNullOrEmpty(userUpdateRequestDto.Email))
-            {
-                user.Email = userUpdateRequestDto.Email;
-            }
-
-            user.FirstName = userUpdateRequestDto.FirstName ?? user.FirstName;
-            user.LastName = userUpdateRequestDto.LastName ?? user.LastName;
-
-            await _adminRepository.UpdateAsync(user);
-            await _unitOfWork.SaveChangesAsync();
-
-            var updatedUser = _mapper.Map<UserProfileDto>(user);
-            return Result<UserProfileDto>.Success(updatedUser, "User updated successfully", 200);
+                Id = a.Id,
+                Name = a.FirstName,
+            }).ToListAsync().ConfigureAwait(false);
+            return customers;
         }
-
-        public async Task<Result<List<DropdownDto>>> GetUsersForDropdownAsync()
+        public async Task<GridResponseViewModel> GetFilteredUsers(UserFilterViewModel model)
         {
-            var users = await _adminRepository.GetAllAsync();
-            var dropdownList = users.Select(user => new DropdownDto
-            {
-                Id = user.Id,
-                Name = user.UserName
-            }).ToList();
-
-            return Result<List<DropdownDto>>.Success(dropdownList, "Fetched users successfully", 200);
-        }
-
-        public async Task<Result<GridResponseViewModel>> GetFilteredUsersAsync(UserFilterViewModel model)
-        {
-            var query = _adminRepository.QueryUsers();
-
+            var query = _dbContext.Users.AsQueryable();
             if (!string.IsNullOrEmpty(model.UserId))
             {
                 query = query.Where(x => x.Id.ToString() == model.UserId);
             }
-
             var totalCount = await query.CountAsync();
-            var users = await query.Skip(model.Skip).Take(model.Take).ToListAsync();
-
-            var response = new GridResponseViewModel
+            var data = await query.Skip(model.Skip).Take(model.Take)
+                .Select(u => new UserResponseViewModel
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName ?? string.Empty,
+                    LastName = u.LastName ?? string.Empty,
+                    PhoneNumber = u.PhoneNumber ?? string.Empty,
+                    Email = u.Email ?? string.Empty,
+                    Role = u.Role,
+                    Status = u.Status.ToString()
+                }).ToListAsync();
+            return new GridResponseViewModel
             {
                 TotalCount = totalCount,
-                Data = users.Select(user => new UserDetailsResponseDto
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Email = user.Email,
-                    Address = user.Address,
-                    Location = user.Location,
-                    Status = user.Status.ToString()
-                }).ToList()
+                Data = data
+            };
+        }
+
+
+        public async Task CreateAdmin(CreateUserViewModel model)
+        {
+            var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
+            if (existingUser != null)
+            {
+                throw new CustomException("User with this email already exists.");
+            }
+
+            var userIdentity = new ApplicationUser
+            {
+                UserName = model.UserName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Email = model.EmailAddress,
+                PhoneNumber = model.PhoneNumber,
+                Status = UserStatus.Approved,
+                Role = Role.Admin.ToString(),
+                Address = model.Address,
+                SecurityStamp = Guid.NewGuid().ToString(),
             };
 
-            return Result<GridResponseViewModel>.Success(response, "Filtered users retrieved successfully", 200);
+            var registerResult = await _userManager.CreateAsync(userIdentity, model.Password);
+            if (!registerResult.Succeeded)
+            {
+                var errorMessage = string.Join(", ", registerResult.Errors.Select(e => e.Description));
+                throw new CustomException($"User registration failed: {errorMessage}");
+            }
         }
 
-        public async Task<Result<string>> CreateUserAsync(ApplicationUser user, string role)
+
+        public async Task<UpdateUserViewModel> GetAdminById(string id)
         {
-            await _adminRepository.CreateAsync(user);
-            await _unitOfWork.SaveChangesAsync();
+            var user = await _dbContext.Users
+                .FirstOrDefaultAsync(u => u.Id.ToString() == id);
 
-            // Assign role logic (if necessary)...
+            if (user == null)
+            {
+                throw new CustomException("User not found.");
+            }
 
-            return Result<string>.Success("User created successfully", 200);
+            var updateUserViewModel = new UpdateUserViewModel
+            {
+                Id = user.Id.ToString(),
+                FirstName = user.FirstName ?? string.Empty,
+                LastName = user.LastName ?? string.Empty,
+                EmailAddress = user.Email ?? string.Empty,
+                PhoneNumber = user.PhoneNumber ?? string.Empty,
+            };
+
+            return updateUserViewModel;
         }
+
+        public async Task EditAdminProfileAsync(UpdateUserViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.Id);
+
+            if (user == null)
+            {
+                throw new CustomException("No user found with the provided ID");
+            }
+
+            if (!string.IsNullOrEmpty(model.EmailAddress))
+            {
+                if (!IsValidEmail(model.EmailAddress))
+                {
+                    throw new CustomException("Invalid email format");
+
+                }
+
+                var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
+
+
+                if (existingUser != null && existingUser.Id != model.Id)
+                {
+                    throw new CustomException("Email conflict: The provided email is already in use by another user");
+                }
+
+                user.Email = model.EmailAddress;
+            }
+
+            if (!string.IsNullOrEmpty(model.FirstName))
+            {
+                user.FirstName = model.FirstName;
+            }
+
+            if (!string.IsNullOrEmpty(model.LastName))
+            {
+                user.LastName = model.LastName;
+            }
+            if (!string.IsNullOrEmpty(model.PhoneNumber))
+            {
+                user.PhoneNumber = model.PhoneNumber;
+            }
+
+            try
+            {
+                var result = await _userManager.UpdateAsync(user);
+                if (!result.Succeeded)
+                {
+                    throw new CustomException("Failed to update user profile");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new CustomException($"An error occurred while saving the profile: {ex.Message}");
+            }
+        }
+
+
+        #region Validate Email
+        private bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        #endregion
     }
 
+
 }
+

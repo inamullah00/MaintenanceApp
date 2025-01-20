@@ -15,12 +15,31 @@
         { data: 'FirstName', name: 'FirstName', "autoWidth": true },
         { data: 'LastName', name: 'LastName', "autoWidth": true },
         { data: 'Email', name: 'Email', "autoWidth": true },
-        { data: 'Address', name: 'Address', "autoWidth": true },
-        { data: 'Location', name: 'Location', "autoWidth": true },
-        { data: 'Status', name: 'Status', "autoWidth": true },
+        { data: 'PhoneNumber', name: 'Mobile', "autoWidth": true },
+        {
+            data: 'Status',
+            render: function () {
+                return `<span class="badge bg-success">Approved</span>`;
+            },
+            "autoWidth": true
+        },
+        {
+            data: 'Role',
+            render: function (data) {
+                return `<span class="badge bg-primary">${data}</span>`;
+            },
+            "autoWidth": true
+        },
+        {
+            data: 'Id',
+            render: function (data, type, row) {
+                return '<a href="/Users/Edit/' + data + '"<i class="fas fa-edit"></i></a>';
+            },
+            "autoWidth": true,
+            "className": "text-center"
+        }
     ]
 });
-
 
 
 $(document).on("click", ".reset-password", function () {

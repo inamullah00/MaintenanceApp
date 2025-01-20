@@ -3,7 +3,6 @@ using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
 using Domain.Entity.UserEntities;
-using Domain.Enums;
 using Infrastructure.Data;
 using MailKit.Net.Smtp;
 using MailKit.Security;
@@ -14,8 +13,6 @@ using Maintenance.Application.Services.Account;
 using Maintenance.Application.Services.Account.Filter;
 using Maintenance.Application.Services.Account.Specification;
 using Maintenance.Application.Specifications;
-using Maintenance.Application.ViewModel;
-using Maintenance.Application.ViewModel.User;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -61,95 +58,6 @@ namespace Infrastructure.Repositories.ServiceImplemention
             _mapper = mapper;
         }
 
-        #endregion
-
-
-        #region Admin Panel
-        public async Task<List<DropdownDto>> GetUsersForDropdown()
-        {
-            var customers = await _dbContext.Users.Select(a => new DropdownDto
-            {
-                Id = a.Id,
-                Name = a.UserName,
-            }).ToListAsync().ConfigureAwait(false);
-            return customers;
-
-        }
-        public async Task<GridResponseViewModel> GetFilteredUsers(UserFilterViewModel model)
-        {
-            var query = _dbContext.Users.AsQueryable();
-
-            if (!string.IsNullOrEmpty(model.UserId))
-            {
-                query = query.Where(x => x.Id.ToString() == model.UserId);
-            }
-
-            var totalCount = await query.CountAsync();
-
-            var data = await query.Skip(model.Skip).Take(model.Take)
-                .Select(u => new UserDetailsResponseDto
-                {
-                    Id = u.Id,
-                    FirstName = u.FirstName,
-                    LastName = u.LastName,
-                    Email = u.Email,
-                    Address = u.Address,
-                    Location = u.Location,
-                    Status = u.Status.ToString()
-                }).ToListAsync();
-
-            return new GridResponseViewModel
-            {
-                TotalCount = totalCount,
-                Data = data
-            };
-        }
-
-
-
-        public async Task<(bool Success, string Message)> CreateUser(CreateUserViewModel model)
-        {
-            var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
-            if (existingUser != null)
-            {
-                return (false, "User with this email already exists.");
-            }
-            var userIdentity = new ApplicationUser
-            {
-                UserName = model.EmailAddress,
-                Email = model.EmailAddress,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
-                PhoneNumber = model.PhoneNumber,
-                Status = UserStatus.Approved,
-                Location = model.Location,
-                Address = model.Address,
-                SecurityStamp = Guid.NewGuid().ToString(),
-            };
-
-            var registerResult = await _userManager.CreateAsync(userIdentity, model.Password);
-            if (!registerResult.Succeeded)
-            {
-                var errorMessage = string.Join(", ", registerResult.Errors.Select(e => e.Description));
-                return (false, $"User registration failed. {errorMessage}");
-            }
-
-            if (!string.IsNullOrEmpty(model.Role.ToString()))
-            {
-                var roleExists = await _roleManager.RoleExistsAsync(model.Role.ToString());
-                if (!roleExists)
-                {
-                    return (false, "The role specified does not exist.");
-                }
-
-                var assignedRole = await _userManager.AddToRoleAsync(userIdentity, model.Role.ToString());
-                if (!assignedRole.Succeeded)
-                {
-                    return (false, "Failed to assign role to the user.");
-                }
-            }
-            return (true, "User created successfully.");
-        }
         #endregion
 
         public async Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto request)
@@ -377,9 +285,6 @@ namespace Infrastructure.Repositories.ServiceImplemention
             return Result<PaginatedResponse<UserDetailsResponseDto>>.Success(paginatedResponse, "Users retrieved successfully.", 200);
         }
 
-
-
-        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null)
         public async Task<Result<CustomPagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10)
         {
             specification ??= new DefaultSpecification<ApplicationUser>();
@@ -644,18 +549,6 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
             return Result<UserProfileDto>.Success(updatedUserProfile, "Profile updated successfully", 200);
         }
-
-
-
-
-
-
-
-
-
-
-
-
 
         #region Validate Email
         private bool IsValidEmail(string email)
