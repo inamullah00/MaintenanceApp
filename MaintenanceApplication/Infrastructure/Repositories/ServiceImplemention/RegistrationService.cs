@@ -12,6 +12,7 @@ using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.Specifications;
 using Maintenance.Application.ViewModel;
+using Maintenance.Application.ViewModel.User;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,6 +24,7 @@ using MimeKit;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+
 
 namespace Infrastructure.Repositories.ServiceImplemention
 {
@@ -60,6 +62,48 @@ namespace Infrastructure.Repositories.ServiceImplemention
 
 
         #region Admin Panel
+        public async Task<List<DropdownDto>> GetUsersForDropdown()
+        {
+            var customers = await _dbContext.Users.Select(a => new DropdownDto
+            {
+                Id = a.Id,
+                Name = a.UserName,
+            }).ToListAsync().ConfigureAwait(false);
+            return customers;
+
+        }
+        public async Task<GridResponseViewModel> GetFilteredUsers(UserFilterViewModel model)
+        {
+            var query = _dbContext.Users.AsQueryable();
+
+            if (!string.IsNullOrEmpty(model.UserId))
+            {
+                query = query.Where(x => x.Id.ToString() == model.UserId);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var data = await query.Skip(model.Skip).Take(model.Take)
+                .Select(u => new UserDetailsResponseDto
+                {
+                    Id = u.Id,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    Address = u.Address,
+                    Location = u.Location,
+                    Status = u.Status.ToString()
+                }).ToListAsync();
+
+            return new GridResponseViewModel
+            {
+                TotalCount = totalCount,
+                Data = data
+            };
+        }
+
+
+
         public async Task<(bool Success, string Message)> CreateUser(CreateUserViewModel model)
         {
             var existingUser = await _userManager.FindByEmailAsync(model.EmailAddress);
@@ -263,7 +307,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
-        public async Task<Result<PagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10)
+        public async Task<Result<CustomPagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10)
         {
             specification ??= new DefaultSpecification<ApplicationUser>();
             var queryResult = SpecificationEvaluator.Default.GetQuery(
@@ -301,7 +345,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 })
                 .ToListAsync();
 
-            var pagedResult = new PagedResult<UserDetailsResponseDto>
+            var pagedResult = new CustomPagedResult<UserDetailsResponseDto>
             {
                 Items = items,
                 PageNumber = pageNumber,
@@ -309,7 +353,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                 TotalCount = totalCount,
             };
 
-            return Result<PagedResult<UserDetailsResponseDto>>.Success(pagedResult, "Users retrieved successfully.");
+            return Result<CustomPagedResult<UserDetailsResponseDto>>.Success(pagedResult, "Users retrieved successfully.");
         }
 
 

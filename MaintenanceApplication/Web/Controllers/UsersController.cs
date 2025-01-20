@@ -1,6 +1,7 @@
 ﻿using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.ViewModel;
+using Maintenance.Application.ViewModel.User;
 using Maintenance.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,17 +18,26 @@ namespace Maintenance.Web.Controllers
             _logger = logger;
             _userService = userService;
         }
-        public async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Index()
         {
-            var result = await _userService.UsersAsync(null, pageNumber, pageSize);
-
-            if (!result.IsSuccess)
-            {
-                return View("Error", result.Message);
-            }
-
-            return View(result.Value);
+            ViewBag.Users = await _userService.GetUsersForDropdown();
+            return View(new UsersDatatableFilterViewModel());
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetFilteredUsers([FromForm] UsersDatatableFilterViewModel model)
+        {
+            var response = await _userService.GetFilteredUsers(new UserFilterViewModel
+            {
+                UserId = model.UserId,
+                Skip = model.start,
+                Take = model.length
+            });
+
+            var jsonData = new { draw = model.draw, recordsFiltered = response.TotalCount, recordsTotal = response.TotalCount, data = response.Data };
+            return Ok(jsonData);
+        }
+
 
         [HttpPost]
         public async Task<IActionResult> Create(CreateUserViewModel model)
@@ -56,7 +66,7 @@ namespace Maintenance.Web.Controllers
         //{
         //    try
         //    {
-        //        await SetRolesDropdown();
+
         //        var userResponse = await _userService.GetById(id);
         //        var editViewModel = new UpdateUserViewModel
         //        {

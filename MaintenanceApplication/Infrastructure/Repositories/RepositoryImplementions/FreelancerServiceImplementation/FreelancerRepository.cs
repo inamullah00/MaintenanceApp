@@ -1,19 +1,12 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
-using AutoMapper;
 using Infrastructure.Data;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.Client;
 using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.FreelancerServiceImplementation
 {
@@ -21,7 +14,6 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
     {
 
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly IMapper _mapper;
 
         public FreelancerRepository(ApplicationDbContext applicationDbContext)
         {
@@ -61,12 +53,12 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
         #endregion
 
         #region GetAllAsync
-        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default , ISpecification<Bid>? specification = null )
+        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null)
         {
             var QueryResult = SpecificationEvaluator.Default.GetQuery(
 
-                query : _applicationDbContext.Bids.AsQueryable(),
-                specification : specification
+                query: _applicationDbContext.Bids.AsQueryable(),
+                specification: specification
                 );
 
             var result = await (from bid in QueryResult
@@ -120,7 +112,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                             on OfferedService.CategoryID equals Category.Id
                           join Freelancer in _applicationDbContext.Users
                           on Bid.FreelancerId equals Freelancer.Id
-      
+
                           select new BidResponseDto
                           {
                               Id = Bid.Id,
@@ -140,7 +132,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                               Apartment = OfferedService.Apartment,
                               Floor = OfferedService.Floor,
                               Street = OfferedService.Street,
-                          
+
                           }).FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -164,7 +156,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.Freela
                 return (false, null);
             }
 
-             existingEntity.CustomPrice = entity.CustomPrice;
+            existingEntity.CustomPrice = entity.CustomPrice;
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
             return (true, existingEntity);

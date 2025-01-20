@@ -15,16 +15,21 @@ using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
-builder.Services.AddControllersWithViews().AddViewLocalization().AddDataAnnotationsLocalization();
-builder.Services.AddMvc().AddMvcOptions(options =>
+builder.Services.AddControllersWithViews()
+    .AddViewLocalization()
+    .AddDataAnnotationsLocalization()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
+        options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+    });
+
+builder.Services.AddMvc(options =>
 {
     var policy = new AuthorizationPolicyBuilder().RequireAuthenticatedUser().Build();
     options.Filters.Add(new AuthorizeFilter(policy));
-}).AddNewtonsoftJson(options =>
-{
-    options.SerializerSettings.Converters.Add(new Newtonsoft.Json.Converters.StringEnumConverter());
 });
+
 builder.Services.ConfigureAuthentication();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.RegistrationServices(builder.Configuration);
