@@ -6,8 +6,11 @@ using Domain.Entity.UserEntities;
 using Infrastructure.Data;
 using MailKit.Net.Smtp;
 using MailKit.Security;
+using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Account.Filter;
+using Maintenance.Application.Services.Account.Specification;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -214,6 +217,75 @@ namespace Infrastructure.Repositories.ServiceImplemention
         }
 
 
+        public async Task<Result<PaginatedResponse<UserDetailsResponseDto>>> UsersPaginatedAsync(UserTableFilter filter)
+        {
+            // Adjust to first page if any search filters are applied
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                filter.PageNumber = 1;
+            }
+
+            // Generate dynamic order string based on sorting options
+            string dynamicOrder = filter.Sorting != null ? NanoHelper.GenerateOrderByString(filter) : string.Empty;
+
+            // Create a specification with the dynamic order
+            UserSearchTable specification = new UserSearchTable(dynamicOrder);
+
+            // Apply the specification to the Users query
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                query: _dbContext.Users.AsQueryable(),
+                specification: specification
+            );
+
+            // Apply filtering (e.g., keyword search)
+            if (!string.IsNullOrEmpty(filter.Keyword))
+            {
+                queryResult = queryResult.Where(u =>
+                    u.FirstName.Contains(filter.Keyword) ||
+                    u.LastName.Contains(filter.Keyword) ||
+                    u.Email.Contains(filter.Keyword));
+            }
+
+            // Get the total record count before applying pagination
+            int recordsTotal = await queryResult.CountAsync();
+
+            // Apply pagination and map results to DTOs
+            var pagedUsers = await queryResult
+                .Skip((filter.PageNumber - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .Select(AppUsers => new UserDetailsResponseDto
+                {
+                    Id = AppUsers.Id,
+                    FirstName = AppUsers.FirstName,
+                    LastName = AppUsers.LastName,
+                    Role = AppUsers.Role,
+                    Status = AppUsers.Status.ToString(),
+                    Location = AppUsers.Location,
+                    Address = AppUsers.Address,
+                    ExpertiseArea = AppUsers.ExpertiseArea,
+                    MonthlyLimit = AppUsers.MonthlyLimit,
+                    OrdersCompleted = AppUsers.OrdersCompleted,
+                    TotalEarnings = AppUsers.TotalEarnings,
+                    ReportMonth = AppUsers.ReportMonth,
+                    Rating = AppUsers.Rating.ToString(),
+                    Bio = AppUsers.Bio,
+                    ApprovedDate = AppUsers.ApprovedDate,
+                    RegistrationDate = AppUsers.RegistrationDate,
+                    Skills = AppUsers.Skills,
+                    HourlyRate = AppUsers.HourlyRate,
+                    IsVerified = AppUsers.IsApprove,
+                    Email = AppUsers.Email,
+                    EmailConfirmed = AppUsers.EmailConfirmed
+                })
+                .ToListAsync();
+
+            // Return the result wrapped in a paginated response
+            var paginatedResponse = new PaginatedResponse<UserDetailsResponseDto>(pagedUsers, recordsTotal, filter.PageNumber, filter.PageSize);
+            return Result<PaginatedResponse<UserDetailsResponseDto>>.Success(paginatedResponse, "Users retrieved successfully.", 200);
+        }
+
+
+
         public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null)
         {
             var queryResult = SpecificationEvaluator.Default.GetQuery(
@@ -227,6 +299,7 @@ namespace Infrastructure.Repositories.ServiceImplemention
                                    Id = AppUsers.Id,
                                    FirstName = AppUsers.FirstName,
                                    LastName = AppUsers.LastName,
+                                   Role = AppUsers.Role,
                                    Status = AppUsers.Status.ToString(),
                                    Location = AppUsers.Location,
                                    Address = AppUsers.Address,

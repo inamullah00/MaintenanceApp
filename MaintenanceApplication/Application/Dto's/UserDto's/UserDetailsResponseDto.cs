@@ -11,6 +11,8 @@ namespace Application.Dto_s.UserDto_s
         public string Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+
+        public string Role { get; set; }
         public string Status { get; set; }
         public string Location { get; set; }
         public string Address { get; set; }

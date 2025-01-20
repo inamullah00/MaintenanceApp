@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Maintenance.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class DbInit : Migration
+    public partial class Dbinit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -36,6 +36,7 @@ namespace Maintenance.Infrastructure.Migrations
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: true),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ExpertiseArea = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -256,9 +257,9 @@ namespace Maintenance.Infrastructure.Migrations
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Location = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    VideoUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    AudioUrls = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    VideoUrls = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrls = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AudioUrls = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     PreferredTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Building = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Apartment = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -290,11 +291,14 @@ namespace Maintenance.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomPrice = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
-                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BidStatus = table.Column<int>(type: "int", nullable: false),
                     OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     CurrentRating = table.Column<double>(type: "float", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     OfferedServiceId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
                 },
@@ -340,6 +344,7 @@ namespace Maintenance.Infrastructure.Migrations
                     CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
                     FreelancerAmount = table.Column<decimal>(type: "DECIMAL(18,2)", nullable: false),
+                    IsApproveByAdmin = table.Column<bool>(type: "bit", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
@@ -410,7 +415,7 @@ namespace Maintenance.Infrastructure.Migrations
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     OrderId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     FeedbackByClientId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    FeedbackByFreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    FeedbackOnFreelancerId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -425,8 +430,8 @@ namespace Maintenance.Infrastructure.Migrations
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Feedbacks_AspNetUsers_FeedbackByFreelancerId",
-                        column: x => x.FeedbackByFreelancerId,
+                        name: "FK_Feedbacks_AspNetUsers_FeedbackOnFreelancerId",
+                        column: x => x.FeedbackOnFreelancerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -464,20 +469,20 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "76b27261-fa15-4127-bd22-b6ca5c8f2295", null, "Freelancer", "FREELANCER" },
-                    { "accca322-5e9b-4e5f-9466-a05f6c180686", null, "Client", "CLIENT" },
-                    { "c174fd9f-2478-4e55-b50e-0353be8a3247", null, "Admin", "ADMIN" }
+                    { "2657c92f-978d-4ba6-bc0b-05927b8211d1", null, "Admin", "ADMIN" },
+                    { "3f586492-e443-4dd3-96e6-fffeb5b38778", null, "Freelancer", "FREELANCER" },
+                    { "511659cc-1a82-481b-87e0-68dc6b8fdf6f", null, "Client", "CLIENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
-                columns: new[] { "Id", "AccessFailedCount", "Address", "ApprovedDate", "Bio", "ConcurrencyStamp", "CurrentRating", "Discriminator", "Email", "EmailConfirmed", "Experience", "ExpertiseArea", "FirstName", "HourlyRate", "IsApprove", "IsSuspended", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "MonthlyLimit", "NormalizedEmail", "NormalizedUserName", "OrdersCompleted", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Rating", "RegistrationDate", "ReportMonth", "SecurityStamp", "Skills", "Status", "TotalEarnings", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "f459384b-c9c0-4f4b-849b-5d45fb06183b", 0, "123 Admin Street", null, null, "edceeb13-83ad-4177-a01f-322de19aa231", 0.0, "ApplicationUser", "admin@gmail.com", true, null, null, "System", null, null, false, "Administrator", "Head Office", false, null, null, "ADMIN@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEMZzWYC6Nd6Bx+gye2TwhM8f5IWgcipvvnO9VAz3PctLTVXHwFmvuLcKjDlgfqqb7Q==", null, false, 0f, null, null, "b5f264b6-d07e-44a4-83dd-03bc96ae3661", null, 2, null, false, "admin" });
+                columns: new[] { "Id", "AccessFailedCount", "Address", "ApprovedDate", "Bio", "ConcurrencyStamp", "CurrentRating", "Discriminator", "Email", "EmailConfirmed", "Experience", "ExpertiseArea", "FirstName", "HourlyRate", "IsApprove", "IsSuspended", "LastName", "Location", "LockoutEnabled", "LockoutEnd", "MonthlyLimit", "NormalizedEmail", "NormalizedUserName", "OrdersCompleted", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "Rating", "RegistrationDate", "ReportMonth", "Role", "SecurityStamp", "Skills", "Status", "TotalEarnings", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "13dc3057-c914-42b8-a743-04d16b130bf8", 0, "123 Admin Street", null, null, "5bb790b8-eeae-4674-8f28-5a94e6db0e09", 0.0, "ApplicationUser", "admin@gmail.com", true, null, null, "System", null, null, false, "Administrator", "Head Office", false, null, null, "ADMIN@GMAIL.COM", "ADMIN", null, "AQAAAAIAAYagAAAAEEMutu8KJB5Q7d3Qs3nstlHpmH9gqpaKGH8jMzb8NA+xvZbsP0A//d2KRyyEjPy3cA==", null, false, 0f, null, null, "Admin", "03d5af8c-1a18-4538-8919-21a9ad1fead8", null, 2, null, false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "c174fd9f-2478-4e55-b50e-0353be8a3247", "f459384b-c9c0-4f4b-849b-5d45fb06183b" });
+                values: new object[] { "2657c92f-978d-4ba6-bc0b-05927b8211d1", "13dc3057-c914-42b8-a743-04d16b130bf8" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -559,9 +564,9 @@ namespace Maintenance.Infrastructure.Migrations
                 column: "FeedbackByClientId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Feedbacks_FeedbackByFreelancerId",
+                name: "IX_Feedbacks_FeedbackOnFreelancerId",
                 table: "Feedbacks",
-                column: "FeedbackByFreelancerId");
+                column: "FeedbackOnFreelancerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Feedbacks_OrderId",
