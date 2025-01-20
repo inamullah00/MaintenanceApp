@@ -15,263 +15,40 @@
             <li class="nav-item" active-when-controllers="Home" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Home")" class="nav-link">
                     <i class="link-icon" data-feather="box"></i>
-                    <span class="link-title"> Home </span>
+                    <span class="link-title">@_CommonLocalizer["Home"]</span>
                 </a>
             </li>
 
 
             <li class="nav-item nav-category">Modules</li>
-            <li class="nav-item" active-when-controllers="Freelancer" active-when-actions="Index,Create,Edit,EditBasicDetail,Pending,Rejected,Approved,ViewDetails">
-                <a class="nav-link" data-bs-toggle="collapse" href="#freelancer" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title"> Freelancer </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="freelancer">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Create", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Create"> Create </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Index"> All </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Pending"> Pending </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Approved", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Approved"> Approved </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Rejected", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Rejected"> Rejected </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Create,Edit,Pending">
-                <a class="nav-link" data-bs-toggle="collapse" href="#client" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title"> Client </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="client">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Create", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Create"> Create </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Index"> All </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Pending"> Pending </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Approved", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Approved"> Approved </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item" active-when-controllers="Bookings" active-when-actions="Index,Create, Details,Pending,InProcess,Completed,Cancelled">
-                <a class="nav-link" data-bs-toggle="collapse" href="#bookings" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="calendar"></i>
-                    <span class="link-title"> Bookings </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="bookings">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Create", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="Create"> Create </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="Index"> All </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="Pending"> Pending </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("InProcess", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="InProcess"> InProcess </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Completed", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="Completed"> Completed </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Cancelled", "Bookings")" class="nav-link" active-when-controllers="Bookings" active-when-actions="Cancelled"> Cancelled </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item" active-when-controllers="Advertisements" active-when-actions="Index,Pending,InProcess,Completed,Cancelled">
-                <a class="nav-link" data-bs-toggle="collapse" href="#advertisements" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="file-text"></i>
-                    <span class="link-title"> Advertisements </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="advertisements">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Advertisements")" class="nav-link" active-when-controllers="Advertisements" active-when-actions="Index"> All </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "Advertisements")" class="nav-link" active-when-controllers="Advertisements" active-when-actions="Pending"> Pending </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("InProcess", "Advertisements")" class="nav-link" active-when-controllers="Advertisements" active-when-actions="InProcess"> InProcess </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Completed", "Advertisements")" class="nav-link" active-when-controllers="Advertisements" active-when-actions="Completed"> Completed </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Cancelled", "Advertisements")" class="nav-link" active-when-controllers="Advertisements" active-when-actions="Cancelled"> Cancelled </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-            
-            <li class="nav-item" active-when-controllers="Transaction" active-when-actions="AdminTransaction, ClientTransaction, FreelancerTransaction">
-                <a class="nav-link" data-bs-toggle="collapse" href="#transaction" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="globe"></i>
-                    <span class="link-title"> Transaction </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="transaction">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("AdminTransaction", "Transaction")" class="nav-link" active-when-controllers="Transaction" active-when-actions="AdminTransaction"> AdminTransaction </a>
-                        </li> 
-                        <li class="nav-item">
-                            <a href="@Url.Action("ClientTransaction", "Transaction")" class="nav-link" active-when-controllers="Transaction" active-when-actions="ClientTransaction"> ClientTransaction </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("FreelancerTransaction", "Transaction")" class="nav-link" active-when-controllers="Transaction" active-when-actions="FreelancerTransaction"> FreelancerTransaction </a>
-                        </li>
-                    
-                    </ul>
-                </div>
-            </li>
-
-            <li class="nav-item" active-when-controllers="Report" active-when-actions="ClientReport, FreelancerReport">
-                <a class="nav-link" data-bs-toggle="collapse" href="#report" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="file-text"></i>
-                    <span class="link-title"> Reports </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="report">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("ClientReport", "Report")" class="nav-link" active-when-controllers="Report" active-when-actions="ClientReport"> ClientReport </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("FreelancerReport", "Report")" class="nav-link" active-when-controllers="Report" active-when-actions="FreelancerReport"> FreelancerReport </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-
-
             <li class="nav-item" active-when-controllers="Users" active-when-actions="Index,Create,Edit">
                 <a href="@Url.Action("Index", "Users")" class="nav-link">
                     <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title"> User </span>
+                    <span class="link-title">@_CommonLocalizer["User"]</span>
                 </a>
             </li>
-
-            <li class="nav-item nav-category">Client Setups</li>
-            <li class="nav-item" active-when-controllers="ClientWallet" active-when-actions="Index,Create">
-                <a href="@Url.Action("Index", "ClientWallet")" class="nav-link">
-                    <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> ClientWallet </span>
-                </a>
-            </li>
-
-            <li class="nav-item nav-category">Contact Us</li>
-            <li class="nav-item" active-when-controllers="ContactUs" active-when-actions="Index,UpdateIsRead">
-                <a href="@Url.Action("Index","ContactUs")" class="nav-link">
-                    <i class="link-icon" data-feather="phone"></i>
-                    <span class="link-title"> Contact Us </span>
-                </a>
-            </li>
-
-            <li class="nav-item nav-category">Freelancer Setups</li>
-            <li class="nav-item" active-when-controllers="FreelancerSchedule" active-when-actions="Index,Create,Edit">
-                <a href="@Url.Action("Index", "FreelancerSchedule")" class="nav-link">
-                    <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> FreelancerSchedule </span>
-                </a>
-            </li>
-            <li class="nav-item" active-when-controllers="FreelancerMetrics" active-when-actions="Index">
-                <a href="@Url.Action("Index", "FreelancerMetrics")" class="nav-link">
-                    <i class="link-icon" data-feather="percent"></i>
-                    <span class="link-title"> FreelancerMetrics </span>
-                </a>
-            </li>
-            <li class="nav-item" active-when-controllers="FreelancerWallet" active-when-actions="Index,Create">
-                <a href="@Url.Action("Index", "FreelancerWallet")" class="nav-link">
-                    <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> FreelancerWallet </span>
-                </a>
-            </li>
-            <li class="nav-item" active-when-controllers="Users" active-when-actions="Index,Create,Update">
-                <a href="@Url.Action("Index", "FreelancerTypes")" class="nav-link">
-                    <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> FreelancerType </span>
-                </a>
-            </li>
-
-            <li class="nav-item" active-when-controllers="FreelancerLocation" active-when-actions="Index,Create,Edit">
-                <a href="@Url.Action("Index", "FreelancerLocation")" class="nav-link">
-                    <i class="link-icon" data-feather="globe"></i>
-                    <span class="link-title"> FreelancerLocation </span>
-                </a>
-            </li> 
-           
-            <li class="nav-item" active-when-controllers="FreelancerReviews" active-when-actions="Index,Pending,Approved,Rejected">
-                <a class="nav-link" data-bs-toggle="collapse" href="#freelancerReviews" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> FreelancerReviews </span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
-                </a>
-                <div class="collapse" id="freelancerReviews">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "FreelancerReviews")" class="nav-link" active-when-controllers="FreelancerReviews" active-when-actions="Index"> All </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "FreelancerReviews")" class="nav-link" active-when-controllers="FreelancerReviews" active-when-actions="Pending"> Pending </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Approved", "FreelancerReviews")" class="nav-link" active-when-controllers="FreelancerReviews" active-when-actions="Approved"> Approved </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Rejected", "FreelancerReviews")" class="nav-link" active-when-controllers="FreelancerReviews" active-when-actions="Rejected"> Rejected </a>
-                        </li>
-                    </ul>
-                </div>
-            </li>
-           
 
             <li class="nav-item nav-category">Setups</li>
 
             <li class="nav-item" active-when-controllers="Users" active-when-actions="Index,Create,Update">
                 <a href="@Url.Action("Index", "CompanyTypes")" class="nav-link">
                     <i class="link-icon" data-feather="anchor"></i>
-                    <span class="link-title"> CompanyType </span>
+                    <span class="link-title">@_CommonLocalizer["CompanyType"]</span>
                 </a>
             </li>
 
-            
-             <li class="nav-item" active-when-controllers="Question" active-when-actions="Index,Create,Edit">
+
+            <li class="nav-item" active-when-controllers="Question" active-when-actions="Index,Create,Edit">
                 <a href="@Url.Action("Index", "Question")" class="nav-link">
                     <i class="link-icon" data-feather="help-circle"></i>
-                    <span class="link-title"> AdTypeQuestion </span>
+                    <span class="link-title">@_CommonLocalizer["AdTypeQuestion"]</span>
                 </a>
             </li>
 
             <li class="nav-item" active-when-controllers="Country" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Country")" class="nav-link">
                     <i class="link-icon" data-feather="globe"></i>
-                    <span class="link-title"> Country </span>
+                    <span class="link-title">@_CommonLocalizer["Country"]</span>
                 </a>
             </li>
 
@@ -279,7 +56,7 @@
             <li class="nav-item" active-when-controllers="Setting" active-when-actions="GlobalSetting">
                 <a href="@Url.Action("GlobalSetting", "Setting")" class="nav-link">
                     <i class="link-icon" data-feather="settings"></i>
-                    <span class="link-title"> GlobalSetting </span>
+                    <span class="link-title">@_CommonLocalizer["GlobalSetting"]</span>
                 </a>
             </li>
 
@@ -287,7 +64,7 @@
             <li class="nav-item" active-when-controllers="FAQ" active-when-actions="Index">
                 <a href="@Url.Action("Index", "FAQ")" class="nav-link">
                     <i class="link-icon" data-feather="help-circle"></i>
-                    <span class="link-title"> FAQManagement </span>
+                    <span class="link-title">@_CommonLocalizer["FAQManagement"]</span>
                 </a>
             </li>
         </ul>

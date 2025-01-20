@@ -26,9 +26,9 @@ namespace Maintenance.Domain.Entity.Client
         public string Description { get; set; }
         public string Location { get; set; }
 
-        public List<string> VideoUrls { get; set; }
-        public List<string> ImageUrls { get; set; } = new();
-        public List<string> AudioUrls { get; set; }
+        public List<string>? VideoUrls { get; set; }
+        public List<string>? ImageUrls { get; set; } = new();
+        public List<string>? AudioUrls { get; set; }
 
         public DateTime? PreferredTime { get; set; }
 

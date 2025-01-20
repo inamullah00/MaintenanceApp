@@ -9,7 +9,6 @@
   <ItemGroup>
     <Folder Include="Common\Caching\" />
     <Folder Include="Mailing\" />
-    <Folder Include="Services\Account\Filter\" />
     <Folder Include="Services\Admin\ContentSpecification\Filter\" />
     <Folder Include="Services\Admin\DisputeSpecification\Filter\" />
     <Folder Include="Services\Admin\FeedbackSpecification\Filter\" />

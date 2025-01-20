@@ -4,6 +4,7 @@ using Domain.Entity.UserEntities;
 using Infrastructure.Repositories.ServiceImplemention;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Account.Filter;
 using Maintenance.Application.Services.Account.Specification;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -187,6 +188,45 @@ namespace API.Controllers.AuthController
             {
                 UserSearchList Specification = new(Keyword);
                 var result = await _registerationService.UsersAsync(Specification);
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new
+                {
+                    StatusCode = 500,
+                    Success = false,
+                    Message = $"Internal server error: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #region List-OF-Paginated-Users
+        [HttpPost]
+        [Route("Users-Paginated")]
+        public async Task<IActionResult> GetAllUsersPaginatedAsync(UserTableFilter filter)
+        {
+            try
+            {
+                var result = await _registerationService.UsersPaginatedAsync(filter);
                 if (result.IsSuccess)
                 {
                     return Ok(new

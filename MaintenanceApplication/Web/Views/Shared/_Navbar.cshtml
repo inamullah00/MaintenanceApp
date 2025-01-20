@@ -7,7 +7,7 @@
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="flag-icon flag-icon-LanguageFlag mt-1" title="Language"></i> <span class="ms-1 me-1 d-none d-md-inline-block">Language</span>
+                    <i class="flag-icon flag-icon-@_CommonLocalizer["LanguageFlag"] mt-1" title="@_CommonLocalizer["Language"]"></i> <span class="ms-1 me-1 d-none d-md-inline-block">@_CommonLocalizer["Language"]</span>
                 </a>
                 <div class="dropdown-menu" aria-labelledby="languageDropdown">
                     <a href="@Url.Action("SetCulture", "Base", new { culture = "en-US"})" class="dropdown-item py-2"><i class="flag-icon flag-icon-us" title="us" id="us"></i> <span class="ms-1"> English </span></a>
@@ -23,26 +23,26 @@
                 <div class="dropdown-menu p-0" aria-labelledby="appsDropdown">
 
                     <ul class="list-unstyled p-1">
- 
+
 
                         <li class="dropdown-item py-2">
                             <a asp-controller="Setting" asp-action="TermsAndCondition" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="settings"></i>
-                                <span> "TermAndCondition </span>
+                                <span>@_CommonLocalizer["TermAndCondition"]</span>
                             </a>
                         </li>
 
                         <li class="dropdown-item py-2">
                             <a asp-controller="Setting" asp-action="AboutUs" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="settings"></i>
-                                <span> "AboutUs </span>
+                                <span>@_CommonLocalizer["AboutUs"]</span>
                             </a>
                         </li>
 
                         <li class="dropdown-item py-2">
                             <a asp-controller="Setting" asp-action="CompanyContactSetup" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="settings"></i>
-                                <span> "CompanyContactSetup </span>
+                                <span>@_CommonLocalizer["CompanyContactSetup"]</span>
                             </a>
                         </li>
 
@@ -85,19 +85,19 @@
                         <li class="dropdown-item py-2">
                             <a asp-controller="Users" asp-action="Edit" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="user"></i>
-                                <span> Profile </span>
+                                <span>@_CommonLocalizer["Profile"]</span>
                             </a>
                         </li>
                         <li class="dropdown-item py-2">
                             <a asp-controller="Users" asp-action="ChangePassword" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="key"></i>
-                                <span> ChangePassword </span>
+                                <span>@_CommonLocalizer["ChangePassword"]</span>
                             </a>
                         </li>
                         <li class="dropdown-item py-2">
                             <a asp-controller="Account" asp-action="Logout" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="log-out"></i>
-                                <span> LogOut </span>
+                                <span>@_CommonLocalizer["LogOut"]</span>
                             </a>
                         </li>
                     </ul>

@@ -125,7 +125,7 @@ namespace Infrastructure.Data
             builder.Entity<Feedback>()
                 .HasOne(f => f.Freelancer)              // A Feedback is given by one Freelancer
                 .WithMany(u => u.FeedbackGivenByFreelancer) // A Freelancer can give many Feedbacks
-                .HasForeignKey(f => f.FeedbackByFreelancerId)     // Foreign Key: FreelancerId
+                .HasForeignKey(f => f.FeedbackOnFreelancerId)     // Foreign Key: FreelancerId
                 .OnDelete(DeleteBehavior.NoAction);      // If Freelancer is deleted, set FreelancerId to null
 
             // Relationship between Order and ApplicationUser (Client)
@@ -334,6 +334,7 @@ namespace Infrastructure.Data
                 EmailConfirmed = true,
                 FirstName = "System",
                 LastName = "Administrator",
+                Role = Role.Admin.ToString(),
                 Status = UserStatus.Approved,
                 Location = "Head Office",
                 Address = "123 Admin Street",

@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250116081310_Db Init")]
-    partial class DbInit
+    [Migration("20250119092854_Db init")]
+    partial class Dbinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -61,7 +61,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("AudioUrls")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Building")
@@ -87,7 +86,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrls")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Location")
@@ -112,7 +110,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("VideoUrls")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -239,7 +236,7 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<string>("FeedbackByClientId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("FeedbackByFreelancerId")
+                    b.Property<string>("FeedbackOnFreelancerId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid?>("OrderId")
@@ -255,7 +252,7 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.HasIndex("FeedbackByClientId");
 
-                    b.HasIndex("FeedbackByFreelancerId");
+                    b.HasIndex("FeedbackOnFreelancerId");
 
                     b.HasIndex("OrderId");
 
@@ -289,6 +286,9 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.Property<string>("FreelancerId")
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<bool>("IsApproveByAdmin")
+                        .HasColumnType("bit");
 
                     b.Property<Guid?>("ServiceId")
                         .HasColumnType("uniqueidentifier");
@@ -379,6 +379,15 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<string>("ApplicationUserId")
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<DateTime?>("ArrivalTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("BidDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("BidStatus")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
@@ -392,15 +401,14 @@ namespace Maintenance.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<string>("Message")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<Guid>("OfferedServiceId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("OfferedServiceId1")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -444,19 +452,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "c174fd9f-2478-4e55-b50e-0353be8a3247",
+                            Id = "2657c92f-978d-4ba6-bc0b-05927b8211d1",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "accca322-5e9b-4e5f-9466-a05f6c180686",
+                            Id = "511659cc-1a82-481b-87e0-68dc6b8fdf6f",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "76b27261-fa15-4127-bd22-b6ca5c8f2295",
+                            Id = "3f586492-e443-4dd3-96e6-fffeb5b38778",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -625,8 +633,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "f459384b-c9c0-4f4b-849b-5d45fb06183b",
-                            RoleId = "c174fd9f-2478-4e55-b50e-0353be8a3247"
+                            UserId = "13dc3057-c914-42b8-a743-04d16b130bf8",
+                            RoleId = "2657c92f-978d-4ba6-bc0b-05927b8211d1"
                         });
                 });
 
@@ -704,6 +712,10 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<DateTime?>("ReportMonth")
                         .HasColumnType("datetime2");
 
+                    b.Property<string>("Role")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Skills")
                         .HasColumnType("nvarchar(max)");
 
@@ -718,17 +730,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f459384b-c9c0-4f4b-849b-5d45fb06183b",
+                            Id = "13dc3057-c914-42b8-a743-04d16b130bf8",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "edceeb13-83ad-4177-a01f-322de19aa231",
+                            ConcurrencyStamp = "5bb790b8-eeae-4674-8f28-5a94e6db0e09",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEMZzWYC6Nd6Bx+gye2TwhM8f5IWgcipvvnO9VAz3PctLTVXHwFmvuLcKjDlgfqqb7Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEEMutu8KJB5Q7d3Qs3nstlHpmH9gqpaKGH8jMzb8NA+xvZbsP0A//d2KRyyEjPy3cA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "b5f264b6-d07e-44a4-83dd-03bc96ae3661",
+                            SecurityStamp = "03d5af8c-1a18-4538-8919-21a9ad1fead8",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             Address = "123 Admin Street",
@@ -738,6 +750,7 @@ namespace Maintenance.Infrastructure.Migrations
                             LastName = "Administrator",
                             Location = "Head Office",
                             Rating = 0f,
+                            Role = "Admin",
                             Status = 2
                         });
                 });
@@ -789,7 +802,7 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "Freelancer")
                         .WithMany("FeedbackGivenByFreelancer")
-                        .HasForeignKey("FeedbackByFreelancerId")
+                        .HasForeignKey("FeedbackOnFreelancerId")
                         .OnDelete(DeleteBehavior.NoAction);
 
                     b.HasOne("Maintenance.Domain.Entity.Dashboard.Order", "Order")

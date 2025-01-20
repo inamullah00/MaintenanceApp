@@ -14,11 +14,16 @@ namespace Maintenance.Domain.Entity.Freelancer
     {
         public Guid Id { get; set; }
         public decimal CustomPrice { get; set; }
-        public string Status { get; set; } = "Pending"; // Pending, Accepted, Rejected
+        public BidStatus BidStatus { get; set; } = BidStatus.Pending;
         public Guid OfferedServiceId { get; set; }
         public string FreelancerId { get; set; }
         public double CurrentRating { get; set; } // Average rating (e.g., 4.5 out of 5)
-        public DateTime CreatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public DateTime? ArrivalTime { get; set; } // Optional expected arrival time
+        public string? Message { get; set; } 
+        public DateTime? BidDate { get; set; } // Date of bid submission
+
 
 
         [ForeignKey(nameof(OfferedServiceId))]
@@ -30,4 +35,9 @@ namespace Maintenance.Domain.Entity.Freelancer
 
 }
 
-//public string ApprovedBy { get; set; }
+public enum BidStatus
+{
+    Pending,
+    Accepted,
+    Rejected
+}
