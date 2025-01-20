@@ -3,6 +3,7 @@ using Ardalis.Specification;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.Services.Account.Filter;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
 using Maintenance.Application.Wrapper;
@@ -19,6 +20,7 @@ namespace Maintenance.Application.Services.Account
         public Task<(bool Success, string Message)> ResetPasswordAsync(string email, string newPassword);
         public Task<(bool Success, string Message)> UserApprovalAsync();
         public Task<Result<UserDetailsResponseDto>> UserDetailsAsync(ISpecification<ApplicationUser> specification);
+        public Task<Result<PaginatedResponse<UserDetailsResponseDto>>> UsersPaginatedAsync(UserTableFilter filter);
         public Task<Result<string>> BlockUserAsync(Guid UserId);
         public Task<Result<string>> UnBlockUserAsync(Guid UserId);
         public Task<(bool Success, string Message)> UserProfileAsync();

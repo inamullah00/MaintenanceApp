@@ -24,6 +24,7 @@ namespace Domain.Entity.UserEntities
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UserStatus Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
        
+        public string Role { get; set; }
         public string? Location { get; set; } 
         public string? Address { get; set; }  
 

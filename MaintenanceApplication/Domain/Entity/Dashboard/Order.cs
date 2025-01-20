@@ -30,7 +30,7 @@ namespace Maintenance.Domain.Entity.Dashboard
         public decimal TotalAmount { get; set; } // Total amount for the order, including freelancer's earnings and platform commission
         public decimal FreelancerAmount { get; set; } // Freelancer's earnings from the order after platform commission
 
-
+        public bool IsApproveByAdmin { get; set; } = false;
 
         // Navigation Properties
         public ICollection<Feedback> Feedbacks { get; set; }  // Freelancer's feedback on orders

@@ -252,6 +252,29 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
         #endregion
 
+        #region Update Order Status
+        [HttpPut("{id:guid}/update-status")]
+        public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusDto updateOrderStatusDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _orderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
+
+                return result.IsSuccess
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
 
 
         #region Assigned Order To Freelancer and they start work on
