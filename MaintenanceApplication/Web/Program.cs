@@ -1,6 +1,7 @@
 using API.DependancyContainer;
 using Domain.Entity.UserEntities;
 using Infrastructure.Data;
+using Maintenance.Infrastructure.Extensions;
 using Maintenance.Web.AuthenticationAuthorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
@@ -87,7 +88,7 @@ builder.Services.Configure<DataProtectionTokenProviderOptions>(options =>
 builder.Services.AddMemoryCache();
 
 var app = builder.Build();
-
+AppHttpContext.Services = app.Services;
 // localization setup
 var supportedCultures = new List<CultureInfo>
             {

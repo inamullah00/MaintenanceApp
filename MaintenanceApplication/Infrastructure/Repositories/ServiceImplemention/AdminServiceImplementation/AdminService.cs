@@ -8,6 +8,7 @@ using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
+using Maintenance.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -52,9 +53,10 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
                     FirstName = u.FirstName ?? string.Empty,
                     LastName = u.LastName ?? string.Empty,
                     PhoneNumber = u.PhoneNumber ?? string.Empty,
-                    Email = u.Email ?? string.Empty,
+                    EmailAddress = u.Email ?? string.Empty,
                     Role = u.Role,
-                    Status = u.Status.ToString()
+                    Status = u.Status.ToString(),
+                    IsBlocked = u.LockoutEnd >= DateTime.Now
                 }).ToListAsync();
             return new GridResponseViewModel
             {
@@ -94,7 +96,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
         }
 
 
-        public async Task<UpdateUserViewModel> GetAdminById(string id)
+        public async Task<UserResponseViewModel> GetAdminById(string id)
         {
             var user = await _dbContext.Users
                 .FirstOrDefaultAsync(u => u.Id.ToString() == id);
@@ -104,16 +106,17 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
                 throw new CustomException("User not found.");
             }
 
-            var updateUserViewModel = new UpdateUserViewModel
+            var userViewModel = new UserResponseViewModel
             {
                 Id = user.Id.ToString(),
                 FirstName = user.FirstName ?? string.Empty,
                 LastName = user.LastName ?? string.Empty,
                 EmailAddress = user.Email ?? string.Empty,
                 PhoneNumber = user.PhoneNumber ?? string.Empty,
+                IsBlocked = user.LockoutEnd >= DateTime.Now
             };
 
-            return updateUserViewModel;
+            return userViewModel;
         }
 
         public async Task EditAdminProfileAsync(UpdateUserViewModel model)
@@ -169,6 +172,43 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             catch (Exception ex)
             {
                 throw new CustomException($"An error occurred while saving the profile: {ex.Message}");
+            }
+        }
+
+        public async Task BlockUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id).ConfigureAwait(false) ?? throw new CustomException("User not found");
+            user.BlockUser();
+            await _userManager.UpdateAsync(user).ConfigureAwait(false);
+        }
+
+        public async Task UnblockUser(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id).ConfigureAwait(false) ?? throw new CustomException("User not found");
+            user.UnBlockUser();
+            await _userManager.UpdateAsync(user).ConfigureAwait(false);
+        }
+
+        public async Task ChangePassword(ChangePasswordViewModel model)
+        {
+            var userId = AppHttpContext.GetAdminCurrentUserId();
+            var user = await _userManager.FindByIdAsync(userId) ?? throw new CustomException("User not found");
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPasword, model.NewPassword).ConfigureAwait(false);
+            if (!result.Succeeded)
+            {
+                throw new CustomException(string.Join("<br>", result.Errors.Select(a => a.Description).ToList()));
+            }
+        }
+
+        public async Task ResetPassword(ResetPasswordViewModel model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId) ?? throw new CustomException("User not found");
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, token, model.NewPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new CustomException(string.Join("<br>", result.Errors.Select(a => a.Description).ToList()));
             }
         }
 

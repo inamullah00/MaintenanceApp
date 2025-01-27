@@ -2,6 +2,7 @@ using API.DependancyContainer;
 using Domain.Entity.UserEntities;
 using Infrastructure.Data;
 using Maintenance.API.Filters;
+using Maintenance.Infrastructure.Extensions;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -85,6 +86,7 @@ builder.Services.AddMemoryCache();
 
 
 var app = builder.Build();
+AppHttpContext.Services = app.Services;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

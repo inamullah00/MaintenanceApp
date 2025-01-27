@@ -1,9 +1,11 @@
-﻿using Maintenance.Application.Exceptions;
+﻿using Domain.Enums;
+using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
 using Maintenance.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Maintenance.Web.Controllers
 {
@@ -110,93 +112,90 @@ namespace Maintenance.Web.Controllers
             }
         }
 
-
-        //[HttpPatch]
-        //public async Task<IActionResult> BlockUser(string id)
-        //{
-        //    try
-        //    {
-        //        await _userService.BlockUser(id);
-        //        return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully blocked user");
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Block User", ex);
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
-        //    }
-        //}
-
-
-        //[HttpPatch]
-        //public async Task<IActionResult> UnBlockUser(string id)
-        //{
-        //    try
-        //    {
-        //        await _userService.UnblockUser(id);
-        //        return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully unblocked user");
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Unblock User", ex);
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
-        //    }
-        //}
+        [HttpPatch]
+        public async Task<IActionResult> BlockUser(string id)
+        {
+            try
+            {
+                await _adminService.BlockUser(id);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully blocked user");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Block User");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
+            }
+        }
 
 
+        [HttpPatch]
+        public async Task<IActionResult> UnBlockUser(string id)
+        {
+            try
+            {
+                await _adminService.UnblockUser(id);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully unblocked user");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Unblock User");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
+            }
+        }
 
-        //public ActionResult ChangePassword()
-        //{
-        //    return View();
-        //}
+        public ActionResult ChangePassword()
+        {
+            return View();
+        }
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
-        //{
-        //    try
-        //    {
-        //        await _userService.ChangePassword(model);
-        //        this.NotifySuccess("Password Changed Successfully.");
-        //        return RedirectToAction("Index", "Home");
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        this.NotifyInfo(ex.Message);
-        //        return View(model);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Change Password", ex);
-        //        this.NotifyError("Something went wrong. Please contact to administrator");
-        //        return View(model);
-        //    }
-        //}
+        [HttpPost]
+        public async Task<IActionResult> ChangePassword(ChangePasswordViewModel model)
+        {
+            try
+            {
+                await _adminService.ChangePassword(model);
+                this.NotifySuccess("Password Changed Successfully.");
+                return RedirectToAction("Index", "Home");
+            }
+            catch (CustomException ex)
+            {
+                this.NotifyInfo(ex.Message);
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Change Password");
+                this.NotifyError("Something went wrong. Please contact to administrator");
+                return View(model);
+            }
+        }
 
-        //[HttpPost]
-        //public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
-        //{
-        //    try
-        //    {
-        //        await _userService.ResetPassword(model);
-        //        return this.ApiSuccessResponse(HttpStatusCode.OK, "Password Reset Successfull.");
-        //    }
-        //    catch (CustomException ex)
-        //    {
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        _logger.LogError("Error on Reset Password", ex);
-        //        return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
-        //    }
-        //}
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword(ResetPasswordViewModel model)
+        {
+            try
+            {
+                await _adminService.ResetPassword(model);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Password Reset Successfull.");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Reset Password");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
+            }
+        }
     }
 }

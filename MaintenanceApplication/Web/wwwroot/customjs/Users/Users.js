@@ -14,7 +14,7 @@
     columns: [
         { data: 'FirstName', name: 'FirstName', "autoWidth": true },
         { data: 'LastName', name: 'LastName', "autoWidth": true },
-        { data: 'Email', name: 'Email', "autoWidth": true },
+        { data: 'EmailAddress', name: 'Email', "autoWidth": true },
         { data: 'PhoneNumber', name: 'Mobile', "autoWidth": true },
         {
             data: 'Status',
@@ -33,11 +33,29 @@
         {
             data: 'Id',
             render: function (data, type, row) {
-                return '<a href="/Users/Edit/' + data + '"<i class="fas fa-edit"></i></a>';
+                const isBlocked = row.IsBlocked;
+
+                return `
+                <div class="text-center">
+                    <a href="/Users/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Update">
+                        <i class="btn-icon-prepend fa fa-edit"></i>
+                    </a>
+                    ${isBlocked
+                        ? `<a class="card-link unBlockUser" data-userId="${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Unblock">
+                            <i class="fa fa-unlock"></i>
+                        </a>`
+                        : `<a class="card-link blockUser text-danger" data-userId="${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Block">
+                            <i class="fa fa-lock"></i>
+                        </a>`}
+                    <a data-userId="${data}" class="text-primary btn-icon-text btn-xs reset-password" data-bs-toggle="tooltip" data-bs-placement="top" title="Reset Password">
+                        <i class="btn-icon-prepend fa fa-sync-alt"></i>
+                    </a>
+                </div>`;
             },
             "autoWidth": true,
             "className": "text-center"
         }
+
     ]
 });
 
@@ -45,7 +63,6 @@
 $(document).on("click", ".reset-password", function () {
     $("#UserId").val($(this).attr("data-userId"));
     $("#resetPasswordModel").modal("show");
-
 })
 
 $(document).on("submit", "#resetPasswordForm", function (e) {

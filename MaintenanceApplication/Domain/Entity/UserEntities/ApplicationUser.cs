@@ -1,16 +1,10 @@
-﻿using Domain.Common;
-using Domain.Enums;
+﻿using Domain.Enums;
 using Maintenance.Domain.Entity.Client;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.Freelancer;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Domain.Entity.UserEntities
 {
@@ -20,13 +14,13 @@ namespace Domain.Entity.UserEntities
         // Common fields
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
-     
+
         [JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         public UserStatus Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
-       
+
         public string Role { get; set; }
-        public string? Location { get; set; } 
-        public string? Address { get; set; }  
+        public string? Location { get; set; }
+        public string? Address { get; set; }
 
         // Freelancer Fields
         public string? ExpertiseArea { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
@@ -63,7 +57,20 @@ namespace Domain.Entity.UserEntities
         // Navigation properties for the feedback given by this user (Client or Freelancer)
         public ICollection<Feedback> FeedbackGivenByClient { get; set; } // Feedback given by this user as a Client
         public ICollection<Feedback> FeedbackGivenByFreelancer { get; set; } // Feedback given by this user as a Freelancer
+
+        public void UnBlockUser()
+        {
+            AccessFailedCount = 0;
+            LockoutEnd = DateTime.Now.AddDays(-1);
+        }
+
+        public void BlockUser()
+        {
+            AccessFailedCount = 1000;
+            LockoutEnd = DateTime.Now.AddYears(4);
+        }
     }
+
 
 
 
