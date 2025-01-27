@@ -1,7 +1,6 @@
 ﻿using Ardalis.Specification;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Domain.Entity.Dashboard;
-using Maintenance.Domain.Entity.Freelancer;
 using System;
 using System.Collections.Generic;
 using System.Linq;

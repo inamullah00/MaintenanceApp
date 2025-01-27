@@ -17,7 +17,7 @@ namespace Maintenance.Application.Services.Account.Specification
             // sort order
             if (string.IsNullOrEmpty(dynamicOrder))
             {
-                _ = Query.OrderByDescending(x => x.Experience); 
+                _ = Query.OrderByDescending(x => x.FullName == dynamicOrder); 
             }
             else
             {

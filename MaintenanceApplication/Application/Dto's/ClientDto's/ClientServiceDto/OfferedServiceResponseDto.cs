@@ -1,7 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Application.Dto_s.UserDto_s;
 using Domain.Entity.UserEntities;
-using Maintenance.Domain.Entity.Client;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -16,7 +15,7 @@ namespace Application.Dto_s.ClientDto_s
     {
 
         public Guid Id { get; set; }
-        public string ClientId { get; set; }
+        public Guid? ClientId { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
         public string Location { get; set; }

@@ -2,6 +2,7 @@
 using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Services.OffereServiceCategory;
+using Maintenance.Application.Services.ServiceManager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,10 +13,12 @@ namespace API.Controllers.ClientController
     public class OfferedServiceCategoryController : ControllerBase
     {
         private readonly IOfferedServiceCategory _offeredServiceCategory;
+        private readonly IServiceManager _serviceManager;
 
-        public OfferedServiceCategoryController(IOfferedServiceCategory offeredServiceCategory)
+        public OfferedServiceCategoryController(IServiceManager serviceManager)
         {
-            _offeredServiceCategory = offeredServiceCategory;
+
+            _serviceManager = serviceManager;
         }
 
         #region List-OF-OfferedServiceCategories
@@ -24,7 +27,7 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                var result = await _offeredServiceCategory.GetAllServiceCategoriesAsync();
+                var result = await _serviceManager.OfferedServiceCategory.GetAllServiceCategoriesAsync();
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -61,7 +64,7 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                var result = await _offeredServiceCategory.GetServiceCategoryByIdAsync(Id);
+                var result = await _serviceManager.OfferedServiceCategory.GetServiceCategoryByIdAsync(Id);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -98,7 +101,7 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                var result = await _offeredServiceCategory.AddServiceCategoryAsync(requestDto);
+                var result = await _serviceManager.OfferedServiceCategory.AddServiceCategoryAsync(requestDto);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -135,7 +138,7 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                var result = await _offeredServiceCategory.UpdateServiceCategoryAsync(Id,requestDto);
+                var result = await _serviceManager.OfferedServiceCategory.UpdateServiceCategoryAsync(Id,requestDto);
 
                 if (result.IsSuccess)
                 {
@@ -173,7 +176,7 @@ namespace API.Controllers.ClientController
         {
             try
             {
-                var result = await _offeredServiceCategory.DeleteServiceCategoryAsync(Id);
+                var result = await _serviceManager.OfferedServiceCategory.DeleteServiceCategoryAsync(Id);
                 if (result.IsSuccess)
                 {
                     return Ok(new
