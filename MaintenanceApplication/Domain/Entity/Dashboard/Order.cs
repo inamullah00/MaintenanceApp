@@ -1,11 +1,7 @@
-﻿using Domain.Entity.UserEntities;
-using Maintenance.Domain.Entity.Client;
-using System;
-using System.Collections.Generic;
+﻿
+using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
@@ -13,8 +9,8 @@ namespace Maintenance.Domain.Entity.Dashboard
     {
 
         public Guid Id { get; set; }
-        public string? ClientId { get; set; } 
-        public string? FreelancerId { get; set; } 
+        public Guid? ClientId { get; set; } 
+        public Guid? FreelancerId { get; set; } 
         public Guid? ServiceId { get; set; } // Foreign key for Service (like plumbing, electrical)
 
         // Order details
@@ -36,10 +32,10 @@ namespace Maintenance.Domain.Entity.Dashboard
         public ICollection<Feedback> Feedbacks { get; set; }  // Freelancer's feedback on orders
 
         [ForeignKey("FreelancerId")] 
-        public ApplicationUser? Freelancer { get; set; }
+        public Freelancer Freelancers { get; set; }
 
         [ForeignKey("ClientId")]
-        public ApplicationUser Client { get; set; }
+        public Client Client { get; set; }
 
         [ForeignKey("ServiceId")]
         public OfferedService Service { get; set; }

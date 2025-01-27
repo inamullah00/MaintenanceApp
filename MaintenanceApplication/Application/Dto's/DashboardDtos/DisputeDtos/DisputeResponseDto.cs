@@ -10,7 +10,7 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos
     public class DisputeResponseDto
     {
         public Guid Id { get; set; }
-        public Guid OrderId { get; set; }
+        public Guid? OrderId { get; set; }
         public DisputeType DisputeType { get; set; }
         public string DisputeDescription { get; set; }
         public DisputeStatus DisputeStatus { get; set; }

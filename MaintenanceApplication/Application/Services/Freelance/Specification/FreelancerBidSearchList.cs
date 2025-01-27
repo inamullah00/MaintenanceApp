@@ -1,5 +1,5 @@
 ﻿using Ardalis.Specification;
-using Maintenance.Domain.Entity.Freelancer;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace Maintenance.Application.Services.Freelance.Specification
         {
             if (!string.IsNullOrWhiteSpace(FreelancerId))
             {
-                _ = Query.Where(x => x.FreelancerId == FreelancerId);
+                _ = Query.Where(x => x.FreelancerId.ToString() == FreelancerId);
             }
         }
     }

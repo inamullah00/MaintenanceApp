@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,9 +38,10 @@ namespace Maintenance.Domain.Entity.Dashboard
         public string ResolutionDetails { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public DateTime? ResolvedAt { get; set; }
-        public string? ResolvedBy { get; set; } // AdminId
-        public string CreatedBy { get; set; } // The ID or Username of the user who created the dispute
+        public string? ResolvedByAdminId { get; set; } // AdminId
+        //public string CreatedBy { get; set; } // The ID or Username of the user who created the dispute
         public virtual Order Order { get; set; }
+        [ForeignKey(nameof(ResolvedByAdminId))]
         public virtual ApplicationUser ResolvedByUser { get; set; }
 
     }

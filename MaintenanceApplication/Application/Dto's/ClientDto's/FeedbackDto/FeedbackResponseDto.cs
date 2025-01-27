@@ -10,8 +10,8 @@ namespace Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto
     {
         public Guid Id { get; set; }                  // Feedback ID
         public Guid? OrderId { get; set; }            // Reference to the Order
-        public string? FeedbackByClientId { get; set; } // Reference to the client
-        public string? FeedbackByFreelancerId { get; set; } // Reference to the freelancer
+        public Guid? FeedbackByClientId { get; set; } // Reference to the client
+        public Guid? FeedbackByFreelancerId { get; set; } // Reference to the freelancer
         public int Rating { get; set; }               // Rating given (1-5 scale)
         public string? Comment { get; set; }          // Optional comments
         public DateTime CreatedAt { get; set; }       // When the feedback was created

@@ -2,6 +2,7 @@
 using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
+using Maintenance.Application.Services.ServiceManager;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,11 +12,11 @@ namespace Maintenance.API.Controllers.ClientController
     [ApiController]
     public class ClientOrderController : ControllerBase
     {
-        private readonly IOrderService _orderService;
+        private readonly IServiceManager _serviceManager;
         private readonly ILogger<ClientOrderController> _logger;
-        public ClientOrderController(IOrderService orderService , ILogger<ClientOrderController> logger)
+        public ClientOrderController(IServiceManager serviceManager , ILogger<ClientOrderController> logger)
         {
-            _orderService = orderService;
+            _serviceManager = serviceManager;
             _logger = logger;
         }
 
@@ -27,7 +28,7 @@ namespace Maintenance.API.Controllers.ClientController
             {
                 _logger.LogInformation("Fetching all orders with keyword: {Keyword}", Keyword);
 
-                var result = await _orderService.GetAllOrdersAsync(cancellationToken, Keyword);
+                var result = await _serviceManager.OrderService.GetAllOrdersAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -66,7 +67,7 @@ namespace Maintenance.API.Controllers.ClientController
             try
             {
                 _logger.LogInformation("Fetching order with ID: {Id}", Id);
-                var result = await _orderService.GetOrderByIdAsync(Id, cancellationToken);
+                var result = await _serviceManager.OrderService.GetOrderByIdAsync(Id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -108,7 +109,7 @@ namespace Maintenance.API.Controllers.ClientController
             try
             {
                 _logger.LogInformation("Creating a new order.");
-                var result = await _orderService.CreateOrderAsync(createOrderDto, cancellationToken);
+                var result = await _serviceManager.OrderService.CreateOrderAsync(createOrderDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -149,7 +150,7 @@ namespace Maintenance.API.Controllers.ClientController
             try
             {
                 _logger.LogInformation("Updating order status for Order ID: {OrderId}", id);
-                var result = await _orderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
+                var result = await _serviceManager.OrderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
                 _logger.LogInformation("Order status updated successfully for Order ID: {OrderId}", id);
                 if (result.IsSuccess)
                 {
@@ -190,7 +191,7 @@ namespace Maintenance.API.Controllers.ClientController
             try
             {
                 _logger.LogInformation("Client attempting to approve order with Order ID: {OrderId}", orderId);
-                var result = await _orderService.ApproveOrderAsync(orderId, cancellationToken);
+                var result = await _serviceManager.OrderService.ApproveOrderAsync(orderId, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -232,7 +233,7 @@ namespace Maintenance.API.Controllers.ClientController
             try
             {
                 _logger.LogInformation("Client attempting to reject order with Order ID: {OrderId}. Reason: {Reason}", orderId, rejectOrderDTO.OrderStatus);
-                var result = await _orderService.RejectOrderAsync(orderId, rejectOrderDTO, cancellationToken);
+                var result = await _serviceManager.OrderService.RejectOrderAsync(orderId, rejectOrderDTO, cancellationToken);
 
                 if (result.IsSuccess)
                 {

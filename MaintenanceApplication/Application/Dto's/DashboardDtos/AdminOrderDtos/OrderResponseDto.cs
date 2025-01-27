@@ -10,14 +10,14 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
     public class OrderResponseDto
     {
             public Guid Id { get; set; } // Order ID
-            public string ClientId { get; set; } // Client's ID
-            public string FreelancerId { get; set; } // Freelancer ID
+            public Guid? ClientId { get; set; } // Client's ID
+            public Guid? FreelancerId { get; set; } // Freelancer ID
 
             public string ClientFirstName { get; set; } // Client's first name
             public string ClientLastName { get; set; } // Client's last name
             public string ClientLocation { get; set; } // Client's location
 
-            public Guid ServiceId { get; set; } // Service ID
+            public Guid? ServiceId { get; set; } // Service ID
             public string ServiceTitle { get; set; } // Service title
             public string ServiceDescription { get; set; } // Service description
             public string ServiceLocation { get; set; } // Service location

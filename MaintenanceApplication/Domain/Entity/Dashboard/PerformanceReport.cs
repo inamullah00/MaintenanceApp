@@ -11,7 +11,7 @@ namespace Maintenance.Domain.Entity.Dashboard
     public class PerformanceReport
     {
         public Guid Id { get; set; } // Unique identifier for the performance report
-        public string FreelancerId { get; set; } // Foreign key for the freelancer
+        public Guid? FreelancerId { get; set; } // Foreign key for the freelancer
 
         public int MonthlyLimit { get; set; } // Maximum number of orders the freelancer can complete in a month
         public int OrdersCompleted { get; set; } // Number of orders completed by the freelancer in the specified month

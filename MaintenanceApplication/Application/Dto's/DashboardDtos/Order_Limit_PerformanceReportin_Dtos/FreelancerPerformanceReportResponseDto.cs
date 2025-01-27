@@ -8,7 +8,7 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceRep
 {
     public class FreelancerPerformanceReportResponseDto
     {
-        public string FreelancerId { get; set; }
+        public Guid FreelancerId { get; set; }
         public string FreelancerName { get; set; }
         public int TotalOrders { get; set; }
         public int TotalOrdersCompleted { get; set; }

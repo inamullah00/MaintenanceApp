@@ -14,16 +14,14 @@ namespace Maintenance.Application.Services.Account.Specification
         {
             if (!string.IsNullOrWhiteSpace(keyword))
             {
-              _ = Query.Where(x => x.FirstName.Contains(keyword) ||
-                                 x.LastName.Contains(keyword) ||
-                                 x.Email.Contains(keyword));
+              _ = Query.Where(x => x.FullName.Contains(keyword) || x.Email.Contains(keyword));
             }
 
             if (!string.IsNullOrWhiteSpace(role))
             {
                 //Query.Where(x => x.Role .Equals(role));
             }
-            _ = Query.OrderBy(x => x.FirstName);
+            _ = Query.OrderBy(x => x.FullName);
         }
 
         public UserSearchList(string UserId)

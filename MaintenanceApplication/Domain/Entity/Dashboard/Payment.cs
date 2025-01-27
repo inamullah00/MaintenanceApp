@@ -11,7 +11,7 @@ namespace Maintenance.Domain.Entity.Dashboard
     public class Payment
     {
         public Guid Id { get; set; } // Unique identifier for the payment
-        public Guid OrderId { get; set; } // Foreign key for the associated order
+        public Guid? OrderId { get; set; } // Foreign key for the associated order
 
         public decimal ClientPaymentAmount { get; set; } // Total amount paid by the client
 

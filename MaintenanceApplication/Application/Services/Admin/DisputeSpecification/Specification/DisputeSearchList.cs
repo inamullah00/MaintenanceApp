@@ -15,7 +15,7 @@ namespace Maintenance.Application.Services.Admin.DisputeSpecification.Specificat
         {
             if (!string.IsNullOrWhiteSpace(Keyword))
             {
-                _ = Query.Where(x => x.ResolvedByUser.FirstName.Contains(Keyword) || x.ResolvedByUser.LastName.Contains(Keyword));
+                _ = Query.Where(x => x.ResolvedByUser.FullName.Contains(Keyword));
             }
 
             _ = Query.OrderBy(x => x.CreatedAt);

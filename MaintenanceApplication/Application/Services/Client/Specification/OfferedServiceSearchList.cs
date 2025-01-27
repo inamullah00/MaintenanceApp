@@ -1,5 +1,5 @@
 ﻿using Ardalis.Specification;
-using Maintenance.Domain.Entity.Client;
+using Maintenance.Domain.Entity.ClientEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
