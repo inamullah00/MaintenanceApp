@@ -193,7 +193,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
         {
             var userId = AppHttpContext.GetAdminCurrentUserId();
             var user = await _userManager.FindByIdAsync(userId) ?? throw new CustomException("User not found");
-            var result = await _userManager.ChangePasswordAsync(user, model.OldPasword, model.NewPassword).ConfigureAwait(false);
+            var result = await _userManager.ChangePasswordAsync(user, model.OldPassword, model.NewPassword).ConfigureAwait(false);
             if (!result.Succeeded)
             {
                 throw new CustomException(string.Join("<br>", result.Errors.Select(a => a.Description).ToList()));
