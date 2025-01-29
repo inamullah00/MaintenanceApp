@@ -1,4 +1,5 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
@@ -11,17 +12,14 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Feedback
+    public class Feedback:BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid OrderId { get; set; }          // Reference to the Order
         public Guid? FeedbackByClientId { get; set; }  // Reference to the client (if applicable)
         public Guid? FeedbackOnFreelancerId { get; set; }  // Reference to the freelancer (if applicable)
         [Range(1,5)]
         public int Rating { get; set; }            // Rating given (1-5 scale, for example)
         public string Comment { get; set; }        // Optional comments from the client or freelancer
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;   // When the feedback was given
-        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;     // When the feedback was last updated
 
         public Order Order { get; set; }
         [ForeignKey(nameof(FeedbackByClientId))]

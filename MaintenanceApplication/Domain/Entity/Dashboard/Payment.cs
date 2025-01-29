@@ -1,4 +1,5 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Payment
+    public class Payment:BaseEntity
     {
-        public Guid Id { get; set; } // Unique identifier for the payment
         public Guid? OrderId { get; set; } // Foreign key for the associated order
 
         public decimal ClientPaymentAmount { get; set; } // Total amount paid by the client
