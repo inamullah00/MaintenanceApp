@@ -10,8 +10,8 @@ using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Specification;
+using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Application.Wrapper;
-using Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardServiceImplemention;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading;
@@ -22,21 +22,14 @@ namespace Maintenance.API.Controllers.AdminController
     [ApiController]
     public class DashboardController : ControllerBase
     {
-        private readonly IOrderService _orderService;
-        private readonly IDisputeService _disputeService;
-        private readonly IContentService _contentService;
 
-        private readonly IAdminFreelancerService _adminFreelancerService;
-        private readonly IFeedbackService _feedbackService;
+        private readonly IServiceManager _serviceManager;
+        private readonly ILogger<DashboardController> _logger;
 
-        public DashboardController(IOrderService orderService , IDisputeService disputeService ,
-            IContentService contentService ,IAdminFreelancerService adminFreelancerService , IFeedbackService feedbackService)
+        public DashboardController(IServiceManager serviceManager , ILogger<DashboardController> logger)
         {
-            _orderService = orderService;
-            _disputeService = disputeService;
-            _contentService = contentService;
-            _adminFreelancerService = adminFreelancerService;
-            _feedbackService = feedbackService;
+            _serviceManager = serviceManager;
+            _logger = logger;
         }
 
         #region Order Management
@@ -45,11 +38,16 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpGet("Order")]
         public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken , string Keyword = "")
         {
+
+            _logger.LogInformation("GetAllOrders called with Keyword: {Keyword}", Keyword);
+
             try
             {
-                var result = await _orderService.GetAllOrdersAsync(cancellationToken, Keyword);
+                var result = await _serviceManager.OrderService.GetAllOrdersAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully retrieved orders.");
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,  
@@ -58,6 +56,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value 
                     });
                 }
+                _logger.LogWarning("Failed to retrieve orders. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -68,6 +67,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all orders.");
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -82,13 +83,17 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpGet("Order/{Id:guid}")]
         public async Task<IActionResult> GetOrderById(Guid Id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("GetOrderById called for Order ID: {Id}", Id);
+
             try
             {
                
-                var result = await _orderService.GetOrderByIdAsync(Id,cancellationToken);
+                var result = await _serviceManager.OrderService.GetOrderByIdAsync(Id,cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully retrieved order with ID: {Id}.", Id);
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -97,6 +102,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value
                     });
                 }
+                _logger.LogWarning("Failed to retrieve order with ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", Id, result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -107,6 +113,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching order with ID: {Id}.", Id);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -122,13 +130,17 @@ namespace Maintenance.API.Controllers.AdminController
         [Route("Order")]
         public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequestDto createOrderDto,CancellationToken cancellationToken)
         {
+            _logger.LogInformation("CreateOrder called with request: {@CreateOrderRequestDto}", createOrderDto);
+
             try
             {
 
-                var result = await _orderService.CreateOrderAsync(createOrderDto, cancellationToken);
+                var result = await _serviceManager.OrderService.CreateOrderAsync(createOrderDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully created order.");
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -137,6 +149,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value
                     });
                 }
+                _logger.LogWarning("Failed to create order. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -147,6 +160,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while creating order.");
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -161,16 +176,25 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpPut("{id:guid}/assign")]
         public async Task<IActionResult> AssignOrder(Guid id, [FromBody] AssignOrderRequestDto assignOrderDto,CancellationToken cancellationToken)
         {
+            _logger.LogInformation("AssignOrder called for Order ID: {Id} with request: {@AssignOrderRequestDto}", id, assignOrderDto);
+
             try
             {
-                var result = await _orderService.AssignOrderAsync(id, assignOrderDto, cancellationToken);
+                var result = await _serviceManager.OrderService.AssignOrderAsync(id, assignOrderDto, cancellationToken);
 
-                return result.IsSuccess
-                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully assigned order with ID: {Id}.", id);
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message });
+                }
+
+                _logger.LogWarning("Failed to assign order with ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", id, result.StatusCode, result.Message);
+                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while assigning order with ID: {Id}.", id);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -185,13 +209,20 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpPut("{id:guid}/update-status")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusDto updateOrderStatusDto, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("UpdateOrderStatus called for Order ID: {Id} with request: {@UpdateOrderStatusDto}", id, updateOrderStatusDto);
+
             try
             {
-                var result = await _orderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
+                var result = await _serviceManager.OrderService.UpdateOrderStatusAsync(id, updateOrderStatusDto, cancellationToken);
 
-                return result.IsSuccess
-                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully updated order status for Order ID: {Id}.", id);
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message });
+                }
+
+                _logger.LogWarning("Failed to update order status for Order ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", id, result.StatusCode, result.Message);
+                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
@@ -213,11 +244,15 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpGet("Disputes")]
         public async Task<IActionResult> GetAllDisputes(CancellationToken cancellationToken, string Keyword = "")
         {
+            _logger.LogInformation("GetAllDisputes called with Keyword: {Keyword}", Keyword);
+
             try
             {
-                var result = await _disputeService.GetAllDisputesAsync(cancellationToken, Keyword);
+                var result = await _serviceManager.DisputeService.GetAllDisputesAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully retrieved all disputes.");
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -226,6 +261,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value
                     });
                 }
+                _logger.LogWarning("Failed to retrieve all disputes. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -236,6 +272,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching all disputes.");
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -250,12 +288,16 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpGet("Dispute/{id:guid}")]
         public async Task<IActionResult> GetDisputeById(Guid id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("GetDisputeById called for Dispute ID: {Id}", id);
+
             try
             {
-                var result = await _disputeService.GetDisputeByIdAsync(id, cancellationToken);
+                var result = await _serviceManager.DisputeService.GetDisputeByIdAsync(id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully retrieved dispute with ID: {Id}.", id);
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -264,6 +306,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value
                     });
                 }
+                _logger.LogWarning("Failed to retrieve dispute with ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", id, result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -274,6 +317,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while fetching dispute with ID: {Id}.", id);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -288,12 +333,16 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpPost("Dispute")]
         public async Task<IActionResult> CreateDispute([FromBody] CreateDisputeRequest createDisputeDto, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("CreateDispute called with request: {@CreateDisputeRequest}", createDisputeDto);
+
             try
             {
-                var result = await _disputeService.CreateDisputeAsync(createDisputeDto, cancellationToken);
+                var result = await _serviceManager.DisputeService.CreateDisputeAsync(createDisputeDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
+                    _logger.LogInformation("Successfully created dispute.");
+
                     return Ok(new
                     {
                         StatusCode = result.StatusCode,
@@ -302,6 +351,7 @@ namespace Maintenance.API.Controllers.AdminController
                         Data = result.Value
                     });
                 }
+                _logger.LogWarning("Failed to create dispute. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
 
                 return StatusCode(result.StatusCode, new
                 {
@@ -312,6 +362,8 @@ namespace Maintenance.API.Controllers.AdminController
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while creating dispute.");
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -326,17 +378,26 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpPost("Resolve-Dispute/{id:guid}")]
         public async Task<IActionResult> ResolveDispute(Guid id, [FromBody] CreateDisputeResolveDto DisputeResolveRequest, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("ResolveDispute called for Dispute ID: {Id} with request: {@DisputeResolveRequest}", id, DisputeResolveRequest);
+
             try
             {
 
-                var result = await _disputeService.ResolveDisputeAsync(id, DisputeResolveRequest, cancellationToken);
+                var result = await _serviceManager.DisputeService.ResolveDisputeAsync(id, DisputeResolveRequest, cancellationToken);
 
-                return result.IsSuccess
-                    ? Ok(new { StatusCode = HttpResponseCodes.OK, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully resolved dispute with ID: {Id}.", id);
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message });
+                }
+
+                _logger.LogWarning("Failed to resolve dispute with ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", id, result.StatusCode, result.Message);
+                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while resolving dispute with ID: {Id}.", id);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -351,16 +412,25 @@ namespace Maintenance.API.Controllers.AdminController
         [HttpDelete("Dispute/{id:guid}")]
         public async Task<IActionResult> DeleteDispute(Guid id, CancellationToken cancellationToken)
         {
+            _logger.LogInformation("DeleteDispute called for Dispute ID: {Id}", id);
+
             try
             {
-                var result = await _disputeService.DeleteDisputeAsync(id, cancellationToken);
+                var result = await _serviceManager.DisputeService.DeleteDisputeAsync(id, cancellationToken);
 
-                return result.IsSuccess
-                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
-                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully deleted dispute with ID: {Id}.", id);
+                    return Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message });
+                }
+
+                _logger.LogWarning("Failed to delete dispute with ID: {Id}. StatusCode: {StatusCode}, Message: {Message}", id, result.StatusCode, result.Message);
+                return BadRequest(new { StatusCode = StatusCodes.Status400BadRequest, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error occurred while deleting dispute with ID: {Id}.", id);
+
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
@@ -381,7 +451,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _contentService.GetAllContentAsync(cancellationToken, Keyword);
+                var result = await _serviceManager.ContentService.GetAllContentAsync(cancellationToken, Keyword);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -418,7 +488,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _contentService.GetContentByIdAsync(Id, cancellationToken);
+                var result = await _serviceManager.ContentService.GetContentByIdAsync(Id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -456,7 +526,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _contentService.CreateContentAsync(createContentDto, cancellationToken);
+                var result = await _serviceManager.ContentService.CreateContentAsync(createContentDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -494,7 +564,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _contentService.UpdateContentAsync(id, updateContentDto, cancellationToken);
+                var result = await _serviceManager.ContentService.UpdateContentAsync(id, updateContentDto, cancellationToken);
 
                 return result.IsSuccess
                     ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
@@ -518,7 +588,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _contentService.DeleteContentAsync(id, cancellationToken);
+                var result = await _serviceManager.ContentService.DeleteContentAsync(id, cancellationToken);
 
                 return result.IsSuccess
                     ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
@@ -546,7 +616,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _feedbackService.GetAllFeedbackAsync(cancellationToken, keyword);
+                var result = await _serviceManager.FeedbackService.GetAllFeedbackAsync(cancellationToken, keyword);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -583,7 +653,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _feedbackService.GetFeedbackByIdAsync(id, cancellationToken);
+                var result = await _serviceManager.FeedbackService.GetFeedbackByIdAsync(id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -621,7 +691,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _feedbackService.CreateFeedbackAsync(createFeedbackDto, cancellationToken);
+                var result = await _serviceManager.FeedbackService.CreateFeedbackAsync(createFeedbackDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -659,7 +729,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _feedbackService.UpdateFeedbackAsync(id, updateFeedbackDto, cancellationToken);
+                var result = await _serviceManager.FeedbackService.UpdateFeedbackAsync(id, updateFeedbackDto, cancellationToken);
 
                 return result.IsSuccess
                     ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
@@ -683,7 +753,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _feedbackService.DeleteFeedbackAsync(id, cancellationToken);
+                var result = await _serviceManager.FeedbackService.DeleteFeedbackAsync(id, cancellationToken);
 
                 return result.IsSuccess
                     ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
@@ -703,7 +773,6 @@ namespace Maintenance.API.Controllers.AdminController
 
         #endregion
 
-
         #region 1.5	Order Limit and Performance Reporting
 
         #region Set Freelancer Order Limit
@@ -712,7 +781,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _adminFreelancerService.SetOrderLimitAsync(freelancerId, RequestDto, cancellationToken);
+                var result = await _serviceManager.AdminFreelancerService.SetOrderLimitAsync(freelancerId, RequestDto, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -748,7 +817,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _adminFreelancerService.CanAcceptNewOrderAsync(freelancerId, cancellationToken);
+                var result = await _serviceManager.AdminFreelancerService.CanAcceptNewOrderAsync(freelancerId, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return Ok(new
@@ -785,7 +854,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _adminFreelancerService.GeneratePerformanceReportAsync(freelancerId, startDate, endDate, cancellationToken);
+                var result = await _serviceManager.AdminFreelancerService.GeneratePerformanceReportAsync(freelancerId, startDate, endDate, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -823,7 +892,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _adminFreelancerService.GenerateTopPerformersReportAsync(month, cancellationToken);
+                var result = await _serviceManager.AdminFreelancerService.GenerateTopPerformersReportAsync(month, cancellationToken);
                 if (result.IsSuccess)
                 {
                     return Ok(new

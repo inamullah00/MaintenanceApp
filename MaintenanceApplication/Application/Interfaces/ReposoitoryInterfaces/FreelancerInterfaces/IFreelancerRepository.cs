@@ -1,7 +1,7 @@
 ﻿using Ardalis.Specification;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
-using Maintenance.Domain.Entity.Freelancer;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +25,8 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<BidResponseDto> GetByIdAsync(ISpecification<Bid> specification , CancellationToken cancellationToken = default);
 
         Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
+        Task<List<FilteredFreelancerResponseDto>> GetByFilterAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
+
 
         Task<Bid> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);

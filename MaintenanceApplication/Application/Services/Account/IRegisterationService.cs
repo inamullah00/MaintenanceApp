@@ -11,7 +11,7 @@ namespace Maintenance.Application.Services.Account
     public interface IRegisterationService
     {
 
-        public Task<(bool Success, string Message)> RegisterAsync(RegistrationRequestDto request);
+        public Task<(bool Success, string Message)> RegisterAsync(CreateAdminRegistrationRequestDto request);
         public Task<(bool Success, string Message, string Token)> LoginAsync(LoginRequestDto requestDto);
         public Task<(bool Success, string Message)> LogoutAsync();
         public Task<(bool Success, string Otp, string Message)> ForgotPasswordAsync(string Email);

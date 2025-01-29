@@ -22,11 +22,11 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
 
         public Guid Id { get; set; } // Bid ID
 
-        public Guid OfferedServiceId { get; set; } // Related OfferedService ID
+        public Guid? OfferedServiceId { get; set; } // Related OfferedService ID
 
         public string ServiceTitle { get; set; } // Title of the offered service
 
-        public string FreelancerId { get; set; } // Freelancer making the bid
+        public Guid? FreelancerId { get; set; } // Freelancer making the bid
 
         public string FreelancerName { get; set; } // Name of the freelancer
 
@@ -35,8 +35,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
         public string Status { get; set; } // Bid status (e.g., Pending, Accepted, Rejected)
 
         public DateTime CreatedAt { get; set; } // Creation timestamp of the bid
-
-        public string ClientId { get; set; } // ID of the client requesting the service
 
         public string CategoryName { get; set; } // Name of the service category
 

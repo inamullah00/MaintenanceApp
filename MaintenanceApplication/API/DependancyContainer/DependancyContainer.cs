@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IUnitOFWork;
-using Infrastructure.Repositories.RepositoryImplementions.UnitofWorkImplementation;
-using Infrastructure.Repositories.ServiceImplemention;
+using Application.Interfaces.ReposoitoryInterfaces;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
+using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
@@ -11,9 +12,9 @@ using Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Sp
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.OffereServiceCategory;
-using Maintenance.Infrastructure.Repositories.ServiceImplemention;
-using Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServiceImplementation;
-using Maintenance.Infrastructure.Repositories.ServiceImplemention.DashboardServiceImplemention;
+using Maintenance.Application.Services.ServiceManager;
+using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.UnitofWorkImplementation;
+using Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention;
 using Microsoft.OpenApi.Models;
 
 namespace API.DependancyContainer
@@ -24,16 +25,16 @@ namespace API.DependancyContainer
         public static IServiceCollection RegistrationServices(this IServiceCollection services, IConfiguration configuration)
         {
 
-            services.AddScoped<IRegisterationService, RegistrationService>();
-            services.AddScoped<IClientService, OfferedServices>();
-            services.AddScoped<IOfferedServiceCategory, OfferedServiceCategory>();
-            services.AddScoped<IFreelancerService, FreelancerService>();
-            services.AddScoped<IOrderService, OrderService>();
-            services.AddScoped<IDisputeService, DisputeService>();
-            services.AddScoped<IContentService, ContentService>();
-            services.AddScoped<IAdminFreelancerService, AdminFreelancerService>();
-            services.AddScoped<IFeedbackService, FeedbackService>();
-            services.AddScoped<IAdminService, AdminService>();
+            //services.AddScoped<IRegisterationService, RegistrationService>();
+            //services.AddScoped<IClientService, OfferedServices>();
+            //services.AddScoped<IOfferedServiceCategory,OfferedServiceCategory>();
+            //services.AddScoped<IFreelancerService,FreelancerService>();
+            //services.AddScoped<IOrderService,OrderService>();
+            //services.AddScoped<IDisputeService,DisputeService>();
+            //services.AddScoped<IContentService,ContentService>();
+            //services.AddScoped<IAdminFreelancerService,AdminFreelancerService>();
+            //services.AddScoped<IFeedbackService,FeedbackService>();
+
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
@@ -69,6 +70,7 @@ namespace API.DependancyContainer
 
 
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<IServiceManager, ServiceManager>();
 
             return services;
         }
