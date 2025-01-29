@@ -1,7 +1,6 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
 using Domain.Entity.UserEntities;
-using Domain.Enums;
 using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.Admin.AdminSpecification;
@@ -34,7 +33,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             var customers = await _dbContext.Users.Select(a => new DropdownDto
             {
                 Id = a.Id,
-                Name = a.FirstName,
+                Name = a.FullName ?? string.Empty,
             }).ToListAsync().ConfigureAwait(false);
             return customers;
         }
@@ -50,12 +49,10 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
                 .Select(u => new UserResponseViewModel
                 {
                     Id = u.Id,
-                    FirstName = u.FirstName ?? string.Empty,
-                    LastName = u.LastName ?? string.Empty,
+                    FirstName = u.FullName ?? string.Empty,
                     PhoneNumber = u.PhoneNumber ?? string.Empty,
                     EmailAddress = u.Email ?? string.Empty,
-                    Role = u.Role,
-                    Status = u.Status.ToString(),
+                    //Role = u.Role,
                     IsBlocked = u.LockoutEnd >= DateTime.Now
                 }).ToListAsync();
             return new GridResponseViewModel
@@ -77,13 +74,10 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             var userIdentity = new ApplicationUser
             {
                 UserName = model.UserName,
-                FirstName = model.FirstName,
-                LastName = model.LastName,
+                FullName = model.FullName,
                 Email = model.EmailAddress,
                 PhoneNumber = model.PhoneNumber,
-                Status = UserStatus.Approved,
-                Role = Role.Admin.ToString(),
-                Address = model.Address,
+                //Role = Role.Admin.ToString(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -109,8 +103,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             var userViewModel = new UserResponseViewModel
             {
                 Id = user.Id.ToString(),
-                FirstName = user.FirstName ?? string.Empty,
-                LastName = user.LastName ?? string.Empty,
+                FirstName = user.FullName ?? string.Empty,
                 EmailAddress = user.Email ?? string.Empty,
                 PhoneNumber = user.PhoneNumber ?? string.Empty,
                 IsBlocked = user.LockoutEnd >= DateTime.Now
@@ -149,13 +142,9 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
 
             if (!string.IsNullOrEmpty(model.FirstName))
             {
-                user.FirstName = model.FirstName;
+                user.FullName = model.FirstName;
             }
 
-            if (!string.IsNullOrEmpty(model.LastName))
-            {
-                user.LastName = model.LastName;
-            }
             if (!string.IsNullOrEmpty(model.PhoneNumber))
             {
                 user.PhoneNumber = model.PhoneNumber;

@@ -7,16 +7,8 @@ namespace Maintenance.Application.ViewModel
         [Required(ErrorMessage = "Username is required")]
         public string UserName { get; set; }
 
-        [Required(ErrorMessage = "First name is required")]
-        public string FirstName { get; set; }
-
-        [Required(ErrorMessage = "last name is required")]
-        public string LastName { get; set; }
-
-
-        [Required(ErrorMessage = "Address is required")]
-        public string Address { get; set; }
-
+        [Required(ErrorMessage = "Fullname is required")]
+        public string FullName { get; set; }
 
         [Required(ErrorMessage = "Password is required")]
         public string Password { get; set; }

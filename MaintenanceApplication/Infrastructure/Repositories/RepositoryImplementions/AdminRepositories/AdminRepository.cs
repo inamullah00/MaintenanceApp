@@ -1,5 +1,4 @@
 ﻿using Domain.Entity.UserEntities;
-using Domain.Enums;
 using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.AdminInterfaces;
 using Maintenance.Application.ViewModel.User;
@@ -23,7 +22,7 @@ namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.AdminR
         public async Task<List<DropdownDto>> GetAdminUsersForDropdownAsync(CancellationToken cancellationToken = default)
         {
             return await _dbContext.Users
-                .Where(user => user.Role == Role.Admin.ToString())
+                //.Where(user => user.Role == Role.Admin.ToString())
                 .Select(user => new DropdownDto
                 {
                     Id = user.Id,

@@ -2,7 +2,6 @@
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Services.Account;
-using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
@@ -36,7 +35,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public IAdminFreelancerService AdminFreelancerService { get; private set; }
         public IPaymentService PaymentService { get; private set; }
         public INotificationService NotificationService { get; private set; }
-        public IAdminService AdminService { get; private set; }
 
         public ServiceManager(IUnitOfWork unitOfWork,
                               UserManager<ApplicationUser> userManager,
@@ -47,8 +45,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                               IMemoryCache memoryCache,
                               ApplicationDbContext dbContext,
                               IMapper mapper,
-                              ILogger<NotificationService> logger
-                              )
+                              ILogger<NotificationService> logger)
         {
             OfferedServiceCategory = new OfferedServiceCategory(unitOfWork, mapper);
             FreelancerService = new FreelancerService(mapper, unitOfWork);
@@ -64,4 +61,3 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
     }
 }
-
