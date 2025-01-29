@@ -11,13 +11,15 @@ namespace Maintenance.Application.Common.Constants
             // User-related error messages
             public const string UserNotFound = "User not found with the provided ID";
             public const string UserNotAuthorized = "User is not authorized to perform this action";
-            public const string EmailAlreadyInUse = "The provided email is already in use by another user";
+            public const string EmailAlreadyExists = "The provided email is already in use by another user";
             public const string UsernameAlreadyInUse = "The provided username is already in use";
             public const string InvalidPassword = "The provided password is incorrect";
             public const string PasswordTooWeak = "The provided password does not meet the required strength criteria";
             public const string UserLockedOut = "The user account is locked out due to multiple failed login attempts";
             public const string UserBanned = "The user account has been banned";
             public const string UserInactive = "The user account is inactive";
+            public const string FreelancerRegistrationFailed = "Failled To Register!";
+
 
             // Authentication & Authorization-related error messages
             public const string UnauthorizedAccess = "You are not authorized to perform this action";

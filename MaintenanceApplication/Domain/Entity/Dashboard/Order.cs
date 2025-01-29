@@ -1,14 +1,13 @@
 ﻿
+using Domain.Common;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Order
+    public class Order:BaseEntity
     {
-
-        public Guid Id { get; set; }
         public Guid? ClientId { get; set; } 
         public Guid? FreelancerId { get; set; } 
         public Guid? ServiceId { get; set; } // Foreign key for Service (like plumbing, electrical)
@@ -19,8 +18,6 @@ namespace Maintenance.Domain.Entity.Dashboard
 
         // Order status and timestamps
         public OrderStatus Status { get; set; } = OrderStatus.Pending; // Current status of the order (Pending, In Progress, Completed, etc.)
-        public DateTime CreatedAt { get; set; } = DateTime.Now; // Date and time when the order was created
-
         public DateTime? CompletedDate { get; set; } // Date when the order was completed
         // Payment details
         public decimal TotalAmount { get; set; } // Total amount for the order, including freelancer's earnings and platform commission
@@ -40,7 +37,6 @@ namespace Maintenance.Domain.Entity.Dashboard
         [ForeignKey("ServiceId")]
         public OfferedService Service { get; set; }
         public ICollection<Dispute> Disputes { get; set; }
-        public DateTime UpdatedAt { get; set; } = DateTime.Now;
     }
 
 

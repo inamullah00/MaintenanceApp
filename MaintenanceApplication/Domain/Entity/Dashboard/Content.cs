@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using Domain.Common;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,15 +8,12 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Content
-    {
-        public Guid Id { get; set; }             
+    public class Content:BaseEntity
+    {           
         public string Title { get; set; }          // Title of the content (e.g., Terms of Service, Privacy Policy)
         public string Body { get; set; }           // The body/content (full text of the policy, guidelines, etc.)
         public ContentType ContentType { get; set; }    // Type of content (e.g., Policy, Guidelines, FAQ)
         public bool IsActive { get; set; }         // If the content is active (can be visible to users)
-        public DateTime CreatedAt { get; set; }    // When the content was created
-        public DateTime? UpdatedAt { get; set; }   // When the content was last updated (nullable)
     }
 
     #region Enums

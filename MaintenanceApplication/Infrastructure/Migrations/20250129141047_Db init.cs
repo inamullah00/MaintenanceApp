@@ -64,7 +64,9 @@ namespace Maintenance.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConfirmPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -106,6 +108,7 @@ namespace Maintenance.Infrastructure.Migrations
                     ExperienceLevel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PreviousWork = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -120,7 +123,9 @@ namespace Maintenance.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -254,7 +259,10 @@ namespace Maintenance.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -314,10 +322,11 @@ namespace Maintenance.Infrastructure.Migrations
                     OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CurrentRating = table.Column<double>(type: "float", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -346,12 +355,12 @@ namespace Maintenance.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Budget = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FreelancerAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsApproveByAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -384,11 +393,11 @@ namespace Maintenance.Infrastructure.Migrations
                     DisputeDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     DisputeStatus = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
                     ResolutionDetails = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    ResolvedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResolvedByAdminId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    OrderId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    OrderId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -427,10 +436,10 @@ namespace Maintenance.Infrastructure.Migrations
                     FeedbackOnFreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -469,20 +478,20 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "110abe18-7199-410f-837e-c7df1455748e", null, "Admin", "ADMIN" },
-                    { "db5372e0-4301-4381-855f-bd703f793e51", null, "Freelancer", "FREELANCER" },
-                    { "e237606a-5b47-42b0-9a06-275d815b73dd", null, "Client", "CLIENT" }
+                    { "202e2b0d-20d1-4cde-86c1-861085b7541e", null, "Admin", "ADMIN" },
+                    { "9eaaec3f-5b9c-46e3-adcb-d1583256c9e8", null, "Client", "CLIENT" },
+                    { "fc4ece5b-216b-4073-9899-4c822169d4ff", null, "Freelancer", "FREELANCER" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "3a0c6c3e-e010-4287-b077-5f6ab624ecb3", 0, "f3b65cf7-1cb0-4ed5-ae57-2732a7348dbf", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEMfoV49mp3uN6EBeBLAErqfmCFkBWixB6p8isXLj4obBk4qRwbCxWdTl5jwxlk6Zug==", null, false, "1455c3bf-e154-44b8-ba86-e0c54ca0b749", false, "admin" });
+                values: new object[] { "22205ca2-2df5-49d5-9748-06b301888edf", 0, "d2e517f9-f3d0-4479-a3b2-2215d9eb46ed", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEINFG+ZUKrmE2MWtrI4V3o45W/w7pcljPIlwbPWDN6IGoI0lnGoLZhB5VxgiFM2fWQ==", null, false, "aabce293-308c-476d-b37f-b769ad2ede45", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "110abe18-7199-410f-837e-c7df1455748e", "3a0c6c3e-e010-4287-b077-5f6ab624ecb3" });
+                values: new object[] { "202e2b0d-20d1-4cde-86c1-861085b7541e", "22205ca2-2df5-49d5-9748-06b301888edf" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",

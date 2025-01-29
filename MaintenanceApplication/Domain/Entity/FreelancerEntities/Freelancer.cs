@@ -1,4 +1,5 @@
-﻿using Maintenance.Domain.Entity.Dashboard;
+﻿using Domain.Common;
+using Maintenance.Domain.Entity.Dashboard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.FreelancerEntites
 {
-    public class Freelancer
+    public class Freelancer : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
@@ -23,9 +23,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
         public string Status { get; set; } // Account status (e.g., Pending, Active, Suspended)
-
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow; // Timestamp for when the profile was created
-        public DateTime? UpdatedAt { get; set; } = null; // Timestamp for when the profile was last updated
+        public string Role { get; set; }
 
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
 

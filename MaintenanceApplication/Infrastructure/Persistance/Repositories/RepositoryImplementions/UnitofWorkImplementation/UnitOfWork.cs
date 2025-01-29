@@ -38,6 +38,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public IFeedbackRepository FeedbackRepository { get; }
 
+       public IFreelancerAuthRepository FreelancerAuthRepository { get; }
+
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -49,8 +51,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             ContentRepository = new ContentRepository(dbContext);
             AdminFreelancerRepository = new AdminFreelancerRepository(dbContext);
             FeedbackRepository = new FeedbackRepository(dbContext);
-            AdminRepository = new AdminRepository(dbContext);
-
+            FreelancerAuthRepository = new FreelancerAuthRepository(dbContext);
         }
 
         public void Dispose()

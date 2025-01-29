@@ -18,6 +18,7 @@ namespace Application.Interfaces.IUnitOFWork
         public IContentRepository ContentRepository { get; }
         public IFeedbackRepository FeedbackRepository { get; }
         public IAdminFreelancerRepository AdminFreelancerRepository { get; }
+        public IFreelancerAuthRepository FreelancerAuthRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }
