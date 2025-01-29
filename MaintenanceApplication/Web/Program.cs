@@ -1,8 +1,7 @@
 using API.DependancyContainer;
 using Domain.Entity.UserEntities;
-using Maintenance.Infrastructure.Persistance.Data;
-using Infrastructure.Data;
 using Maintenance.Infrastructure.Extensions;
+using Maintenance.Infrastructure.Persistance.Data;
 using Maintenance.Web.AuthenticationAuthorization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;

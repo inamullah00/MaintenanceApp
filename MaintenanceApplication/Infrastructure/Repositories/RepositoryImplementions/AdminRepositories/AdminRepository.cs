@@ -1,9 +1,10 @@
 ﻿using Domain.Entity.UserEntities;
 using Domain.Enums;
-using Infrastructure.Data;
 using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.AdminInterfaces;
 using Maintenance.Application.ViewModel.User;
+using Maintenance.Infrastructure.Persistance.Data;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Repositories.RepositoryImplementions.AdminRepositories

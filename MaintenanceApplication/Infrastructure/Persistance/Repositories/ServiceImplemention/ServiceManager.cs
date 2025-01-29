@@ -2,6 +2,7 @@
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
@@ -12,7 +13,6 @@ using Maintenance.Application.Services.ClientPayment;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.OffereServiceCategory;
 using Maintenance.Application.Services.ServiceManager;
-using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Infrastructure.Persistance.Data;
 using Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention;
 using Microsoft.AspNetCore.Http;
@@ -20,11 +20,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
@@ -41,6 +36,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public IAdminFreelancerService AdminFreelancerService { get; private set; }
         public IPaymentService PaymentService { get; private set; }
         public INotificationService NotificationService { get; private set; }
+        public IAdminService AdminService { get; private set; }
 
         public ServiceManager(IUnitOfWork unitOfWork,
                               UserManager<ApplicationUser> userManager,
@@ -51,7 +47,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                               IMemoryCache memoryCache,
                               ApplicationDbContext dbContext,
                               IMapper mapper,
-                              ILogger<NotificationService> logger)
+                              ILogger<NotificationService> logger
+                              )
         {
             OfferedServiceCategory = new OfferedServiceCategory(unitOfWork, mapper);
             FreelancerService = new FreelancerService(mapper, unitOfWork);

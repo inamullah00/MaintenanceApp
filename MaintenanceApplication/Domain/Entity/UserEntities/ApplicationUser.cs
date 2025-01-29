@@ -1,5 +1,4 @@
-﻿using Domain.Enums;
-using Maintenance.Domain.Entity.Dashboard;
+﻿using Maintenance.Domain.Entity.Dashboard;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
@@ -11,16 +10,12 @@ namespace Domain.Entity.UserEntities
 
         // Common fields
         public string? FullName { get; set; }
-     
+
         //[JsonConverter(typeof(Newtonsoft.Json.Converters.StringEnumConverter))]
         //public UserStatus Status { get; set; } // Enum: Pending, Approved, Suspended, Rejected
 
         public ICollection<Dispute> Disputes { get; set; }
-            
     }
-
-
-
 
     public class UserOtp
     {
