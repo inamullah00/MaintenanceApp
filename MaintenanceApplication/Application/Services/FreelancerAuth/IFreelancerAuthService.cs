@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+﻿using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount;
+using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
@@ -16,10 +17,11 @@ namespace Maintenance.Application.Services.FreelancerAuth
         Task<Result<Freelancer>> RegisterFreelancerAsync(FreelancerRegistrationDto registrationDto, CancellationToken cancellationToken);
 
         // Login a freelancer
-        Task<FreelancerLoginResponseDto> LoginAsync(FreelancerLoginDto loginDto);
+
+        Task<Result<FreelancerLoginResponseDto>> LoginAsync(FreelancerLoginDto loginDto, CancellationToken cancellationToken);
 
         // Logout method for Freelancer
-        Task<bool> LogoutAsync();
+        Task<Result<bool>> LogoutAsync(Guid freelancerId, CancellationToken cancellationToken);
 
         // Update freelancer profile information
         Task<Freelancer> UpdateProfileAsync(Guid freelancerId, FreelancerUpdateDto updateDto);
@@ -46,9 +48,9 @@ namespace Maintenance.Application.Services.FreelancerAuth
         // Reset password using a reset token
         Task<bool> ResetPasswordAsync(string resetToken, string newPassword);
         Task<bool> FreelancerApprovalAsync(Guid freelancerId); // Approve a freelancer
-        Task<Result<FreelancerProfileDto>> FreelancerPaginatedAsync(int pageNumber, int pageSize); // Paginated list of freelancers
-        Task<bool> BlockFreelancerAsync(Guid freelancerId); // Block a freelancer
-        Task<bool> UnBlockFreelancerAsync(Guid freelancerId); // Unblock a freelancer
+        Task<Result<FreelancerProfileDto>> FreelancerPaginatedAsync(int pageNumber, int pageSize); // Paginated list of freelancer
+        Task<Result<bool>> BlockFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken = default);
+        Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken); // Unblock a freelancer
 
     }
 }

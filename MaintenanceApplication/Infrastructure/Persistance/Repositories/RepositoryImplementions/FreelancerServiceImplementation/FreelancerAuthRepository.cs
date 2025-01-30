@@ -1,6 +1,7 @@
 ﻿using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -44,15 +45,13 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             throw new NotImplementedException();
         }
 
-        public Task<Freelancer> GetFreelancerByEmailAsync(string email)
+        public async Task<Freelancer?> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
 
-        public Task<Freelancer> GetFreelancerByIdAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
+            return await _dbContext.Freelancers
+                .AsNoTracking()
+                .FirstOrDefaultAsync(f => f.Id == freelancerId, cancellationToken);
+                }
 
         public Task<List<Freelancer>> GetFreelancersAsync(string keyword = null)
         {
@@ -79,9 +78,23 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             throw new NotImplementedException();
         }
 
-        public Task<Freelancer> UpdateFreelancerAsync(Freelancer freelancer)
+        public async Task<Freelancer> UpdateFreelancerAsync (Freelancer freelancer)
         {
-            throw new NotImplementedException();
+            if (freelancer == null)
+            {
+                throw new ArgumentNullException(nameof(freelancer), "Freelancer cannot be null");
+            }
+
+            _dbContext.Freelancers.Update(freelancer); // Update the freelancer in the DB
+           await _dbContext.SaveChangesAsync(); // Save changes to the database
+            return freelancer;
+        }
+
+        public async Task<Freelancer?> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            return await _dbContext.Freelancers
+          .AsNoTracking()
+          .FirstOrDefaultAsync(f => f.Email == email, cancellationToken);
         }
     }
 }

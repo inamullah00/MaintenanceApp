@@ -22,7 +22,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string? CivilID { get; set; }
         public string? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
-        public string Status { get; set; } // Account status (e.g., Pending, Active, Suspended)
+        public string Status { get; set; } = "Pending"; // Account status (e.g., Pending, Active, Suspended)
         public string Role { get; set; }
 
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer

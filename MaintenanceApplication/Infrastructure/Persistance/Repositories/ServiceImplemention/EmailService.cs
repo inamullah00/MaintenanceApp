@@ -1,23 +1,23 @@
-﻿using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
+﻿using Maintenance.Application.Communication;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maintenance.Infrastructure.Communication
+namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
     public class EmailService : IEmailService
     {
 
         private readonly IConfiguration _configuration;
-        private readonly ILogger<EmailService> _logger;
 
-        public EmailService(IConfiguration configuration, ILogger<EmailService> logger)
+
+        public EmailService(IConfiguration configuration)
         {
             _configuration = configuration;
-            _logger = logger;
+
         }
 
 
@@ -25,5 +25,6 @@ namespace Maintenance.Infrastructure.Communication
         {
             throw new NotImplementedException();
         }
+
     }
 }

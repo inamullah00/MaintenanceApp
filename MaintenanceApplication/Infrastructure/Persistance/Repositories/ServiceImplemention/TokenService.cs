@@ -1,4 +1,5 @@
-﻿using Maintenance.Domain.Entity.FreelancerEntites;
+﻿using Maintenance.Application.Security;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System;
@@ -9,7 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maintenance.Infrastructure.Security
+namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
     public class TokenService : ITokenService
     {
@@ -24,11 +25,11 @@ namespace Maintenance.Infrastructure.Security
         public string GenerateToken(Freelancer freelancer)
         {
             var claims = new List<Claim>
-        {
-            new Claim(ClaimTypes.NameIdentifier, freelancer.Id.ToString()),
-            new Claim(ClaimTypes.Email, freelancer.Email),
-            //new Claim(ClaimTypes.Role, freelancer.Role.ToString())
-        };
+            {
+                new Claim(ClaimTypes.NameIdentifier, freelancer.Id.ToString()),
+                new Claim(ClaimTypes.Email, freelancer.Email),
+                //new Claim(ClaimTypes.Role, freelancer.Role.ToString())
+            };
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);

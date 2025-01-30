@@ -20,5 +20,6 @@ namespace Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos
         public string CivilID { get; set; }
         public string ExperienceLevel { get; set; }
         public string PreviousWork { get; set; }
+        public string Status { get; set; } = "Pending";
     }
 }

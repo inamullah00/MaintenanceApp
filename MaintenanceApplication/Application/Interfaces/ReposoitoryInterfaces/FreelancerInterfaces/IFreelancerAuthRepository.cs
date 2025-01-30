@@ -13,10 +13,11 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<Freelancer> AddFreelancerAsync(Freelancer freelancer);
 
         // Get freelancer by ID
-        Task<Freelancer> GetFreelancerByIdAsync(Guid freelancerId);
+        Task<Freelancer?> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken);
 
-        // Get freelancer by email (useful for login and account verification)
-        Task<Freelancer> GetFreelancerByEmailAsync(string email);
+        // Get Freelancer By Email 
+
+       Task<Freelancer?> GetFreelancerByEmailAsync(string email , CancellationToken cancellationToken);
 
         // Get all freelancers (optionally with filtering keyword)
         Task<List<Freelancer>> GetFreelancersAsync(string keyword = null);

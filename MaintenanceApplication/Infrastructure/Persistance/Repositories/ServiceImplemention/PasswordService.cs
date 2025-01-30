@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using Maintenance.Application.Common;
+using Maintenance.Application.Security;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maintenance.Infrastructure.Security
+namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
     public class PasswordService : IPasswordService
     {

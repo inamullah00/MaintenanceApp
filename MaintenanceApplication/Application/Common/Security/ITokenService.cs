@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Maintenance.Infrastructure.Security
+namespace Maintenance.Application.Security
 {
     public interface ITokenService
     {
