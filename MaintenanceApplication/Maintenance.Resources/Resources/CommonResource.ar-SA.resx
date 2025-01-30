@@ -765,4 +765,13 @@
   <data name="IsCommissionIn%" xml:space="preserve">
     <value>هل العمولة في٪</value>
   </data>
+  <data name="Shtabi" xml:space="preserve">
+    <value>شتبي</value>
+  </data>
+  <data name="FirstName" xml:space="preserve">
+    <value>الاسم الأول</value>
+  </data>
+  <data name="LastName" xml:space="preserve">
+    <value>اسم العائلة</value>
+  </data>
 </root>

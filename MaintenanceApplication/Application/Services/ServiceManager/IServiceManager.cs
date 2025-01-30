@@ -1,4 +1,5 @@
 ﻿using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
@@ -8,11 +9,6 @@ using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.ClientPayment;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.OffereServiceCategory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Application.Services.ServiceManager
 {
@@ -26,9 +22,9 @@ namespace Maintenance.Application.Services.ServiceManager
         public IContentService ContentService { get; }
         public IDisputeService DisputeService { get; }
         public IFeedbackService FeedbackService { get; }
-        public IAdminFreelancerService AdminFreelancerService { get;} 
+        public IAdminFreelancerService AdminFreelancerService { get; }
         public IPaymentService PaymentService { get; }
         public INotificationService NotificationService { get; }
-
+        public IAdminService AdminService { get; }
     }
 }

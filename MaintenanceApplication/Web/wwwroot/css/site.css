@@ -122,3 +122,10 @@ body {
         bottom: 0;
         left: 0;
 }
+
+div.dataTables_wrapper div.dataTables_paginate ul.pagination .page-link {
+    padding: 0.594rem 0.9rem;
+    min-width: calc( 1.938rem + 0px );
+    font-size: 0.75rem;
+    line-height: 1;
+}

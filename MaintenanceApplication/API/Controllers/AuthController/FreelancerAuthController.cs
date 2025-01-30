@@ -1,12 +1,8 @@
 ﻿using Application.Dto_s.UserDto_s;
 using AutoMapper;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
-using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.FreelancerAuth.Filter;
-using Maintenance.Application.Services.ServiceManager;
-using Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.API.Controllers.AuthController
@@ -34,7 +30,7 @@ namespace Maintenance.API.Controllers.AuthController
 
         [HttpPost]
         [Route("Signup")]
-        public async Task<IActionResult> Signup(FreelancerRegistrationDto request , CancellationToken cancellationToken)
+        public async Task<IActionResult> Signup(FreelancerRegistrationDto request, CancellationToken cancellationToken)
         {
             try
             {
@@ -42,7 +38,7 @@ namespace Maintenance.API.Controllers.AuthController
 
                 var result = await _freelancerAuthService.RegisterFreelancerAsync(request, cancellationToken).ConfigureAwait(false);
 
-                if (result!=null)
+                if (result != null)
                 {
                     _logger.LogWarning("SignUp failed for freelancer: {FullName}, Message: {Message}", request.FullName, result.Message);
                     return BadRequest(result.Message);

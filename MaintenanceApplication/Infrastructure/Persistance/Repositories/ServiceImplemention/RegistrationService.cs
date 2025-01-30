@@ -154,7 +154,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             // Generate a numeric OTP
             var otp = GenerateNumericOtp(6); // Generate a 6-digit OTP
 
-            await SendSmsAsync("03191724454",otp);
+            await SendSmsAsync("03191724454", otp);
             return (true, "User registered successfully.");
 
 

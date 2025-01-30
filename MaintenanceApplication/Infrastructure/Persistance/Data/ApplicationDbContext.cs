@@ -1,6 +1,5 @@
 ﻿
 using Domain.Entity.UserEntities;
-using Domain.Enums;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
@@ -8,12 +7,6 @@ using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Maintenance.Infrastructure.Persistance.Data

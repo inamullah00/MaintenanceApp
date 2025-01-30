@@ -1,16 +1,11 @@
 ﻿using Ardalis.Specification;
 using Domain.Entity.UserEntities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Application.Services.Account.Specification
 {
     public class UserSearchList : Specification<ApplicationUser>
     {
-        public UserSearchList(string? keyword = "", string? role = "" )
+        public UserSearchList(string? keyword = "", string? role = "", int pageNumber = 1, int pageSize = 10)
         {
             if (!string.IsNullOrWhiteSpace(keyword))
             {
