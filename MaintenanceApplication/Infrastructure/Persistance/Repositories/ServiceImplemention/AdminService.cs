@@ -1,30 +1,26 @@
-﻿using Application.Interfaces.IUnitOFWork;
-using AutoMapper;
-using Domain.Entity.UserEntities;
+﻿using Domain.Entity.UserEntities;
+using Domain.Enums;
 using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
+using Maintenance.Application.Wrapper;
 using Maintenance.Infrastructure.Extensions;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServiceImplementation
+namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
     public class AdminService : IAdminService
     {
         private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUnitOfWork _unitOfWork;
-        private readonly IMapper _mapper;
         private readonly ApplicationDbContext _dbContext;
 
-        public AdminService(UserManager<ApplicationUser> userManager, IUnitOfWork unitOfWork, IMapper mapper, ApplicationDbContext dbContext)
+        public AdminService(UserManager<ApplicationUser> userManager, ApplicationDbContext dbContext)
         {
             _userManager = userManager;
-            _unitOfWork = unitOfWork;
-            _mapper = mapper;
             _dbContext = dbContext;
         }
 
@@ -37,30 +33,41 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             }).ToListAsync().ConfigureAwait(false);
             return customers;
         }
-        public async Task<GridResponseViewModel> GetFilteredUsers(UserFilterViewModel model)
+        public async Task<PaginatedResponse<UserResponseViewModel>> GetFilteredUsers(UserFilterViewModel model)
         {
             var query = _dbContext.Users.AsQueryable();
+
             if (!string.IsNullOrEmpty(model.UserId))
             {
                 query = query.Where(x => x.Id.ToString() == model.UserId);
             }
+
             var totalCount = await query.CountAsync();
-            var data = await query.Skip(model.Skip).Take(model.Take)
-                .Select(u => new UserResponseViewModel
-                {
-                    Id = u.Id,
-                    FirstName = u.FullName ?? string.Empty,
-                    PhoneNumber = u.PhoneNumber ?? string.Empty,
-                    EmailAddress = u.Email ?? string.Empty,
-                    //Role = u.Role,
-                    IsBlocked = u.LockoutEnd >= DateTime.Now
-                }).ToListAsync();
-            return new GridResponseViewModel
+
+            int skip = (model.Page - 1) * model.PageSize;
+
+            var users = await query.Skip(skip).Take(model.PageSize).ToListAsync();
+
+            var data = new List<UserResponseViewModel>();
+
+            foreach (var user in users)
             {
-                TotalCount = totalCount,
-                Data = data
-            };
+                var roles = await _userManager.GetRolesAsync(user);
+                data.Add(new UserResponseViewModel
+                {
+                    Id = user.Id,
+                    FullName = user.FullName ?? string.Empty,
+                    PhoneNumber = user.PhoneNumber ?? string.Empty,
+                    EmailAddress = user.Email ?? string.Empty,
+                    Role = roles.Any() ? string.Join(", ", roles) : "No Role",
+                    IsBlocked = user.LockoutEnd >= DateTime.Now
+                });
+            }
+
+            return new PaginatedResponse<UserResponseViewModel>(data, totalCount, model.Page, model.PageSize);
         }
+
+
 
 
         public async Task CreateAdmin(CreateUserViewModel model)
@@ -77,7 +84,6 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
                 FullName = model.FullName,
                 Email = model.EmailAddress,
                 PhoneNumber = model.PhoneNumber,
-                //Role = Role.Admin.ToString(),
                 SecurityStamp = Guid.NewGuid().ToString(),
             };
 
@@ -86,6 +92,13 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             {
                 var errorMessage = string.Join(", ", registerResult.Errors.Select(e => e.Description));
                 throw new CustomException($"User registration failed: {errorMessage}");
+            }
+
+            var roleAssignmentResult = await _userManager.AddToRoleAsync(userIdentity, Role.Admin.ToString());
+            if (!roleAssignmentResult.Succeeded)
+            {
+                var errorMessage = string.Join(", ", roleAssignmentResult.Errors.Select(e => e.Description));
+                throw new CustomException($"Failed to assign Admin role: {errorMessage}");
             }
         }
 
@@ -103,7 +116,7 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
             var userViewModel = new UserResponseViewModel
             {
                 Id = user.Id.ToString(),
-                FirstName = user.FullName ?? string.Empty,
+                FullName = user.FullName ?? string.Empty,
                 EmailAddress = user.Email ?? string.Empty,
                 PhoneNumber = user.PhoneNumber ?? string.Empty,
                 IsBlocked = user.LockoutEnd >= DateTime.Now
@@ -140,9 +153,9 @@ namespace Maintenance.Infrastructure.Repositories.ServiceImplemention.AdminServi
                 user.Email = model.EmailAddress;
             }
 
-            if (!string.IsNullOrEmpty(model.FirstName))
+            if (!string.IsNullOrEmpty(model.FullName))
             {
-                user.FullName = model.FirstName;
+                user.FullName = model.FullName;
             }
 
             if (!string.IsNullOrEmpty(model.PhoneNumber))

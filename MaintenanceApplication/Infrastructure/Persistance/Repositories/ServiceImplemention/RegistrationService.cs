@@ -6,12 +6,10 @@ using Domain.Entity.UserEntities;
 using MailKit.Net.Smtp;
 using MailKit.Security;
 using Maintenance.Application.Common.Utility;
-using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.Services.Account.Filter;
 using Maintenance.Application.Services.Account.Specification;
-using Maintenance.Application.Specifications;
 using Maintenance.Application.Wrapper;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.AspNetCore.Http;
@@ -156,8 +154,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             // Generate a numeric OTP
             var otp = GenerateNumericOtp(6); // Generate a 6-digit OTP
 
-            await SendSmsAsync("03191724454",otp);
+            await SendSmsAsync("03191724454", otp);
             return (true, "User registered successfully.");
+
+
         }
 
         public Task<(bool Success, string Message)> UserApprovalAsync()
@@ -236,13 +236,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<PaginatedResponse<UserDetailsResponseDto>>.Success(paginatedResponse, "Users retrieved successfully.", 200);
         }
 
-        public async Task<Result<CustomPagedResult<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null, int pageNumber = 1, int pageSize = 10)
+
+
+        public async Task<Result<List<UserDetailsResponseDto>>> UsersAsync(ISpecification<ApplicationUser>? specification = null)
         {
-            specification ??= new DefaultSpecification<ApplicationUser>();
             var queryResult = SpecificationEvaluator.Default.GetQuery(
-                query: _dbContext.Users.AsQueryable(),
-                specification: specification
-            );
+                          query: _dbContext.Users.AsQueryable(),
+                          specification: specification
+                           );
 
             var users = await (from AppUsers in queryResult
                                select new UserDetailsResponseDto
@@ -250,47 +251,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                                    Id = AppUsers.Id,
                                    FullName = AppUsers.FullName
                                }).ToListAsync();
-            var totalCount = await queryResult.CountAsync();
 
-            var items = await queryResult
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .Select(user => new UserDetailsResponseDto
-                {
-                    Id = user.Id,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    Status = user.Status.ToString(),
-                    Location = user.Location,
-                    Address = user.Address,
-                    ExpertiseArea = user.ExpertiseArea,
-                    MonthlyLimit = user.MonthlyLimit,
-                    OrdersCompleted = user.OrdersCompleted,
-                    TotalEarnings = user.TotalEarnings,
-                    ReportMonth = user.ReportMonth,
-                    Rating = user.Rating.ToString(),
-                    Bio = user.Bio,
-                    ApprovedDate = user.ApprovedDate,
-                    RegistrationDate = user.RegistrationDate,
-                    Skills = user.Skills,
-                    HourlyRate = user.HourlyRate,
-                    IsVerified = user.IsApprove,
-                    Email = user.Email,
-                    EmailConfirmed = user.EmailConfirmed
-                })
-                .ToListAsync();
-
-            var pagedResult = new CustomPagedResult<UserDetailsResponseDto>
-            {
-                Items = items,
-                PageNumber = pageNumber,
-                PageSize = pageSize,
-                TotalCount = totalCount,
-            };
-
-            return Result<CustomPagedResult<UserDetailsResponseDto>>.Success(pagedResult, "Users retrieved successfully.");
+            return Result<List<UserDetailsResponseDto>>.Success(users, "User found.", 200);
         }
-
 
         public Task<(bool Success, string Message)> UserProfileAsync()
         {
@@ -476,6 +439,18 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             return Result<UserProfileDto>.Success(updatedUserProfile, "Profile updated successfully", 200);
         }
+
+
+
+
+
+
+
+
+
+
+
+
 
         #region Validate Email
         private bool IsValidEmail(string email)

@@ -3,8 +3,9 @@
     public class UserFilterViewModel
     {
         public string? UserId { get; set; }
-        public int Skip { get; set; }
-        public int Take { get; set; }
+        public int Page { get; set; } = 1;
+        public int PageSize { get; set; } = 10;
     }
+
 
 }

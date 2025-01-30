@@ -1,6 +1,6 @@
 ﻿using Domain.Enums;
 using Maintenance.Application.Exceptions;
-using Maintenance.Application.Services.Admin.AdminSpecification;
+using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.ViewModel.User;
 using Maintenance.Web.Extensions;
@@ -9,20 +9,20 @@ using System.Net;
 
 namespace Maintenance.Web.Controllers
 {
-
     public class UsersController : Controller
     {
-        private readonly ILogger<IAdminService> _logger;
-        private readonly IAdminService _adminService;
+        private readonly ILogger<UsersController> _logger;
+        private readonly IServiceManager _serviceManager;
 
-        public UsersController(ILogger<IAdminService> logger, IAdminService adminService)
+        public UsersController(ILogger<UsersController> logger, IServiceManager serviceManager)
         {
             _logger = logger;
-            _adminService = adminService;
+            _serviceManager = serviceManager;
         }
+
         public async Task<IActionResult> Index()
         {
-            ViewBag.Users = await _adminService.GetUsersForDropdown();
+            ViewBag.Users = await _serviceManager.AdminService.GetUsersForDropdown();
             return View(new UsersDatatableFilterViewModel());
         }
 
@@ -32,18 +32,24 @@ namespace Maintenance.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> GetFilteredUsers([FromForm] UsersDatatableFilterViewModel model)
+        public async Task<IActionResult> GetFilteredUsers(UsersDatatableFilterViewModel model)
         {
-            var response = await _adminService.GetFilteredUsers(new UserFilterViewModel
+            var result = await _serviceManager.AdminService.GetFilteredUsers(new UserFilterViewModel
             {
                 UserId = model.UserId,
-                Skip = model.start,
-                Take = model.length
+                Page = (model.start / model.length) + 1,
+                PageSize = model.length
             });
 
-            var jsonData = new { draw = model.draw, recordsFiltered = response.TotalCount, recordsTotal = response.TotalCount, data = response.Data };
-            return Ok(jsonData);
+            return Json(new
+            {
+                draw = model.draw,
+                recordsTotal = result.TotalCount,
+                recordsFiltered = result.TotalCount,
+                data = result.Data
+            });
         }
+
 
 
         [HttpPost]
@@ -51,7 +57,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.CreateAdmin(model);
+                await _serviceManager.AdminService.CreateAdmin(model);
                 this.NotifySuccess("User created Successfully");
                 return RedirectToAction(nameof(Index));
             }
@@ -74,12 +80,11 @@ namespace Maintenance.Web.Controllers
             try
             {
 
-                var userResponse = await _adminService.GetAdminById(id);
+                var userResponse = await _serviceManager.AdminService.GetAdminById(id);
                 var editViewModel = new UpdateUserViewModel
                 {
                     Id = id,
-                    FirstName = userResponse.FirstName,
-                    LastName = userResponse.LastName,
+                    FullName = userResponse.FullName,
                     EmailAddress = userResponse.EmailAddress,
                     PhoneNumber = userResponse.PhoneNumber,
                 };
@@ -99,7 +104,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.EditAdminProfileAsync(model);
+                await _serviceManager.AdminService.EditAdminProfileAsync(model);
 
                 this.NotifySuccess("User updated successfully");
                 return RedirectToAction(nameof(Index));
@@ -117,7 +122,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.BlockUser(id);
+                await _serviceManager.AdminService.BlockUser(id);
                 return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully blocked user");
             }
             catch (CustomException ex)
@@ -137,7 +142,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.UnblockUser(id);
+                await _serviceManager.AdminService.UnblockUser(id);
                 return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully unblocked user");
             }
             catch (CustomException ex)
@@ -162,7 +167,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.ChangePassword(model);
+                await _serviceManager.AdminService.ChangePassword(model);
                 this.NotifySuccess("Password Changed Successfully.");
                 return RedirectToAction("Index", "Home");
             }
@@ -184,7 +189,7 @@ namespace Maintenance.Web.Controllers
         {
             try
             {
-                await _adminService.ResetPassword(model);
+                await _serviceManager.AdminService.ResetPassword(model);
                 return this.ApiSuccessResponse(HttpStatusCode.OK, "Password Reset Successfull.");
             }
             catch (CustomException ex)

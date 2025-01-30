@@ -12,17 +12,9 @@
         }
     },
     columns: [
-        { data: 'FirstName', name: 'FirstName', "autoWidth": true },
-        { data: 'LastName', name: 'LastName', "autoWidth": true },
+        { data: 'FullName', name: 'FullName', "autoWidth": true },
         { data: 'EmailAddress', name: 'Email', "autoWidth": true },
         { data: 'PhoneNumber', name: 'Mobile', "autoWidth": true },
-        {
-            data: 'Status',
-            render: function () {
-                return `<span class="badge bg-success">Approved</span>`;
-            },
-            "autoWidth": true
-        },
         {
             data: 'Role',
             render: function (data) {
@@ -56,7 +48,9 @@
             "className": "text-center"
         }
 
-    ]
+    ],
+    "pageLength": 10,
+    "lengthMenu": [[10, 25, 50], [10, 25, 50]]
 });
 
 
@@ -116,7 +110,7 @@ $(document).on("click", ".blockUser", function () {
                 success: function (response) {
                     if (response.Status == "Success") {
                         SuccessToast(response.Message);
-                        window.location.reload();
+                        table.ajax.reload(null, false); 
                     }
                     else {
                         InfoToast(response.Errors.join("\n"))
@@ -147,7 +141,7 @@ $(document).on("click", ".unBlockUser", function () {
                 success: function (response) {
                     if (response.Status == "Success") {
                         SuccessToast(response.Message);
-                        window.location.reload();
+                        table.ajax.reload(null, false); 
                     }
                     else {
                         InfoToast(response.Errors.join("\n"))

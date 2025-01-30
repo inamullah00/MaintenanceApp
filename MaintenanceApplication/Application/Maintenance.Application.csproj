@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Folder Include="Common\Caching\" />
+    <Folder Include="Interfaces\ReposoitoryInterfaces\AdminInterfaces\" />
     <Folder Include="Mailing\" />
     <Folder Include="Services\Admin\ContentSpecification\Filter\" />
     <Folder Include="Services\Admin\DisputeSpecification\Filter\" />
