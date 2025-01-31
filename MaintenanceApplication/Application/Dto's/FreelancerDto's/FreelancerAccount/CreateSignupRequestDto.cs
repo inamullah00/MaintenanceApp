@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount
+﻿namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount
 {
     public class CreateSignupRequestDto
     {
@@ -13,7 +7,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
-        public AreaOfExpertise AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? CivilID { get; set; }

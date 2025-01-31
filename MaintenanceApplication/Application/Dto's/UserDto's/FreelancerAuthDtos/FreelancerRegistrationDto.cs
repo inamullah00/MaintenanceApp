@@ -7,7 +7,6 @@
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
-        public AreaOfExpertise AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? CivilID { get; set; }
