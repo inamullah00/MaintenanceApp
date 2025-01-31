@@ -1,12 +1,7 @@
 ﻿using Domain.Common;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntities;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.FreelancerEntites
 {
@@ -17,11 +12,10 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string Password { get; set; }
         public string PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
-        public AreaOfExpertise AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? CivilID { get; set; }
-        public string? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
+        public ExperienceLevel? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
         public AccountStatus Status { get; set; }  // Account status (e.g., Pending, Active, Suspended)
         public Guid? CountryId { get; set; }
@@ -33,10 +27,10 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public ICollection<Feedback> ClientFeedbacks { get; set; }
 
         // Many-to-many relationship with Service (Freelancer selects multiple services)
-        public ICollection<FreelancerTopServices> FreelancerTopServices { get; set; }
+        public ICollection<FreelancerService> FreelancerServices { get; set; }
 
-        [ForeignKey(nameof(CountryId))] 
-        public Country? country { get; set; }
+        [ForeignKey(nameof(CountryId))]
+        public Country? Country { get; set; }
 
     }
 }
@@ -53,14 +47,11 @@ public enum AccountStatus
 
 
 
-public enum AreaOfExpertise
+public enum ExperienceLevel
 {
-    Plumbing = 1,
-    Electrician = 2,
-    Cleaning = 3,
-    Carpentry = 4,
-    Painting = 5,
-    Other = 6 // You can add more as required
+    Newbie = 1,
+    Experienced = 2,
+    Expert = 3,
 }
 
 

@@ -5,6 +5,7 @@ using Maintenance.Application.Common;
 using Maintenance.Application.Communication;
 using Maintenance.Application.Security;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
@@ -16,7 +17,6 @@ using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.OffereServiceCategory;
 using Maintenance.Application.Services.ServiceManager;
-using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Infrastructure.Persistance.Data;
 using Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention;
 using Microsoft.AspNetCore.Http;
@@ -24,11 +24,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
@@ -45,9 +40,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public IAdminFreelancerService AdminFreelancerService { get; private set; }
         public IPaymentService PaymentService { get; private set; }
         public INotificationService NotificationService { get; private set; }
-       public IFreelancerAuthService FreelancerAuthService { get; private set; }
+        public IFreelancerAuthService FreelancerAuthService { get; private set; }
+        public IAdminService AdminService { get; private set; }
 
-       public IPasswordService PasswordService { get; private set; }
+        public IPasswordService PasswordService { get; private set; }
 
         public ITokenService TokenService { get; private set; }
 
@@ -62,10 +58,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                               IMemoryCache memoryCache,
                               ApplicationDbContext dbContext,
                               IMapper mapper,
-                              ILogger<NotificationService> logger , 
+                              ILogger<NotificationService> logger,
                              ITokenService tokenService,
                               IPasswordService PasswordService
-            
+
             )
         {
             OfferedServiceCategory = new OfferedServiceCategory(unitOfWork, mapper);
@@ -79,10 +75,11 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper);
             PaymentService = new PaymentService(unitOfWork, mapper);
             NotificationService = new NotificationService(unitOfWork, mapper, logger);
-            FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper , PasswordService , tokenService);
+            FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService);
             PasswordService = new PasswordService();
             TokenService = new TokenService(configuration);
             EmailService = new EmailService(configuration);
+            AdminService = new AdminService(userManager, dbContext);
         }
     }
 }

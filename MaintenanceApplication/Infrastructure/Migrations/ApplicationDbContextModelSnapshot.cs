@@ -492,10 +492,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<int>("AreaOfExpertise")
-                        .HasMaxLength(100)
-                        .HasColumnType("int");
-
                     b.Property<string>("Bio")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
@@ -520,9 +516,9 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<string>("ExperienceLevel")
+                    b.Property<int?>("ExperienceLevel")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("int");
 
                     b.Property<string>("FullName")
                         .IsRequired()
@@ -596,7 +592,7 @@ namespace Maintenance.Infrastructure.Migrations
                     b.ToTable("Country");
                 });
 
-            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerTopServices", b =>
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerService", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -622,7 +618,7 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("FreelancerTopServices");
+                    b.ToTable("FreelancerService");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Service", b =>
@@ -670,19 +666,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "be058a74-0327-48f6-adf3-a9009ff6c441",
+                            Id = "14cdd25a-c79f-465d-9246-d0b50c9b2ce8",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f7523748-3324-44bd-9565-12108e39a124",
+                            Id = "c50cda6c-fa8a-4041-9760-c753061a82c1",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "0a1cb165-3ef7-4b26-80a6-3935799a7f75",
+                            Id = "30964f5f-db56-407e-9965-8f3244ce4b66",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -851,8 +847,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "1791d2c4-968d-4fd4-903a-ec917eb5560f",
-                            RoleId = "be058a74-0327-48f6-adf3-a9009ff6c441"
+                            UserId = "98d6d110-3b15-48fe-9029-096340d116b2",
+                            RoleId = "14cdd25a-c79f-465d-9246-d0b50c9b2ce8"
                         });
                 });
 
@@ -890,17 +886,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1791d2c4-968d-4fd4-903a-ec917eb5560f",
+                            Id = "98d6d110-3b15-48fe-9029-096340d116b2",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "7940b0e6-e14e-400f-a6e6-f1f71cf8e30e",
+                            ConcurrencyStamp = "f0f608f0-eb14-48dd-bc06-781373a81cf8",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEBmopGyRYEadU5C3xjiBdG5/t2PtdCGUaGtSOjtjhvNoMlk5yITQgtdHFv/bE1EP9g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEOz6TSfELhIWM3Ahrhl8kuJ6H2CXzPMac3teaY6JD5TDF781M62qBHsM9tAnzAjD9w==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "72a9ef4b-39fa-4ebf-ad38-7fd4ad25db1e",
+                            SecurityStamp = "1bd495fc-7234-4fb8-8fcd-cb1798647494",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"
@@ -1030,23 +1026,23 @@ namespace Maintenance.Infrastructure.Migrations
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", b =>
                 {
-                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Country", "country")
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
 
-                    b.Navigation("country");
+                    b.Navigation("Country");
                 });
 
-            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerTopServices", b =>
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerService", b =>
                 {
                     b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", "Freelancer")
-                        .WithMany("FreelancerTopServices")
+                        .WithMany("FreelancerServices")
                         .HasForeignKey("FreelancerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Service", "Service")
-                        .WithMany("FreelancerTopServices")
+                        .WithMany("FreelancerServices")
                         .HasForeignKey("ServiceId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1141,12 +1137,12 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.Navigation("FreelancerOrders");
 
-                    b.Navigation("FreelancerTopServices");
+                    b.Navigation("FreelancerServices");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Service", b =>
                 {
-                    b.Navigation("FreelancerTopServices");
+                    b.Navigation("FreelancerServices");
                 });
 
             modelBuilder.Entity("Domain.Entity.UserEntities.ApplicationUser", b =>
