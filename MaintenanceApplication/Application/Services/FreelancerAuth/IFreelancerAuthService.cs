@@ -39,8 +39,8 @@ namespace Maintenance.Application.Services.FreelancerAuth
         Task<bool> ReactivateAccountAsync(Guid freelancerId);
 
         // Get freelancer profile by ID
-        Task<FreelancerProfileDto> GetFreelancerProfileAsync(Guid freelancerId);
-        Task<List<FreelancerProfileDto>> GetFreelancersAsync(string Keyword);
+        Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId,CancellationToken cancellationToken);
+        Task<Result<List<FreelancerProfileDto>>> GetFreelancersAsync(string Keyword);
 
         // Forgot password (send reset email)
         Task<bool> ForgotPasswordAsync(string email);

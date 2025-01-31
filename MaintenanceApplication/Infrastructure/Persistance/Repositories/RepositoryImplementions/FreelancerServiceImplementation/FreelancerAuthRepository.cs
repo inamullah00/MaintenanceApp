@@ -1,4 +1,6 @@
-﻿using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
+﻿using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
+using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
@@ -45,17 +47,41 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             throw new NotImplementedException();
         }
 
-        public async Task<Freelancer?> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken)
+        public async Task<FreelancerProfileDto> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken)
         {
 
-            return await _dbContext.Freelancers
-                .AsNoTracking()
-                .FirstOrDefaultAsync(f => f.Id == freelancerId, cancellationToken);
-                }
+            var freelancer = await _dbContext.Freelancers
+                 .AsNoTracking()
+                 .Select(f => new FreelancerProfileDto
+                 {
+                     Id = f.Id,
+                     FullName = f.FullName,
+                     Email = f.Email,
+                     ProfilePicture = f.ProfilePicture,
+                     AreaOfExpertise = f.AreaOfExpertise.ToString(),
+                     Status = f.Status.ToString()
+                 })
+                 .FirstOrDefaultAsync(x => x.Id == freelancerId);
 
-        public Task<List<Freelancer>> GetFreelancersAsync(string keyword = null)
+            return freelancer;
+        }
+
+        public async Task<List<FreelancerProfileDto>> GetFreelancersAsync(string keyword = null)
         {
-            throw new NotImplementedException();
+            var freelancers = await _dbContext.Freelancers
+                  .AsNoTracking()
+                  .Select(f => new FreelancerProfileDto
+                  {
+                      Id = f.Id,
+                      FullName = f.FullName,
+                      Email = f.Email,
+                      ProfilePicture = f.ProfilePicture,
+                      AreaOfExpertise = f.AreaOfExpertise.ToString(),
+                      Status = f.Status.ToString()
+                  })
+                  .ToListAsync();
+
+            return freelancers;
         }
 
         public Task<(List<Freelancer>, int)> GetFreelancersPaginatedAsync(int pageNumber, int pageSize)

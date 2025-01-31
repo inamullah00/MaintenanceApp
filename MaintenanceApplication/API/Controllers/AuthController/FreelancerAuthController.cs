@@ -254,15 +254,15 @@ namespace Maintenance.API.Controllers.AuthController
 
                 var result = await _serviceManager.FreelancerAuthService.GetFreelancersAsync(Keyword);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer list retrieved successfully.");
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer list retrieved successfully.");
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to retrieve freelancer list. Message: {Message}", result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to retrieve freelancer list. Message: {Message}", result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+              
             }
             catch (Exception ex)
             {
@@ -282,7 +282,7 @@ namespace Maintenance.API.Controllers.AuthController
             {
                 _logger.LogInformation("Fetching paginated list of freelancers with filter: {Filter}", filter);
 
-                //var result = await _freelancerAuthService.FreelancerPaginatedAsync(filter);
+                //var result = await _serviceManager.FreelancerAuthService.FreelancerPaginatedAsync(filter);
 
                 //if (result.IsSuccess)
                 //{
@@ -292,7 +292,7 @@ namespace Maintenance.API.Controllers.AuthController
 
                 //_logger.LogWarning("Failed to retrieve paginated freelancer list. Message: {Message}", result.Message);
                 //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                return null; 
             }
             catch (Exception ex)
             {
@@ -305,8 +305,8 @@ namespace Maintenance.API.Controllers.AuthController
 
         #region Freelancer-Details
         [HttpGet]
-        [Route("Freelancer-Details/{FreelancerId:guid}")]
-        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId)
+        [Route("Freelancer-Details/{freelancerId:guid}")]
+        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId,CancellationToken cancellationToken)
         {
             try
             {
@@ -317,17 +317,17 @@ namespace Maintenance.API.Controllers.AuthController
 
                 _logger.LogInformation("Fetching details for freelancer with ID: {FreelancerId}", freelancerId);
 
-                var result = await _serviceManager.FreelancerAuthService.GetFreelancerProfileAsync(freelancerId);
+                var result = await _serviceManager.FreelancerAuthService.GetFreelancerProfileAsync(freelancerId, cancellationToken);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer details retrieved successfully for ID: {FreelancerId}", freelancerId);
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer details retrieved successfully for ID: {FreelancerId}", freelancerId);
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to retrieve freelancer details for ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to retrieve freelancer details for ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+             
             }
             catch (Exception ex)
             {

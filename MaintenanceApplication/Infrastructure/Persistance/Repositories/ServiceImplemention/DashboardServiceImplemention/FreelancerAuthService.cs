@@ -7,6 +7,7 @@ using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Security;
 using Maintenance.Application.Services.FreelancerAuth;
+using Maintenance.Application.Services.FreelancerAuth.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Http;
@@ -48,16 +49,18 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<bool>.Failure("Freelancer not found.", StatusCodes.Status404NotFound);
             }
 
-            if (freelancer.Status == "Blocked")
-            {
-                return Result<bool>.Failure("Freelancer is already blocked.", StatusCodes.Status400BadRequest);
-            }
+            //if (freelancer.Status == "Blocked")
+            //{
+            //    return Result<bool>.Failure("Freelancer is already blocked.", StatusCodes.Status400BadRequest);
+            //}
 
             // Update freelancer status to blocked
-            freelancer.Status = updateDto.Status ;
+            //freelancer.Status = updateDto.Status ;
             //freelancer.BlockedAt = DateTime.UtcNow;
 
-            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(freelancer);
+            var freelancerEntity = _mapper.Map<Freelancer>(freelancer);
+
+            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(freelancerEntity);
 
             return Result<bool>.Success(true, "Freelancer has been successfully blocked.", StatusCodes.Status200OK);
         }
@@ -84,17 +87,42 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             throw new NotImplementedException();
         }
 
-        public Task<FreelancerProfileDto> GetFreelancerProfileAsync(Guid freelancerId)
+        #region Get Freelancer Profile
+        public async Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId , CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+            if (freelancerId == Guid.Empty)
+            {
+                return Result<FreelancerProfileDto>.Failure(ErrorMessages.InvalidFreelancerId, StatusCodes.Status400BadRequest);
+            }
 
-        public Task<List<FreelancerProfileDto>> GetFreelancersAsync(string Keyword)
+            var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByIdAsync(freelancerId, cancellationToken);
+
+            if (freelancer == null)
+            {
+                return Result<FreelancerProfileDto>.Failure(ErrorMessages.FreelancerNotFound, StatusCodes.Status404NotFound);
+            }
+
+            var freelancerProfile = _mapper.Map<FreelancerProfileDto>(freelancer);
+
+            return Result<FreelancerProfileDto>.Success(freelancerProfile, SuccessMessages.FreelancersFetchedSuccessfully, StatusCodes.Status200OK);
+        }
+        #endregion
+
+
+        #region Get All Freelancers
+        public async Task<Result<List<FreelancerProfileDto>>> GetFreelancersAsync(string keyword)
         {
-            throw new NotImplementedException();
-        }
+            // Apply search filter
+            FreelancerSearchSpecification specification = new(keyword);
 
-       
+            // Fetch freelancers from the repository
+            var freelancers = await _unitOfWork.FreelancerAuthRepository.GetFreelancersAsync();
+
+            return Result<List<FreelancerProfileDto>>.Success(freelancers, SuccessMessages.FreelancersFetchedSuccessfully, StatusCodes.Status200OK);
+        }
+        #endregion
+
+
         #region Login
         public async Task<Result<FreelancerLoginResponseDto>> LoginAsync(FreelancerLoginDto loginDto, CancellationToken cancellationToken)
         {
@@ -149,7 +177,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             // Remove refresh token from DB if stored
             //freelancer.RefreshTokenExpiryTime = null;
 
-            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(freelancer);
+            var FreelancerEntity = _mapper.Map<Freelancer>(freelancer);
+
+            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(FreelancerEntity);
            
 
             return Result<bool>.Success(true, "Logout successful.", StatusCodes.Status200OK);
@@ -222,16 +252,18 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<bool>.Failure("Freelancer not found.", StatusCodes.Status404NotFound);
             }
 
-            if (freelancer.Status == "Active")
-            {
-                return Result<bool>.Failure("Freelancer is already an Active State.", StatusCodes.Status400BadRequest);
-            }
+            //if (freelancer.Status == "Active")
+            //{
+            //    return Result<bool>.Failure("Freelancer is already an Active State.", StatusCodes.Status400BadRequest);
+            //}
 
             // Update freelancer status to blocked
-            freelancer.Status = updateDto.Status;
+            //freelancer.Status = updateDto.Status;
             //freelancer.BlockedAt = DateTime.UtcNow;
 
-            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(freelancer);
+            var FreelancerEntity = _mapper.Map<Freelancer>(freelancer);
+
+            await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(FreelancerEntity);
 
             return Result<bool>.Success(true, "Freelancer has been successfully Unblocked.", StatusCodes.Status200OK);
         }

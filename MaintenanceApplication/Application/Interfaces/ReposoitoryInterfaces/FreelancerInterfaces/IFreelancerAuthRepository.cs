@@ -1,4 +1,5 @@
-﻿using Maintenance.Domain.Entity.FreelancerEntites;
+﻿using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,14 +14,14 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<Freelancer> AddFreelancerAsync(Freelancer freelancer);
 
         // Get freelancer by ID
-        Task<Freelancer?> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken);
+        Task<FreelancerProfileDto> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken);
 
         // Get Freelancer By Email 
 
        Task<Freelancer?> GetFreelancerByEmailAsync(string email , CancellationToken cancellationToken);
 
         // Get all freelancers (optionally with filtering keyword)
-        Task<List<Freelancer>> GetFreelancersAsync(string keyword = null);
+        Task<List<FreelancerProfileDto>> GetFreelancersAsync(string keyword = null);
 
         // Update freelancer details
         Task<Freelancer> UpdateFreelancerAsync(Freelancer freelancer);
