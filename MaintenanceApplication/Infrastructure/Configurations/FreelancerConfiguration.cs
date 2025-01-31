@@ -63,7 +63,7 @@ namespace Maintenance.Infrastructure.Configurations
                 .IsRequired();
 
             builder.Property(f => f.UpdatedAt)
-                .IsRequired(false); // UpdatedAt is optional
+                .IsRequired(false);
 
 
             // Relationships
