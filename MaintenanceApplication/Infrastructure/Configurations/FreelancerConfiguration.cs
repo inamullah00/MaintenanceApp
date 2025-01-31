@@ -42,7 +42,7 @@ namespace Maintenance.Infrastructure.Configurations
 
             builder.Property(f => f.AreaOfExpertise)
                 .HasMaxLength(100) // Optional: Set max length for AreaOfExpertise
-                .IsRequired(false); // Optional: the area of expertise
+                .IsRequired(); // Optional: the area of expertise
 
             builder.Property(f => f.Bio)
                 .HasMaxLength(500) // Limit bio to 500 characters
@@ -50,10 +50,6 @@ namespace Maintenance.Infrastructure.Configurations
 
             builder.Property(f => f.DateOfBirth)
                 .IsRequired(); // DateOfBirth is required
-
-            builder.Property(f => f.Country)
-                .HasMaxLength(100) // Optional: max length for country name
-                .IsRequired(false); // Optional: country
 
             builder.Property(f => f.CivilID)
                 .HasMaxLength(100) // Optional: max length for Civil ID
@@ -78,25 +74,43 @@ namespace Maintenance.Infrastructure.Configurations
             builder.Property(f => f.UpdatedAt)
                 .IsRequired(false); // UpdatedAt is optional
 
-            // Relationships Configuration
 
-            // One-to-many relationship between Freelancer and Bid
+            // Relationships
+
+            // One-to-Many: Freelancer to Bids
             builder.HasMany(f => f.Bids)
-                .WithOne(b => b.Freelancer) // Each bid is linked to one freelancer
-                .HasForeignKey(b => b.FreelancerId); // FreelancerId is the foreign key in the Bid entity
-                //.OnDelete(DeleteBehavior.Cascade); // If freelancer is deleted, delete related bids (optional)
+                .WithOne(b => b.Freelancer)
+                .HasForeignKey(b => b.FreelancerId);
 
-            // One-to-many relationship between Freelancer and Order
+            // One-to-Many: Freelancer to Orders
             builder.HasMany(f => f.FreelancerOrders)
-                .WithOne(o => o.Freelancers) // Each order is related to one freelancer
-                .HasForeignKey(o => o.FreelancerId); // FreelancerId is the foreign key in the Order entity
-                //.OnDelete(DeleteBehavior.Cascade); // Cascade delete if needed (optional)
+                .WithOne(o => o.Freelancers)
+                .HasForeignKey(o => o.FreelancerId);
 
-            // One-to-many relationship between Freelancer and Feedback (ClientFeedbacks)
+            // One-to-Many: Freelancer to Feedbacks
             builder.HasMany(f => f.ClientFeedbacks)
-                .WithOne(feedback => feedback.Freelancer) // Each feedback is related to one freelancer
-                .HasForeignKey(feedback => feedback.FeedbackOnFreelancerId); // FeedbackOnFreelancerId is the foreign key in the Feedback entity
-                //.OnDelete(DeleteBehavior.Cascade); // Cascade delete if needed (optional)
+                .WithOne(feedback => feedback.FeedbackOnFreelancer)
+                .HasForeignKey(feedback => feedback.FeedbackOnFreelancerId);
+
+            // Many-to-Many: Freelancer to Services
+            builder.HasMany(f => f.FreelancerTopServices)
+                .WithOne(fts => fts.Freelancer)
+                .HasForeignKey(fts => fts.FreelancerId);
+
+            // One-to-One: Freelancer to Country
+            builder.HasOne(f => f.country)
+                .WithMany()
+                .HasForeignKey(f => f.CountryId)
+                .IsRequired(false);
+            
+
+            // BaseEntity properties (if applicable)
+            builder.Property(f => f.CreatedAt)
+                .HasDefaultValueSql("GETUTCDATE()")
+                .IsRequired();
+
+            builder.Property(f => f.UpdatedAt)
+                .IsRequired(false);
 
         }
     }

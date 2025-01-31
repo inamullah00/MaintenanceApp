@@ -39,10 +39,6 @@ namespace Maintenance.Infrastructure.Configurations
                    .HasDefaultValueSql("GETDATE()")  // Default value for CreatedAt is current date
                    .IsRequired();  // CreatedAt is required
 
-            // Nullable property ResolvedAt
-            builder.Property(d => d.ResolvedAt)
-                   .IsRequired(false);  // ResolvedAt is nullable
-
             // ResolvedByAdminId: Foreign Key to ApplicationUser (Admin)
             builder.HasOne(d => d.ResolvedByUser)
                    .WithMany()  // Assuming one admin can resolve multiple disputes

@@ -2,6 +2,8 @@
 using Application.Interfaces.ReposoitoryInterfaces;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+using Maintenance.Application.Common;
+using Maintenance.Application.Security;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
@@ -32,7 +34,8 @@ namespace API.DependancyContainer
             //services.AddScoped<IDisputeService,DisputeService>();
             //services.AddScoped<IContentService,ContentService>();
             //services.AddScoped<IAdminFreelancerService,AdminFreelancerService>();
-            //services.AddScoped<IFeedbackService,FeedbackService>();
+            services.AddScoped<IPasswordService,PasswordService>();
+            services.AddScoped<ITokenService,TokenService>();
 
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

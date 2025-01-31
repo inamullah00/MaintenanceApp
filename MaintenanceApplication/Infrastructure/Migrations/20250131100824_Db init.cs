@@ -64,7 +64,9 @@ namespace Maintenance.Infrastructure.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ConfirmPassword = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Country = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -89,29 +91,20 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Freelancers",
+                name: "Country",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
-                    ProfilePicture = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    AreaOfExpertise = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Bio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Country = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    CivilID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExperienceLevel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    PreviousWork = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    Status = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CountryCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    FlagCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    DialCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Freelancers", x => x.Id);
+                    table.PrimaryKey("PK_Country", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -120,11 +113,25 @@ namespace Maintenance.Infrastructure.Migrations
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(200)", maxLength: 200, nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false, defaultValue: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_OfferedServiceCategories", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Service",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Service", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -249,20 +256,33 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Notifications",
+                name: "Freelancers",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false)
+                    FullName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
+                    ProfilePicture = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    AreaOfExpertise = table.Column<int>(type: "int", maxLength: 100, nullable: false),
+                    Bio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CivilID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    ExperienceLevel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    PreviousWork = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    Status = table.Column<int>(type: "int", maxLength: 20, nullable: false),
+                    CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.PrimaryKey("PK_Freelancers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Notifications_Freelancers_FreelancerId",
-                        column: x => x.FreelancerId,
-                        principalTable: "Freelancers",
+                        name: "FK_Freelancers_Country_CountryId",
+                        column: x => x.CountryId,
+                        principalTable: "Country",
                         principalColumn: "Id");
                 });
 
@@ -305,6 +325,54 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FreelancerTopServices",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FreelancerTopServices", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FreelancerTopServices_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_FreelancerTopServices_Service_ServiceId",
+                        column: x => x.ServiceId,
+                        principalTable: "Service",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Notifications",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    IsRead = table.Column<bool>(type: "bit", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Notifications", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Notifications_Freelancers_FreelancerId",
+                        column: x => x.FreelancerId,
+                        principalTable: "Freelancers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Bids",
                 columns: table => new
                 {
@@ -314,10 +382,11 @@ namespace Maintenance.Infrastructure.Migrations
                     OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     CurrentRating = table.Column<double>(type: "float", nullable: true),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true)
+                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -346,12 +415,12 @@ namespace Maintenance.Infrastructure.Migrations
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Budget = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     CompletedDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     TotalAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     FreelancerAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     IsApproveByAdmin = table.Column<bool>(type: "bit", nullable: false),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()")
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -384,11 +453,11 @@ namespace Maintenance.Infrastructure.Migrations
                     DisputeDescription = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
                     DisputeStatus = table.Column<int>(type: "int", nullable: false, defaultValue: 2),
                     ResolutionDetails = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    ResolvedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ResolvedByAdminId = table.Column<string>(type: "nvarchar(450)", nullable: true),
                     ApplicationUserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    OrderId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    OrderId1 = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -427,10 +496,10 @@ namespace Maintenance.Infrastructure.Migrations
                     FeedbackOnFreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Rating = table.Column<int>(type: "int", nullable: false),
                     Comment = table.Column<string>(type: "nvarchar(1000)", maxLength: 1000, nullable: false),
-                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
-                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
                     ClientId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                    FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETDATE()"),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true, defaultValueSql: "GETDATE()")
                 },
                 constraints: table =>
                 {
@@ -469,20 +538,20 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "110abe18-7199-410f-837e-c7df1455748e", null, "Admin", "ADMIN" },
-                    { "db5372e0-4301-4381-855f-bd703f793e51", null, "Freelancer", "FREELANCER" },
-                    { "e237606a-5b47-42b0-9a06-275d815b73dd", null, "Client", "CLIENT" }
+                    { "0a1cb165-3ef7-4b26-80a6-3935799a7f75", null, "Freelancer", "FREELANCER" },
+                    { "be058a74-0327-48f6-adf3-a9009ff6c441", null, "Admin", "ADMIN" },
+                    { "f7523748-3324-44bd-9565-12108e39a124", null, "Client", "CLIENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "3a0c6c3e-e010-4287-b077-5f6ab624ecb3", 0, "f3b65cf7-1cb0-4ed5-ae57-2732a7348dbf", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEMfoV49mp3uN6EBeBLAErqfmCFkBWixB6p8isXLj4obBk4qRwbCxWdTl5jwxlk6Zug==", null, false, "1455c3bf-e154-44b8-ba86-e0c54ca0b749", false, "admin" });
+                values: new object[] { "1791d2c4-968d-4fd4-903a-ec917eb5560f", 0, "7940b0e6-e14e-400f-a6e6-f1f71cf8e30e", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEBmopGyRYEadU5C3xjiBdG5/t2PtdCGUaGtSOjtjhvNoMlk5yITQgtdHFv/bE1EP9g==", null, false, "72a9ef4b-39fa-4ebf-ad38-7fd4ad25db1e", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "110abe18-7199-410f-837e-c7df1455748e", "3a0c6c3e-e010-4287-b077-5f6ab624ecb3" });
+                values: new object[] { "be058a74-0327-48f6-adf3-a9009ff6c441", "1791d2c4-968d-4fd4-903a-ec917eb5560f" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -603,6 +672,21 @@ namespace Maintenance.Infrastructure.Migrations
                 column: "OrderId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Freelancers_CountryId",
+                table: "Freelancers",
+                column: "CountryId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FreelancerTopServices_FreelancerId",
+                table: "FreelancerTopServices",
+                column: "FreelancerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FreelancerTopServices_ServiceId",
+                table: "FreelancerTopServices",
+                column: "ServiceId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Notifications_FreelancerId",
                 table: "Notifications",
                 column: "FreelancerId");
@@ -664,6 +748,9 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
+                name: "FreelancerTopServices");
+
+            migrationBuilder.DropTable(
                 name: "Notifications");
 
             migrationBuilder.DropTable(
@@ -679,10 +766,16 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "Orders");
 
             migrationBuilder.DropTable(
+                name: "Service");
+
+            migrationBuilder.DropTable(
                 name: "Freelancers");
 
             migrationBuilder.DropTable(
                 name: "OfferedServices");
+
+            migrationBuilder.DropTable(
+                name: "Country");
 
             migrationBuilder.DropTable(
                 name: "Clients");

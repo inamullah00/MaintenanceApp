@@ -1,4 +1,5 @@
-﻿using Maintenance.Domain.Entity.Dashboard;
+﻿using Domain.Common;
+using Maintenance.Domain.Entity.Dashboard;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,8 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.ClientEntities
 {
-    public class Client
+    public class Client:BaseEntity
     {
-        public Guid Id { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? PhoneNumber { get; set; }

@@ -1,4 +1,5 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -8,9 +9,8 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class PerformanceReport
+    public class PerformanceReport:BaseEntity
     {
-        public Guid Id { get; set; } // Unique identifier for the performance report
         public Guid? FreelancerId { get; set; } // Foreign key for the freelancer
 
         public int MonthlyLimit { get; set; } // Maximum number of orders the freelancer can complete in a month

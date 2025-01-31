@@ -1,4 +1,5 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
@@ -9,13 +10,11 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.Dashboard
 {
-    public class Notification
+    public class Notification:BaseEntity
     {
-        public Guid Id { get; set; } // Unique Identifier for the notification
         public Guid? FreelancerId { get; set; } // Foreign key to User (nullable for global notifications)
         public string Message { get; set; } // Notification message
-        //public bool IsRead { get; set; } // Whether the notification has been read
-        //public DateTime CreatedAt { get; set; } // Date and time when the notification was created
+        public bool IsRead { get; set; } = false;// Whether the notification has been read
 
         [ForeignKey(nameof(FreelancerId))]
         public Freelancer Freelancer { get; set; }

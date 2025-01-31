@@ -43,7 +43,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               Comment = feedback.Comment,
                               Rating = feedback.Rating,
                               CreatedAt = feedback.CreatedAt,
-                              UpdatedAt = feedback.UpdatedAt
+                              UpdatedAt = feedback.UpdatedAt.Value
                           })
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);

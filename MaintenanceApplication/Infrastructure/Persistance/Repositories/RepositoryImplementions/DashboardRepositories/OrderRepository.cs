@@ -59,7 +59,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
                               Status = orders.Status,
                               CreatedAt = orders.CreatedAt,
-                              UpdatedAt = orders.UpdatedAt,
+                              UpdatedAt = orders.UpdatedAt.Value,
 
                               TotalAmount = orders.TotalAmount,
                               FreelancerAmount = orders.FreelancerAmount
@@ -93,7 +93,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
                               Status = orders.Status,
                               CreatedAt = orders.CreatedAt,
-                              UpdatedAt = orders.UpdatedAt,
+                              UpdatedAt = orders.UpdatedAt.Value,
 
                               TotalAmount = orders.TotalAmount,
                               FreelancerAmount = orders.FreelancerAmount

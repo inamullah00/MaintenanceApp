@@ -141,7 +141,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
                 DisouteEntity.DisputeStatus = requestDto.DisputeStatus;
                 DisouteEntity.ResolutionDetails = requestDto.ResolutionDetails;
-                DisouteEntity.ResolvedAt = DateTime.UtcNow;
 
 
                 var ResolvedDispute = await _unitOfWork.DisputeRepository.UpdateAsync(DisouteEntity, cancellationToken);

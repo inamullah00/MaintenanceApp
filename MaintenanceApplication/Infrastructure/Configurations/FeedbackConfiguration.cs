@@ -20,19 +20,17 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasOne(f => f.Order) // A Feedback belongs to one Order
                    .WithMany(o => o.Feedbacks) // An Order can have many Feedbacks
                    .HasForeignKey(f => f.OrderId); // Feedback contains OrderId as foreign key
-                 //.OnDelete(DeleteBehavior.Cascade); // Optional: Feedback will be deleted if Order is deleted
 
             // Define relationship with Client (Feedback is provided by a Client)
             builder.HasOne(f => f.Client) // A Feedback is given by one Client
                    .WithMany() // A Client can give many Feedbacks (if needed)
                    .HasForeignKey(f => f.FeedbackByClientId); // Feedback contains FeedbackByClientId as foreign key
-                 //.OnDelete(DeleteBehavior.Restrict); // Optional: SetNull, Cascade, etc.
 
             // Define relationship with Freelancer (Feedback is for a Freelancer)
-            builder.HasOne(f => f.Freelancer) // A Feedback is given to one Freelancer
+            builder.HasOne(f => f.FeedbackOnFreelancer) // A Feedback is given to one Freelancer
                    .WithMany() // A Freelancer can receive many Feedbacks (if needed)
                    .HasForeignKey(f => f.FeedbackOnFreelancerId); // Feedback contains FeedbackOnFreelancerId as foreign key
-                   //.OnDelete(DeleteBehavior.Restrict); // Optional: SetNull, Cascade, etc.
+
 
             // Configure properties
             //builder.Property(f => f.Rating)

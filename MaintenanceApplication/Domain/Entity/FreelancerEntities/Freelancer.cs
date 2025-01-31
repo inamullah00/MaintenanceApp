@@ -1,42 +1,67 @@
-﻿using Maintenance.Domain.Entity.Dashboard;
+﻿using Domain.Common;
+using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.FreelancerEntites
 {
-    public class Freelancer
+    public class Freelancer : BaseEntity
     {
-        public Guid Id { get; set; }
         public string? FullName { get; set; }
         public string? Email { get; set; }
         public string? Password { get; set; }
         public string? PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
-        public string? AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
+        public AreaOfExpertise AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string? Country { get; set; }
         public string? CivilID { get; set; }
         public string? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
-        public string Status { get; set; } // Account status (e.g., Pending, Active, Suspended)
-
-        public DateTime? CreatedAt { get; set; } = DateTime.UtcNow; // Timestamp for when the profile was created
-        public DateTime? UpdatedAt { get; set; } = null; // Timestamp for when the profile was last updated
+        public AccountStatus Status { get; set; }  // Account status (e.g., Pending, Active, Suspended)
+        public Guid? CountryId { get; set; }
 
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
 
         public ICollection<Order> FreelancerOrders { get; set; } // Orders completed by the freelancer
 
-        public ICollection<Feedback> ClientFeedbacks { get; set; } 
+        public ICollection<Feedback> ClientFeedbacks { get; set; }
+
+        // Many-to-many relationship with Service (Freelancer selects multiple services)
+        public ICollection<FreelancerTopServices> FreelancerTopServices { get; set; }
+
+        [ForeignKey(nameof(CountryId))] 
+        public Country? country { get; set; }
 
     }
 }
 
 
+
+public enum AccountStatus
+{
+    Pending = 1,       // Account is pending verification
+    Active = 2,        // Account is active and can be used
+    Suspended = 3,     // Account is suspended due to policy violations
+    Deactivated = 4    // Account is deactivated by the user or system
+}
+
+
+
+public enum AreaOfExpertise
+{
+    Plumbing = 1,
+    Electrician = 2,
+    Cleaning = 3,
+    Carpentry = 4,
+    Painting = 5,
+    Other = 6 // You can add more as required
+}
 
 
 

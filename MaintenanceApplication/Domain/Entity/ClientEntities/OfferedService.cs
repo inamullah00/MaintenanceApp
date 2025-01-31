@@ -14,9 +14,8 @@ using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.ClientEntities
 {
-    public class OfferedService
+    public class OfferedService:BaseEntity
     {
-        public Guid Id { get; set; }
         public Guid? ClientId { get; set; }
         public Guid? CategoryID { get; set; }
 
@@ -43,7 +42,6 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Order> Orders { get; set; }  // List of orders related to this service
         public ICollection<Bid> Bids { get; set; }  // List of Bids related to this service
-        public DateTime? UpdatedAt { get; set; }
 
         // Navigation Properties
         [ForeignKey("CategoryID")]
@@ -53,9 +51,8 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public Client Client { get; set; }
     }
 
-    public class OfferedServiceCategory
+    public class OfferedServiceCategory:BaseEntity
     {
-        public Guid Id { get; set; }
         public string CategoryName { get; set; }
        public bool IsActive { get; set; }
        public ICollection<OfferedService>? OfferedServices { get; set; }
