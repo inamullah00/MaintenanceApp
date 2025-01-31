@@ -10,10 +10,10 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
 {
     public class Freelancer : BaseEntity
     {
-        public string? FullName { get; set; }
-        public string? Email { get; set; }
-        public string? Password { get; set; }
-        public string? PhoneNumber { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
         public string? AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
