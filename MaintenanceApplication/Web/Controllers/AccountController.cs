@@ -1,5 +1,4 @@
 ﻿using Domain.Entity.UserEntities;
-using Maintenance.API.Controllers.ClientController;
 using Maintenance.Application.Exceptions;
 using Maintenance.Application.ViewModel;
 using Maintenance.Web.Extensions;
@@ -14,8 +13,8 @@ namespace Maintenance.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
-        private readonly ILogger<ClientOrderController> _logger;
-        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ClientOrderController> logger)
+        private readonly ILogger<ApplicationUser> _logger;
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, ILogger<ApplicationUser> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
@@ -54,7 +53,6 @@ namespace Maintenance.Web.Controllers
                         }
 
                         return RedirectToAction("Index", "Home");
-
                     }
                     else if (isSucceeded.IsLockedOut)
                     {
