@@ -1,5 +1,6 @@
 ﻿
 using Domain.Entity.UserEntities;
+using Domain.Enums;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
@@ -7,6 +8,12 @@ using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection.Emit;
+using System.Text;
+using System.Threading.Tasks;
 
 
 namespace Maintenance.Infrastructure.Persistance.Data
@@ -49,6 +56,9 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new FeedbackConfiguration());
             builder.ApplyConfiguration(new DisputeConfiguration());
             builder.ApplyConfiguration(new ContentConfiguration());
+            builder.ApplyConfiguration(new ServiceConfiguration());
+            builder.ApplyConfiguration(new FreelancerTopServicesConfiguration());
+            builder.ApplyConfiguration(new CountryConfiguration());
 
             #region Fluent Model
 
@@ -145,51 +155,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
 
             #endregion
 
-            //#region Set Precision 
-            ////------------------------ Set precision for HourlyRate (DECIMAL(18, 2) in SQL Server)
-            //builder.Entity<ApplicationUser>()
-            //    .Property(u => u.HourlyRate)
-            //    .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<ApplicationUser>()
-            //.Property(u => u.TotalEarnings)
-            //.HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Bid>()
-            //  .Property(u => u.CustomPrice)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-
-            //builder.Entity<PerformanceReport>()
-            //  .Property(u => u.TotalEarnings)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Payment>()
-            //  .Property(u => u.ClientPaymentAmount)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Payment>()
-            //  .Property(u => u.FreelancerEarning)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Payment>()
-            //  .Property(u => u.PlatformCommission)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Order>()
-            //  .Property(u => u.Budget)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Order>()
-            //  .Property(u => u.TotalAmount)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //builder.Entity<Order>()
-            //  .Property(u => u.FreelancerAmount)
-            //  .HasColumnType("DECIMAL(18,2)");
-
-            //#endregion
-
+          
             #region Data Seeding
 
             // Seeding roles

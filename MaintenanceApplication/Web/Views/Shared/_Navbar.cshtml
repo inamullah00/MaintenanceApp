@@ -77,13 +77,13 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <img class="wd-30 ht-30 rounded-circle" src="/images/others/placeholder.jpg" alt="profile"> <span class="text-primary">@User.Identity.Name</span>
+                    <img class="wd-30 ht-30 rounded-circle" src="/images/others/placeholder.jpg" alt="profile"> <span class="text-primary">Admin</span>
                 </a>
                 <div class="dropdown-menu " aria-labelledby="profileDropdown">
 
                     <ul class="list-unstyled p-1">
                         <li class="dropdown-item py-2">
-                            <a asp-controller="Users" asp-action="Edit" asp-route-id="@AppHttpContext.GetAdminCurrentUserId()" class="text-body ms-0">
+                            <a asp-controller="Users" asp-action="Edit" class="text-body ms-0">
                                 <i class="me-2 icon-md" data-feather="user"></i>
                                 <span>@_CommonLocalizer["Profile"]</span>
                             </a>

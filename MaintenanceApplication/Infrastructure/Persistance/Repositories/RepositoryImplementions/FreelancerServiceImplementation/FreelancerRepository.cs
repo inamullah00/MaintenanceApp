@@ -6,7 +6,13 @@ using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfa
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation
 {
@@ -14,6 +20,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
     {
 
         private readonly ApplicationDbContext _applicationDbContext;
+        private readonly IMapper _mapper;
 
         public FreelancerRepository(ApplicationDbContext applicationDbContext)
         {

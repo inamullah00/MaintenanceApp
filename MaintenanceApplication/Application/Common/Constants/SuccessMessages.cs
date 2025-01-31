@@ -117,6 +117,8 @@ namespace Maintenance.Application.Common.Constants
         #region Freelancer 
 
         public const string FreelancersFiltered = "Filterd Freelancer has been Fetched";
+        public const string FreelancersFetchedSuccessfully = "Freelancer has been Fetched Successfully";
+
         
         #endregion
     }

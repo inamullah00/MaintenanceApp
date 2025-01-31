@@ -9,6 +9,7 @@ using Maintenance.Application.Dto_s.DashboardDtos.ContentDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
@@ -26,6 +27,11 @@ namespace Application.Mapper
         {
             CreateMap<ApplicationUser, UserDetailsResponseDto>().ReverseMap();
             CreateMap<UserDetailsResponseDto, ApplicationUser>().ReverseMap();
+
+
+            CreateMap<Freelancer , FreelancerRegistrationDto>().ReverseMap();
+            
+            
 
 
             CreateMap<OfferedService,OfferedServiceResponseDto>().ReverseMap();

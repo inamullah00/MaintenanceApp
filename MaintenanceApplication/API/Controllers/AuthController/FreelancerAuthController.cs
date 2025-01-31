@@ -1,8 +1,13 @@
 ﻿using Application.Dto_s.UserDto_s;
 using AutoMapper;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.FreelancerAuth.Filter;
+using Maintenance.Application.Services.ServiceManager;
+using Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.API.Controllers.AuthController
@@ -15,12 +20,12 @@ namespace Maintenance.API.Controllers.AuthController
         #region Constructor & Fields
 
         private readonly IMapper _mapper;
-        private readonly IFreelancerAuthService _freelancerAuthService;
+        private readonly IServiceManager _serviceManager;
         private readonly ILogger<FreelancerAuthController> _logger;
 
-        public FreelancerAuthController(IFreelancerAuthService freelancerAuthService, ILogger<FreelancerAuthController> logger)
+        public FreelancerAuthController(IServiceManager serviceManager, ILogger<FreelancerAuthController> logger)
         {
-            _freelancerAuthService = freelancerAuthService;
+            _serviceManager = serviceManager;
             _logger = logger;
         }
 
@@ -36,7 +41,7 @@ namespace Maintenance.API.Controllers.AuthController
             {
                 _logger.LogInformation("SignUp request started for freelancer: {FullName}", request.FullName);
 
-                var result = await _freelancerAuthService.RegisterFreelancerAsync(request, cancellationToken).ConfigureAwait(false);
+                var result = await _serviceManager.FreelancerAuthService.RegisterFreelancerAsync(request, cancellationToken).ConfigureAwait(false);
 
                 if (result != null)
                 {
@@ -62,23 +67,36 @@ namespace Maintenance.API.Controllers.AuthController
 
         [HttpPost]
         [Route("Login")]
-        public async Task<IActionResult> Login(FreelancerLoginDto request)
+        public async Task<IActionResult> Login(FreelancerLoginDto request, CancellationToken cancellationToken)
         {
             try
             {
                 _logger.LogInformation("Login request started for email: {Email}", request.Email);
 
-                var result = await _freelancerAuthService.LoginAsync(request);
+                var result = await _serviceManager.FreelancerAuthService.LoginAsync(request, cancellationToken);
 
-                //if (!result.Success)
-                //{
-                //    _logger.LogWarning("Login failed for email: {Email}, Message: {Message}", request.Email, result.Message);
-                //    return BadRequest(result.Message);
-                //}
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Login failed for email: {Email}, Message: {Message}", request.Email, result.Message);
+                    return BadRequest(result.Message);
+                }
 
-                //_logger.LogInformation("Login successful for email: {Email}", request.Email);
-                //return Ok(new { Token = result.Token, Message = result.Message });
-                return null;
+                _logger.LogInformation("Login successful for email: {Email}", request.Email);
+
+                // Extracting the response DTO
+                var response = result.Value;
+
+                return Ok(new
+                {
+                    Token = response.Token,
+                    RefreshToken = response.RefreshToken,
+                    FreelancerId = response.FreelancerId,
+                    FullName = response.FullName,
+                    Email = response.Email,
+                    ProfilePicture = response.ProfilePicture,
+                    Message = result.Message
+                });
+
             }
             catch (Exception ex)
             {
@@ -92,24 +110,24 @@ namespace Maintenance.API.Controllers.AuthController
         #region Logout
 
         [HttpPost]
-        [Route("Logout")]
-        public async Task<IActionResult> Logout()
+        [Route("Logout/{FreelancerId:guid}")]
+        public async Task<IActionResult> Logout(Guid FreelancerId,CancellationToken cancellationToken)
         {
             try
             {
                 _logger.LogInformation("Logout request started.");
 
-                var result = await _freelancerAuthService.LogoutAsync();
+                var result = await _serviceManager.FreelancerAuthService.LogoutAsync(FreelancerId,cancellationToken);
 
-                //if (!result.Success)
-                //{
-                //    _logger.LogWarning("Logout failed.");
-                //    return BadRequest("Logout failed.");
-                //}
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Logout failed.");
+                    return BadRequest("Logout failed.");
+                }
 
-                //_logger.LogInformation("Logout successful.");
-                //return Ok(new { Message = "User logged out successfully." });
-                return null;
+                _logger.LogInformation("Logout successful.");
+                return Ok(new { Message = "User logged out successfully." });
+
             }
             catch (Exception ex)
             {
@@ -131,7 +149,7 @@ namespace Maintenance.API.Controllers.AuthController
             {
                 _logger.LogInformation("Forgot Password request started for email: {Email}", requestDto.Email);
 
-                var result = await _freelancerAuthService.ForgotPasswordAsync(requestDto.Email);
+                var result = await _serviceManager.FreelancerAuthService.ForgotPasswordAsync(requestDto.Email);
 
                 //if (!result.Success)
                 //{
@@ -168,7 +186,7 @@ namespace Maintenance.API.Controllers.AuthController
                     return BadRequest("Password mismatch");
                 }
 
-                var result = await _freelancerAuthService.ResetPasswordAsync(requestDto.Email, requestDto.NewPassword);
+                var result = await _serviceManager.FreelancerAuthService.ResetPasswordAsync(requestDto.Email, requestDto.NewPassword);
 
                 //if (!result.Success)
                 //{
@@ -234,17 +252,17 @@ namespace Maintenance.API.Controllers.AuthController
             {
                 _logger.LogInformation("Fetching list of freelancers with keyword: {Keyword}", Keyword);
 
-                var result = await _freelancerAuthService.GetFreelancersAsync(Keyword);
+                var result = await _serviceManager.FreelancerAuthService.GetFreelancersAsync(Keyword);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer list retrieved successfully.");
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer list retrieved successfully.");
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to retrieve freelancer list. Message: {Message}", result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to retrieve freelancer list. Message: {Message}", result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+              
             }
             catch (Exception ex)
             {
@@ -264,7 +282,7 @@ namespace Maintenance.API.Controllers.AuthController
             {
                 _logger.LogInformation("Fetching paginated list of freelancers with filter: {Filter}", filter);
 
-                //var result = await _freelancerAuthService.FreelancerPaginatedAsync(filter);
+                //var result = await _serviceManager.FreelancerAuthService.FreelancerPaginatedAsync(filter);
 
                 //if (result.IsSuccess)
                 //{
@@ -274,7 +292,7 @@ namespace Maintenance.API.Controllers.AuthController
 
                 //_logger.LogWarning("Failed to retrieve paginated freelancer list. Message: {Message}", result.Message);
                 //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                return null; 
             }
             catch (Exception ex)
             {
@@ -287,8 +305,8 @@ namespace Maintenance.API.Controllers.AuthController
 
         #region Freelancer-Details
         [HttpGet]
-        [Route("Freelancer-Details/{FreelancerId:guid}")]
-        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId)
+        [Route("Freelancer-Details/{freelancerId:guid}")]
+        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId,CancellationToken cancellationToken)
         {
             try
             {
@@ -299,17 +317,17 @@ namespace Maintenance.API.Controllers.AuthController
 
                 _logger.LogInformation("Fetching details for freelancer with ID: {FreelancerId}", freelancerId);
 
-                var result = await _freelancerAuthService.GetFreelancerProfileAsync(freelancerId);
+                var result = await _serviceManager.FreelancerAuthService.GetFreelancerProfileAsync(freelancerId, cancellationToken);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer details retrieved successfully for ID: {FreelancerId}", freelancerId);
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer details retrieved successfully for ID: {FreelancerId}", freelancerId);
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to retrieve freelancer details for ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to retrieve freelancer details for ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+             
             }
             catch (Exception ex)
             {
@@ -321,25 +339,25 @@ namespace Maintenance.API.Controllers.AuthController
         #endregion
 
         #region Block-Freelancer
-        [HttpPost]
+        [HttpPut]
         [Route("Block-Freelancer/{FreelancerId:guid}")]
-        public async Task<IActionResult> BlockFreelancer(Guid freelancerId)
+        public async Task<IActionResult> BlockFreelancer(Guid freelancerId , [FromBody] FreelancerStatusUpdateDto updateDto)
         {
             try
             {
                 _logger.LogInformation("Block request started for freelancer with ID: {FreelancerId}", freelancerId);
 
-                var result = await _freelancerAuthService.BlockFreelancerAsync(freelancerId);
+                var result = await _serviceManager.FreelancerAuthService.BlockFreelancerAsync(freelancerId,updateDto);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer blocked successfully with ID: {FreelancerId}", freelancerId);
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer blocked successfully with ID: {FreelancerId}", freelancerId);
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to block freelancer with ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to block freelancer with ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+
             }
             catch (Exception ex)
             {
@@ -351,25 +369,24 @@ namespace Maintenance.API.Controllers.AuthController
         #endregion
 
         #region UnBlock-Freelancer
-        [HttpPost]
+        [HttpPut]
         [Route("UnBlock-Freelancer/{FreelancerId:guid}")]
-        public async Task<IActionResult> UnBlockFreelancer(Guid freelancerId)
+        public async Task<IActionResult> UnBlockFreelancer(Guid freelancerId , [FromBody] FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken)
         {
             try
             {
-                _logger.LogInformation("UnBlock request started for freelancer with ID: {FreelancerId}", freelancerId);
+                _logger.LogInformation("Unblock request started for freelancer with ID: {FreelancerId}", freelancerId);
 
-                var result = await _freelancerAuthService.UnBlockFreelancerAsync(freelancerId);
+                var result = await _serviceManager.FreelancerAuthService.UnBlockFreelancerAsync(freelancerId, updateDto, cancellationToken);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer unblocked successfully with ID: {FreelancerId}", freelancerId);
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer unblocked successfully with ID: {FreelancerId}", freelancerId);
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to unblock freelancer with ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to unblock freelancer with ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
             }
             catch (Exception ex)
             {
@@ -394,7 +411,7 @@ namespace Maintenance.API.Controllers.AuthController
 
                 _logger.LogInformation("Edit profile request started for freelancer with ID: {FreelancerId}", freelancerId);
 
-                var result = await _freelancerAuthService.UpdateProfileAsync(freelancerId, freelancerProfileEditDto);
+                var result = await _serviceManager.FreelancerAuthService.UpdateProfileAsync(freelancerId, freelancerProfileEditDto);
 
                 //if (result.IsSuccess)
                 //{

@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="Common\Caching\" />
-    <Folder Include="Interfaces\ReposoitoryInterfaces\AdminInterfaces\" />
     <Folder Include="Mailing\" />
     <Folder Include="Services\Admin\ContentSpecification\Filter\" />
     <Folder Include="Services\Admin\DisputeSpecification\Filter\" />
@@ -17,7 +16,6 @@
     <Folder Include="Services\Admin\SetOrderLimit_Performance_Report_Specification\Filter\" />
     <Folder Include="Services\Admin\SetOrderLimit_Performance_Report_Specification\Specification\" />
     <Folder Include="Services\Client\Filter\" />
-    <Folder Include="Services\FreelancerAuth\Specification\" />
     <Folder Include="Services\Freelance\Filter\" />
     <Folder Include="Services\OffereServiceCategory\Filter\" />
     <Folder Include="Services\OffereServiceCategory\Specification\" />
@@ -27,6 +25,10 @@
   <ItemGroup>
     <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
     <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
   </ItemGroup>
 
   <ItemGroup>

@@ -10,6 +10,7 @@ namespace Maintenance.Application.Common.Constants
         {
             // User-related error messages
             public const string UserNotFound = "User not found with the provided ID";
+
             public const string UserNotAuthorized = "User is not authorized to perform this action";
             public const string EmailAlreadyExists = "The provided email is already in use by another user";
             public const string UsernameAlreadyInUse = "The provided username is already in use";
@@ -191,5 +192,8 @@ namespace Maintenance.Application.Common.Constants
 
         #endregion
 
+
+        // Freelancer as a Usre
+        public const string FreelancerNotFound = "Freelancer not found with the provided ID";
     }
 }

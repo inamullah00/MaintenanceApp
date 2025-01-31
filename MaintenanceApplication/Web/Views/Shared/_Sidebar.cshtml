@@ -1,7 +1,7 @@
 ﻿<nav class="sidebar">
     <div class="sidebar-header">
         <a href="/Home/Index" class="sidebar-brand">
-            @_CommonLocalizer["Shtabi"]
+            Maintenance<span>App</span>
         </a>
         <div class="sidebar-toggler not-active">
             <span></span>
@@ -28,34 +28,22 @@
                 </a>
             </li>
 
-            <li class="nav-item" active-when-controllers="Freelancer" active-when-actions="Index,Create,Edit,EditBasicDetail,Pending,Rejected,Approved,ViewDetails">
-                <a class="nav-link" data-bs-toggle="collapse" href="#freelancer" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title">@_CommonLocalizer["Freelancer"]</span>
-                    <i class="link-arrow" data-feather="chevron-down"></i>
+            <li class="nav-item nav-category">Setups</li>
+
+            <li class="nav-item" active-when-controllers="Users" active-when-actions="Index,Create,Update">
+                <a href="@Url.Action("Index", "CompanyTypes")" class="nav-link">
+                    <i class="link-icon" data-feather="anchor"></i>
+                    <span class="link-title">@_CommonLocalizer["CompanyType"]</span>
                 </a>
-                <div class="collapse" id="freelancer">
-                    <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Create", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Index", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Index">@_CommonLocalizer["All"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Pending", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Pending">@_CommonLocalizer["Pending"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Approved", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Approved">@_CommonLocalizer["Approved"]</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="@Url.Action("Rejected", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Rejected">@_CommonLocalizer["Rejected"]</a>
-                        </li>
-                    </ul>
-                </div>
             </li>
 
-            <li class="nav-item nav-category">Setups</li>
+
+            <li class="nav-item" active-when-controllers="Question" active-when-actions="Index,Create,Edit">
+                <a href="@Url.Action("Index", "Question")" class="nav-link">
+                    <i class="link-icon" data-feather="help-circle"></i>
+                    <span class="link-title">@_CommonLocalizer["AdTypeQuestion"]</span>
+                </a>
+            </li>
 
             <li class="nav-item" active-when-controllers="Country" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Country")" class="nav-link">

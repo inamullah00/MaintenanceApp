@@ -228,7 +228,7 @@ namespace Maintenance.API.Controllers.ClientController
         #region Client Rejects the Work 
 
         [HttpPut("Orders/{orderId:guid}/Reject")]
-        public async Task<IActionResult> RejectOrder(Guid orderId, [FromBody] RejectOrderRequestDTO rejectOrderDTO, CancellationToken cancellationToken)
+        public async Task<IActionResult> RejectOrder(Guid orderId, [FromBody] RejectOrderRequestDTO rejectOrderDTO,CancellationToken cancellationToken)
         {
             try
             {

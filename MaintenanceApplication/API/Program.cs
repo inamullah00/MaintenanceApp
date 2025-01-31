@@ -1,7 +1,6 @@
 using API.DependancyContainer;
 using Domain.Entity.UserEntities;
 using Maintenance.API.Filters;
-using Maintenance.Infrastructure.Extensions;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -30,6 +29,9 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 builder.Services.RegistrationServices(builder.Configuration);
+
+
+
 
 // Identity Setup
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>()
@@ -86,7 +88,6 @@ builder.Services.AddMemoryCache();
 
 
 var app = builder.Build();
-AppHttpContext.Services = app.Services;
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

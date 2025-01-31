@@ -25,7 +25,7 @@ namespace Maintenance.Domain.Entity.Dashboard
         [ForeignKey(nameof(FeedbackByClientId))]
         public Client Client { get; set; }
         [ForeignKey(nameof(FeedbackOnFreelancerId))]
-        public Freelancer Freelancer { get; set; }
+        public Freelancer FeedbackOnFreelancer { get; set; }
     
     
     }
