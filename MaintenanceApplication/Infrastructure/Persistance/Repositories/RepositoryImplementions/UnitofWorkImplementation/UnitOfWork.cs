@@ -1,21 +1,17 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+using Maintenance.Application.Interfaces.RepositoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.DisputeInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.Order_Limit_PerformanceReportin_interfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
-using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Infrastructure.Persistance.Data;
+using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.CountryRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.OfferedServiceImplementation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.UnitofWorkImplementation
 {
@@ -38,7 +34,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public IFeedbackRepository FeedbackRepository { get; }
 
-       public IFreelancerAuthRepository FreelancerAuthRepository { get; }
+        public IFreelancerAuthRepository FreelancerAuthRepository { get; }
+        public ICountryRepository CountryRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -52,6 +49,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminFreelancerRepository = new AdminFreelancerRepository(dbContext);
             FeedbackRepository = new FeedbackRepository(dbContext);
             FreelancerAuthRepository = new FreelancerAuthRepository(dbContext);
+            CountryRepository = new CountryRepository(dbContext);
         }
 
         public void Dispose()
