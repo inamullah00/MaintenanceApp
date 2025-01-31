@@ -1,0 +1,136 @@
+﻿@model Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos.FreelancerRegistrationDto
+@{
+    ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
+    ViewBag.ModuleIcon = "user";
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form class="forms-sample" method="post" enctype="multipart/form-data">
+                    <div class="row">
+                        <!-- Personal Information -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="FullName" class="form-label">@_CommonLocalizer["FullName"]</label>
+                                <input type="text" class="form-control" asp-for="FullName" placeholder="@_CommonLocalizer["FullName"]">
+                                <span asp-validation-for="FullName" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Email" class="form-label">@_CommonLocalizer["Email"]</label>
+                                <input type="text" class="form-control" asp-for="Email" placeholder="@_CommonLocalizer["Email"]">
+                                <span asp-validation-for="Email" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="col-sm-3 col-form-label">@_CommonLocalizer["Password"]</label>
+                                <input type="password" autocomplete="new-password" class="form-control" asp-for="Password" placeholder="@_CommonLocalizer["Password"]">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="col-sm-3 col-form-label">@_CommonLocalizer["ConfirmPassword"]</label>
+                                <input type="password" autocomplete="new-password" class="form-control" asp-for="Password" placeholder="@_CommonLocalizer["ConfirmPassword"]">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label asp-for="PhoneNumber" class="form-label">Phone Number</label>
+                                <input asp-for="PhoneNumber" class="form-control" placeholder="Enter phone number">
+                                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
+                                <div class="input-group">
+                                    <input asp-for="DateOfBirth" type="date" class="form-control flatpickr-input">
+                                </div>
+                                <span asp-validation-for="DateOfBirth" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Professional Information -->
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Role" class="form-label">Role</label>
+                                <input asp-for="Role" class="form-control" placeholder="Enter role">
+                                <span asp-validation-for="Role" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="AreaOfExpertise" class="form-label">Area of Expertise</label>
+                                <input asp-for="AreaOfExpertise" class="form-control" placeholder="Enter area of expertise">
+                                <span asp-validation-for="AreaOfExpertise" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="ExperienceLevel" class="form-label">Experience Level</label>
+                                <select asp-for="ExperienceLevel"  class="form-select">
+                                    <option value="">Select Experience Level</option>
+                                </select>
+                                <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CountryId" class="form-label">Country</label>
+                                <select asp-for="CountryId" asp-items="@ViewBag.Countries" class="form-select">
+                                    <option value="">Select Country</option>
+                                </select>
+                                <span asp-validation-for="CountryId" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="CivilID" class="form-label">Civil ID (PDF)</label>
+                                <input type="file" class="form-control" name="CivilIDFile" accept=".pdf">
+                                <span asp-validation-for="CivilID" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <!-- Full Width Fields -->
+                        <div class="col-12">
+                            <div class="mb-3">
+                                <label asp-for="Bio" class="form-label">Bio</label>
+                                <textarea asp-for="Bio" class="form-control" rows="4" placeholder="Enter bio"></textarea>
+                                <span asp-validation-for="Bio" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="PreviousWork" class="form-label">Previous Work</label>
+                                <textarea asp-for="PreviousWork" class="form-control" rows="4" placeholder="Enter previous work experience"></textarea>
+                                <span asp-validation-for="PreviousWork" class="text-danger"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-end">
+                        <a asp-action="Index" class="btn btn-secondary me-2">
+                            <i data-feather="x"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i data-feather="save"></i> Create Freelancer
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize Feather icons
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+
+            // Initialize form validation
+            $("form").validate({
+                errorPlacement: function (error, element) {
+                    error.addClass("text-danger");
+                    error.insertAfter(element);
+                }
+            });
+        });
+    </script>
+}
