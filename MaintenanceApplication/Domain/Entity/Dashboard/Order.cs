@@ -44,10 +44,9 @@ namespace Maintenance.Domain.Entity.Dashboard
     // Enum for Order Status
     public enum OrderStatus
     {
-        Pending,
-        InProgress,
-        Completed, 
-        Cancelled, 
-        Disputed
+        Pending=0,
+        InProgress=1,
+        Completed=2, 
+        Cancelled=3
     }
 }

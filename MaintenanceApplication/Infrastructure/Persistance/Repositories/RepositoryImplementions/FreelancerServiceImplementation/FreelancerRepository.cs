@@ -82,7 +82,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                     FreelancerId = bid.FreelancerId,
                                     FreelancerName = freelancer.FullName,
                                     ServiceTitle = service.Title,
-                                    BidAmount = bid.CustomPrice,
+                                    BidAmount = bid.Price,
                                     Status = bid.BidStatus.ToString(),
                                     CreatedAt = bid.CreatedAt,
                                     CategoryName = category.CategoryName,
@@ -125,7 +125,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               OfferedServiceId = Bid.OfferedServiceId,
                               FreelancerId = Bid.FreelancerId,
                               ServiceTitle = OfferedService.Title,
-                              BidAmount = Bid.CustomPrice,
+                              BidAmount = Bid.Price,
                               Status = Bid.BidStatus.ToString(),
                               CreatedAt = Bid.CreatedAt,
                               CategoryName = Category.CategoryName,
@@ -160,7 +160,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                 return (false, null);
             }
 
-            existingEntity.CustomPrice = entity.CustomPrice;
+            existingEntity.Price = entity.Price;
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
             return (true, existingEntity);
@@ -202,7 +202,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                        {
                                            FreelancerId = freelancer.Id,
                                            Name = freelancer.FullName,
-                                           BidPrice = bid.CustomPrice,
+                                           BidPrice = bid.Price,
                                            //Rating = (float)freelancer.Rating, // Assuming Rating is a property in Users table
                                            //SkillSet = freelancer.Skills // Assuming SkillSet is a property in Users table
                                        })

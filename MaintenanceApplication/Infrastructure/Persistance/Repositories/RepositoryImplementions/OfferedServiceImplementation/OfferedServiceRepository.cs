@@ -12,6 +12,9 @@ using System.Text;
 using System.Threading.Tasks;
 using Maintenance.Infrastructure.Persistance.Data;
 using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Domain.Entity.FreelancerEntities;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Ardalis.Specification.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.OfferedServiceImplementation
 {
@@ -172,6 +175,34 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             await _dbContext.SaveChangesAsync(cancellationToken);
             return (true, service);
+        }
+
+       public async Task<List<RequestedServiceResponseDto>> GetRequestedServicesAsync(ISpecification<OfferedService> specification, CancellationToken cancellationToken)
+        {
+            var query = SpecificationEvaluator.Default.GetQuery(
+                       _dbContext.OfferedServices.AsQueryable(), specification);
+
+            var requestedServices = await (from service in query
+                                           join bid in _dbContext.Bids on service.Id equals bid.OfferedServiceId
+                                           join freelancer in _dbContext.Freelancers on bid.FreelancerId equals freelancer.Id
+                                           where bid.BidStatus == BidStatus.Pending
+                                           select new RequestedServiceResponseDto
+                                           {
+                                               CoverLetter = bid.CoverLetter,
+                                               BidPrice = bid.Price.ToString(),
+                                               FreelancerName = freelancer.FullName,
+                                               TotalNoOfFreelancerApplied = _dbContext.Bids.Count(b => b.OfferedServiceId == service.Id).ToString(),
+                                               Title = service.Title,
+                                               Description = service.Description,
+                                               Address = service.Location,
+                                               ServiceTime = service.PreferredTime.Value,
+                                               Images = service.ImageUrls,
+                                               Videos = service.VideoUrls,
+                                               Audios = service.AudioUrls,
+                                               BookingDate = bid.CreatedAt
+                                           }).ToListAsync(cancellationToken);
+
+            return requestedServices;
         }
     }
 }

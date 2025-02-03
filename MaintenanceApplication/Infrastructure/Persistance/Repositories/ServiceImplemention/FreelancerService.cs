@@ -8,6 +8,7 @@ using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
 using Maintenance.Application.Wrapper;
+using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Http;
 using System;
@@ -209,5 +210,33 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
+        public async Task<Result<List<RequestedServiceResponseDto>>> GetRequestedServicesAsync(CancellationToken cancellationToken, string? keyword)
+        {
+            var specification = new RequestedServiceSpecification(keyword);
+            var services = await _unitOfWork.OfferedServiceRepository.GetRequestedServicesAsync(specification, cancellationToken);
+
+            if (services == null || services.Count == 0)
+            {
+                return Result<List<RequestedServiceResponseDto>>.Success("No requested services found.", StatusCodes.Status200OK);
+            }
+
+            var serviceDtos = _mapper.Map<List<RequestedServiceResponseDto>>(services);
+            return Result<List<RequestedServiceResponseDto>>.Success(serviceDtos, "Requested services fetched successfully.", StatusCodes.Status200OK);
+        }
+
+        public async Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(string status, CancellationToken cancellationToken)
+        {
+
+            var specification = new OrderStatusSearchList(status);
+            //var services = await _unitOfWork.OfferedServiceRepository.GetRequestedServicesAsync(specification, cancellationToken);
+
+            //if (services == null || services.Count == 0)
+            //{
+            //    return Result<List<OrderStatusResponseDto>>.Success("No requested services found.", StatusCodes.Status200OK);
+            //}
+
+            //var serviceDtos = _mapper.Map<List<RequestedServiceResponseDto>>(services);
+            return null;
+        }
     }
 }

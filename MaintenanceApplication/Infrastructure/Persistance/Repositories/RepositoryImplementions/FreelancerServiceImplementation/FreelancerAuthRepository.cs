@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+﻿using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
@@ -47,21 +48,22 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             throw new NotImplementedException();
         }
 
-        public async Task<FreelancerProfileDto> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken)
+        public async Task<Freelancer> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken)
         {
 
             var freelancer = await _dbContext.Freelancers
                  .AsNoTracking()
-                 .Select(f => new FreelancerProfileDto
-                 {
-                     Id = f.Id,
-                     FullName = f.FullName,
-                     Email = f.Email,
-                     ProfilePicture = f.ProfilePicture,
-                     AreaOfExpertise = f.AreaOfExpertise.ToString(),
-                     Status = f.Status.ToString()
-                 })
-                 .FirstOrDefaultAsync(x => x.Id == freelancerId);
+                 .Where(f => f.Id == freelancerId)
+                 //.Select(f => new FreelancerProfileDto
+                 //{
+                 //    Id = f.Id,
+                 //    FullName = f.FullName,
+                 //    Email = f.Email,
+                 //    ProfilePicture = f.ProfilePicture,
+                 //    AreaOfExpertise = f.AreaOfExpertise.ToString(),
+                 //    Status = f.Status.ToString()
+                 //})
+                 .FirstOrDefaultAsync(cancellationToken);
 
             return freelancer;
         }
@@ -106,11 +108,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public async Task<Freelancer> UpdateFreelancerAsync (Freelancer freelancer)
         {
-            if (freelancer == null)
-            {
-                throw new ArgumentNullException(nameof(freelancer), "Freelancer cannot be null");
-            }
-
+      
             _dbContext.Freelancers.Update(freelancer); // Update the freelancer in the DB
            await _dbContext.SaveChangesAsync(); // Save changes to the database
             return freelancer;
@@ -121,6 +119,13 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return await _dbContext.Freelancers
           .AsNoTracking()
           .FirstOrDefaultAsync(f => f.Email == email, cancellationToken);
+        }
+
+        public async Task<UserOtp?> GetValidOtpAsync(string otp, CancellationToken cancellationToken)
+        {
+            return await _dbContext.UserOtps
+                    .Where(o => o.Otp == otp && o.ExpiresAt > DateTime.UtcNow && !o.IsUsed)
+                    .FirstOrDefaultAsync(cancellationToken);
         }
     }
 }

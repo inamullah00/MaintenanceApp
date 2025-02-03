@@ -1,6 +1,8 @@
 ﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using Domain.Enums;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System;
@@ -52,6 +54,33 @@ namespace Domain.Entity.UserEntities
     }
 }
 
+
+//public Guid Id { get; set; } = Guid.NewGuid();
+
+//[Required]
+//[MaxLength(6)]
+//public string Otp { get; set; } // The OTP code
+
+//[Required]
+//public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // When OTP was created
+
+//[Required]
+//public DateTime ExpiresAt { get; set; } // When OTP expires
+
+//[Required]
+//public bool IsUsed { get; set; } = false; // Whether OTP has been used
+
+//[Required]
+//public Guid FreelancerId { get; set; } // Foreign key to freelancer
+
+//// Navigation property
+//public virtual Freelancer Freelancer { get; set; }
+
+//// Constructor to set expiration automatically
+//public UserOtp()
+//{
+//    ExpiresAt = CreatedAt.AddMinutes(5); // Set OTP to expire in 5 minutes
+//}
 
 
 

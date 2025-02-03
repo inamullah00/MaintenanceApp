@@ -62,7 +62,6 @@ namespace Maintenance.API.Controllers.AuthController
 
         #endregion
 
-
         #region Login
 
         [HttpPost]
@@ -138,28 +137,26 @@ namespace Maintenance.API.Controllers.AuthController
 
         #endregion
 
-
         #region Forgot Password
 
         [HttpPost]
         [Route("Forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto requestDto)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequestDto requestDto , CancellationToken cancellationToken)
         {
             try
             {
                 _logger.LogInformation("Forgot Password request started for email: {Email}", requestDto.Email);
 
-                var result = await _serviceManager.FreelancerAuthService.ForgotPasswordAsync(requestDto.Email);
+                var result = await _serviceManager.FreelancerAuthService.ForgotPasswordAsync(requestDto.Email, cancellationToken);
 
-                //if (!result.Success)
-                //{
-                //    _logger.LogWarning("Forgot Password failed for email: {Email}, Message: {Message}", requestDto.Email, result.Message);
-                //    return BadRequest(result.Message);
-                //}
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Forgot Password failed for email: {Email}, Message: {Message}", requestDto.Email, result.Message);
+                    return BadRequest(result.Message);
+                }
 
-                //_logger.LogInformation("Forgot Password email sent successfully to: {Email}", requestDto.Email);
-                //return Ok(new { Message = "Password reset email has been sent successfully." });
-                return null;
+                _logger.LogInformation("Forgot Password email sent successfully to: {Email}", requestDto.Email);
+                return Ok(new { Message = "Password reset email has been sent successfully." });
             }
             catch (Exception ex)
             {
@@ -170,12 +167,11 @@ namespace Maintenance.API.Controllers.AuthController
 
         #endregion
 
-
         #region Reset Password
 
         [HttpPost]
         [Route("Reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto requestDto)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequestDto requestDto , CancellationToken cancellationToken)
         {
             try
             {
@@ -186,17 +182,17 @@ namespace Maintenance.API.Controllers.AuthController
                     return BadRequest("Password mismatch");
                 }
 
-                var result = await _serviceManager.FreelancerAuthService.ResetPasswordAsync(requestDto.Email, requestDto.NewPassword);
+                var result = await _serviceManager.FreelancerAuthService.ResetPasswordAsync(requestDto.Email, requestDto.NewPassword, cancellationToken);
 
-                //if (!result.Success)
-                //{
-                //    _logger.LogWarning("Reset Password failed for email: {Email}, Message: {Message}", requestDto.Email, result.Message);
-                //    return BadRequest(result.Message);
-                //}
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Reset Password failed for email: {Email}, Message: {Message}", requestDto.Email, result.Message);
+                    return BadRequest(result.Message);
+                }
 
-                //_logger.LogInformation("Password reset successful for email: {Email}", requestDto.Email);
-                //return Ok(new { Message = result.Message });
-                return null;
+                _logger.LogInformation("Password reset successful for email: {Email}", requestDto.Email);
+                return Ok(new { Message = result.Message });
+                
             }
             catch (Exception ex)
             {
@@ -207,28 +203,27 @@ namespace Maintenance.API.Controllers.AuthController
 
         #endregion
 
-
         #region Validate OTP
 
         [HttpPost]
         [Route("Validate-Otp")]
-        public async Task<IActionResult> ValidateOtp([FromBody] string otp)
+        public async Task<IActionResult> ValidateOtp([FromBody] string otp , CancellationToken cancellationToken)
         {
             try
             {
                 _logger.LogInformation("Validate OTP request started for OTP: {Otp}", otp);
 
-                //var result = await _freelancerAuthService.ValidateOtpAsync(otp);
+                var result = await _serviceManager.FreelancerAuthService.ValidateOtpAsync(otp, cancellationToken);
 
-                //if (!result.Success)
-                //{
-                //    _logger.LogWarning("OTP validation failed for OTP: {Otp}, Message: {Message}", otp, result.Message);
-                //    return BadRequest(result.Message);
-                //}
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("OTP validation failed for OTP: {Otp}, Message: {Message}", otp, result.Message);
+                    return BadRequest(result.Message);
+                }
 
-                //_logger.LogInformation("OTP validation successful for OTP: {Otp}", otp);
-                //return Ok(new { Message = result.Message });
-                return null;
+                _logger.LogInformation("OTP validation successful for OTP: {Otp}", otp);
+                return Ok(new { Message = result.Message });
+               
             }
             catch (Exception ex)
             {
@@ -238,7 +233,6 @@ namespace Maintenance.API.Controllers.AuthController
         }
 
         #endregion
-
 
 
         #region Freelancer Profile Management
@@ -400,7 +394,7 @@ namespace Maintenance.API.Controllers.AuthController
         #region Edit-Freelancer-Profile
         [HttpPut]
         [Route("Edit-Freelancer-Profile/{FreelancerId:guid}")]
-        public async Task<IActionResult> EditFreelancerProfile(Guid freelancerId, [FromBody] FreelancerUpdateDto freelancerProfileEditDto)
+        public async Task<IActionResult> EditFreelancerProfile(Guid FreelancerId, [FromBody] FreelancerEditProfileDto freelancerProfileEditDto,CancellationToken cancellationToken)
         {
             try
             {
@@ -409,29 +403,60 @@ namespace Maintenance.API.Controllers.AuthController
                     return BadRequest(new { StatusCode = 400, Success = false, Message = "Invalid profile data." });
                 }
 
-                _logger.LogInformation("Edit profile request started for freelancer with ID: {FreelancerId}", freelancerId);
+                _logger.LogInformation("Edit profile request started for freelancer with ID: {FreelancerId}", FreelancerId);
 
-                var result = await _serviceManager.FreelancerAuthService.UpdateProfileAsync(freelancerId, freelancerProfileEditDto);
+                var result = await _serviceManager.FreelancerAuthService.UpdateProfileAsync(FreelancerId, freelancerProfileEditDto , cancellationToken);
 
-                //if (result.IsSuccess)
-                //{
-                //    _logger.LogInformation("Freelancer profile updated successfully for ID: {FreelancerId}", freelancerId);
-                //    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
-                //}
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Freelancer profile updated successfully for ID: {FreelancerId}", FreelancerId);
+                    return Ok(new { StatusCode = result.StatusCode, Success = true, Message = result.Message, Data = result.Value });
+                }
 
-                //_logger.LogWarning("Failed to edit freelancer profile for ID: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
-                //return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
-                return null;
+                _logger.LogWarning("Failed to edit freelancer profile for ID: {FreelancerId}. Message: {Message}", FreelancerId, result.Message);
+                return StatusCode(result.StatusCode, new { StatusCode = result.StatusCode, Success = false, Message = result.Message });
+
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while editing freelancer profile for ID: {FreelancerId}", freelancerId);
+                _logger.LogError(ex, "Error occurred while editing freelancer profile for ID: {FreelancerId}", FreelancerId);
                 return StatusCode(500, new { StatusCode = 500, Success = false, Message = $"Internal server error: {ex.Message}" });
             }
         }
 
         #endregion
 
+        #region ApproveFreelancer Account
+        [HttpPut]
+        [Route("FreelancerApproval/{freelancerId:guid}")]
+        public async Task<IActionResult> ApproveFreelancer(Guid freelancerId,FreelancerStatusUpdateDto statusUpdateDto  ,  CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Approval request started for freelancer ID: {FreelancerId}", freelancerId);
+
+
+                var result = await _serviceManager.FreelancerAuthService.ApproveFreelancerAsync(freelancerId, statusUpdateDto , cancellationToken).ConfigureAwait(false);
+
+                if (!result.IsSuccess)
+                {
+                    _logger.LogWarning("Freelancer approval failed for ID: {FreelancerId}, Message: {Message}", freelancerId, result.Message);
+                    return BadRequest(new { Success = false, Message = result.Message });
+                }
+
+                _logger.LogInformation("Freelancer approved successfully for ID: {FreelancerId}");
+                return Ok(new { Success = true, Message = result.Message });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while approving freelancer with ID: {FreelancerId}", freelancerId);
+                return StatusCode(500, new { Success = false, Message = $"Internal server error: {ex.Message}" });
+            }
+        }
+
+
+        #endregion
 
         #endregion
 

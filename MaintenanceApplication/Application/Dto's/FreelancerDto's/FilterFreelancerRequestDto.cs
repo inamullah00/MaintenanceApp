@@ -13,4 +13,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
         public double? MinRating { get; set; }
         public double? MaxRating { get; set; }
     }
+
+
 }

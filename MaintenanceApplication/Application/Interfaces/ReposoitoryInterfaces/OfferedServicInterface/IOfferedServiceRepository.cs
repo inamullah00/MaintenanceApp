@@ -1,6 +1,8 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Ardalis.Specification;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,6 +25,7 @@ namespace Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface
         Task<OfferedServiceResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<List<OfferedServiceResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
+        Task<List<RequestedServiceResponseDto>> GetRequestedServicesAsync(ISpecification<OfferedService> specification, CancellationToken cancellationToken = default);
 
         // Find an OfferedService entity based on a predicate
         Task<OfferedService> FindAsync(Expression<Func<OfferedService, bool>> predicate, CancellationToken cancellationToken = default);

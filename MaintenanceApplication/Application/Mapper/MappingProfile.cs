@@ -30,6 +30,7 @@ namespace Application.Mapper
 
 
             CreateMap<Freelancer , FreelancerRegistrationDto>().ReverseMap();
+            CreateMap<Freelancer , FreelancerProfileDto>().ReverseMap();
             
             
 
@@ -51,6 +52,11 @@ namespace Application.Mapper
             CreateMap<Order, OrderResponseDto>().ReverseMap();
             CreateMap<CreateOrderRequestDto, Order>().ReverseMap();
             CreateMap<UpdateOrderStatusDto, Order>().ReverseMap();
+
+
+
+            
+            
 
 
             #region Account Mapping

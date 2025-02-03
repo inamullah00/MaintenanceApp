@@ -19,7 +19,11 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string? ProfilePicture { get; set; }  // Optional
         public AreaOfExpertise AreaOfExpertise { get; set; }  // Freelancer's area of expertise (e.g., plumbing, cleaning)
         public string? Bio { get; set; }
+
+        public UserType IsType { get; set; }
         public DateTime DateOfBirth { get; set; }
+        public string City { get; set; }
+        public string Address { get; set; }
         public string? CivilID { get; set; }
         public string? ExperienceLevel { get; set; } // Level of experience (e.g., "Brand New", "Some Experience", "Expert")
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
@@ -49,6 +53,13 @@ public enum AccountStatus
     Active = 2,        // Account is active and can be used
     Suspended = 3,     // Account is suspended due to policy violations
     Deactivated = 4    // Account is deactivated by the user or system
+}
+
+public enum UserType
+{
+    Freelancer =1,
+    Company = 2
+
 }
 
 
