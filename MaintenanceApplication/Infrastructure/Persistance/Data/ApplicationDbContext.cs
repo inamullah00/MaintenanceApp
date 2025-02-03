@@ -3,6 +3,7 @@ using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -32,6 +33,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
         //public DbSet<Notification> Notifications { get; set; }
         public DbSet<Dispute> Disputes { get; set; }
         public DbSet<Content> Contents { get; set; }
+        public DbSet<Country> Countries { get; set; }
         //public DbSet<Payment> Payments { get; set; }
 
 

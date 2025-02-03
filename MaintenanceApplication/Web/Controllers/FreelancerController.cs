@@ -1,12 +1,21 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Maintenance.Application.Services.ServiceManager;
+using Microsoft.AspNetCore.Mvc;
 
 namespace StarBooker.Web.Controllers
 {
     public class FreelancerController : Controller
     {
+        private readonly ILogger<FreelancerController> _logger;
+        private readonly IServiceManager _serviceManager;
 
-        public FreelancerController()
+        public FreelancerController(ILogger<FreelancerController> logger, IServiceManager serviceManager)
         {
+            _logger = logger;
+            _serviceManager = serviceManager;
+        }
+        private async Task PrepareViewBags()
+        {
+            ViewBag.Countries = await _serviceManager.CountryService.GetAllAsync().ConfigureAwait(false);
         }
         public async Task<IActionResult> Index()
         {
@@ -38,7 +47,8 @@ namespace StarBooker.Web.Controllers
 
         public async Task<IActionResult> Create()
         {
-            return View();
+            await PrepareViewBags().ConfigureAwait(false);
+            return View(new FreelancerCreateViewModel());
         }
 
         public async Task<IActionResult> Edit(int id)

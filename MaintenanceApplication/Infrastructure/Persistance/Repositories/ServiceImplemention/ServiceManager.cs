@@ -13,6 +13,7 @@ using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Specification;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.ClientPayment;
+using Maintenance.Application.Services.Country;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.OffereServiceCategory;
@@ -42,6 +43,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public INotificationService NotificationService { get; private set; }
         public IFreelancerAuthService FreelancerAuthService { get; private set; }
         public IAdminService AdminService { get; private set; }
+        public ICountryService CountryService { get; private set; }
 
         public IPasswordService PasswordService { get; private set; }
 
@@ -80,6 +82,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             TokenService = new TokenService(configuration);
             EmailService = new EmailService(configuration);
             AdminService = new AdminService(userManager, dbContext);
+            CountryService = new CountryService(unitOfWork);
         }
     }
 }

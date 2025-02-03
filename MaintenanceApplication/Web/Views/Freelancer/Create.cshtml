@@ -1,7 +1,8 @@
-﻿@model Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos.FreelancerRegistrationDto
+﻿@model FreelancerCreateViewModel
 @{
     ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
     ViewBag.ModuleIcon = "user";
+    var countries = ViewBag.Countries as List<CountryResponseViewModel> ?? new List<CountryResponseViewModel>();
 }
 
 <div class="row">
@@ -10,7 +11,6 @@
             <div class="card-body">
                 <form asp-action="Create" asp-controller="Freelancer" method="post" class="form-freelancer">
                     <div class="row">
-                        <!-- Personal Information -->
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label asp-for="FullName" class="form-label">@_CommonLocalizer["FullName"]</label>
@@ -20,7 +20,7 @@
 
                             <div class="mb-3">
                                 <label asp-for="Email" class="form-label">@_CommonLocalizer["Email"]</label>
-                                <input type="text" class="form-control" asp-for="Email" placeholder="@_CommonLocalizer["Email"]">
+                                <input type="email" class="form-control" asp-for="Email" placeholder="@_CommonLocalizer["Email"]">
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
 
@@ -31,7 +31,7 @@
                                     <input type="number" class="form-control" asp-for="PhoneNumber" placeholder="@_CommonLocalizer["Mobile"]">
                                     <span asp-validation-for="PhoneNumber" class="text-danger"></span>
                                 </div>
-
+                            </div>
                                 <div class="col-md-6">
                                     <label class="form-label">@_CommonLocalizer["CountryCode"]</label>
                                     <select asp-for="CountryId" class="form-select select-with-flags" style="width: 100%;">
@@ -46,8 +46,8 @@
                                 </div>
                             </div>
 
+
                             <div class="mb-3">
-                                <label asp-for="DateOfBirth" class="form-label">Date of Birth</label>
                                 <div class="input-group">
                                     <input type="text" asp-for="DateOfBirth" class="form-control datetime-picker" placeholder="@_CommonLocalizer["Select"]" value="" data-input data-type="datetime" data-show="future">
                                     <span class="input-group-text input-group-addon" data-toggle><i data-feather="calendar"></i></span>
@@ -72,15 +72,22 @@
                                 <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                             </div>
                         </div>
+                        <!-- Professional Information -->
                         <div class="col-md-6">
-                           
-
                             <div class="mb-3">
                                 <label asp-for="ExperienceLevel" class="form-label">Experience Level</label>
-                                <select asp-for="ExperienceLevel"  class="form-select">
+                                <select asp-for="ExperienceLevel" asp-items="@ViewBag.ExperienceLevels" class="form-select">
                                     <option value="">Select Experience Level</option>
                                 </select>
                                 <span asp-validation-for="ExperienceLevel" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Status" class="form-label">Account Status</label>
+                                <select asp-for="Status" asp-items="@ViewBag.AccountStatuses" class="form-select">
+                                    <option value="">Select Account Status</option>
+                                </select>
+                                <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
 
                             <div class="mb-3">
@@ -97,8 +104,6 @@
                                 <span asp-validation-for="CivilID" class="text-danger"></span>
                             </div>
                         </div>
-
-                        <!-- Full Width Fields -->
                         <div class="col-12">
                             <div class="mb-3">
                                 <label asp-for="Bio" class="form-label">Bio</label>
@@ -128,21 +133,3 @@
     </div>
 </div>
 
-@section Scripts {
-    <script>
-        $(document).ready(function () {
-            // Initialize Feather icons
-            if (typeof feather !== 'undefined') {
-                feather.replace();
-            }
-
-            // Initialize form validation
-            $("form").validate({
-                errorPlacement: function (error, element) {
-                    error.addClass("text-danger");
-                    error.insertAfter(element);
-                }
-            });
-        });
-    </script>
-}
