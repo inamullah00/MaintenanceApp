@@ -1,0 +1,65 @@
+﻿@model FreelancerDatatableFilterViewModel
+@{
+    ViewBag.Title = "Freelancer List";
+}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row card-title align-middle">
+                    <div class="col-md-12 mt-1">
+                        <form id="filterForm">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="form-label">@_CommonLocalizer["Search"]</label>
+                                            <input type="text" id="searchFullName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
+                                        </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">@_CommonLocalizer["Status"]</label>
+                                            <select id="statusFilter" class="form-select">
+                                                <option value="">@_CommonLocalizer["All"]</option>
+                                                @foreach (var status in Enum.GetValues(typeof(AccountStatus)))
+                                                {
+                                                    <option value="@status">@status</option>
+                                                }
+                                            </select>
+                                        </div>
+
+                                        <!-- Filter Button -->
+                                        <div class="col-md-2 mt-4">
+                                            <button type="button" id="filter" class="mt-1 search-button btn btn-primary waves-effect waves-light form-control">
+                                                @_CommonLocalizer["Filter"]
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="freelancersTable" class="datatables-products table">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="user"></i>@_CommonLocalizer["FullName"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="mail"></i>@_CommonLocalizer["Email"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="smartphone"></i>@_CommonLocalizer["Mobile"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="settings"></i>@_CommonLocalizer["DateOfBirth"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="settings"></i>@_CommonLocalizer["ExperienceLevel"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="settings"></i>@_CommonLocalizer["Status"]</th>
+                                <th class="text-white fw-bold"><i class="link-icon feather-16" data-feather="settings"></i>@_CommonLocalizer["Action"]</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="/customjs/Freelancers/Freelancers.js" asp-append-version="true"></script>
+}

@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Interfaces.RepositoryInterfaces;
+﻿using Maintenance.Application.Exceptions;
+using Maintenance.Application.Interfaces.RepositoryInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
@@ -7,22 +8,29 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 {
     public class CountryRepository : ICountryRepository
     {
-        private readonly ApplicationDbContext _dbContext;
+        private readonly ApplicationDbContext _context;
 
-        public CountryRepository(ApplicationDbContext dbContext)
+        public CountryRepository(ApplicationDbContext context)
         {
-            _dbContext = dbContext;
+            _context = context;
         }
 
         public async Task<IList<Country>> GetAllAsync()
         {
-            return await _dbContext.Countries.OrderBy(a => a.Name).ToListAsync();
+            return await _context.Countries.OrderBy(a => a.Name).ToListAsync();
         }
 
-        public async Task<Country> GetByIdAsync(Guid id)
+        public async Task<Country> GetByIdAsync(Guid? id)
         {
-            return await _dbContext.Countries.FirstOrDefaultAsync(a => a.Id == id);
+            var country = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id) ?? throw new CustomException("Country Not Found");
+            return country;
         }
+
+        public async Task<bool> ExistsAsync(Guid? countryId)
+        {
+            return await _context.Countries.AnyAsync(c => c.Id == countryId);
+        }
+
 
     }
 }

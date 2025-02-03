@@ -28,7 +28,7 @@
                 </a>
             </li>
 
-            <li class="nav-item" active-when-controllers="Freelancer" active-when-actions="Index,Create,Edit,EditBasicDetail,Pending,Rejected,Approved,ViewDetails">
+            <li class="nav-item" active-when-controllers="Freelancer" active-when-actions="Index,Edit,Pending,Rejected,Approved,ViewDetails">
                 <a class="nav-link" data-bs-toggle="collapse" href="#freelancer" role="button" aria-expanded="false">
                     <i class="link-icon" data-feather="users"></i>
                     <span class="link-title">@_CommonLocalizer["Freelancer"]</span>
@@ -36,9 +36,6 @@
                 </a>
                 <div class="collapse" id="freelancer">
                     <ul class="nav sub-menu">
-                        <li class="nav-item">
-                            <a href="@Url.Action("Create", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
-                        </li>
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Freelancer")" class="nav-link" active-when-controllers="Freelancer" active-when-actions="Index">@_CommonLocalizer["All"]</a>
                         </li>

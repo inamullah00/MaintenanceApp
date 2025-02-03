@@ -1,12 +1,8 @@
 ﻿using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Specification
+namespace Maintenance.Application.Services.Admin.FreelancerSpecification
 {
     public interface IAdminFreelancerService
     {
@@ -21,6 +17,9 @@ namespace Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Repor
 
         // Response DTO: List<TopFreelancerDto>
         Task<Result<List<TopFreelancerResponseDto>>> GenerateTopPerformersReportAsync(int month, CancellationToken cancellationToken);
-    }
 
+        Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter);
+        Task EditFreelancerAsync(FreelancerEditViewModel model, CancellationToken cancellationToken);
+        Task<FreelancerEditViewModel> GetFreelancerForEditAsync(Guid id, CancellationToken cancellationToken);
+    }
 }

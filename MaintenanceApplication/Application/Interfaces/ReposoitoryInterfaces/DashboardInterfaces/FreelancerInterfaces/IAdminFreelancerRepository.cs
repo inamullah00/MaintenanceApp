@@ -1,13 +1,11 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Ardalis.Specification;
+using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Maintenance.Domain.Entity.FreelancerEntites;
 
-namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.Order_Limit_PerformanceReportin_interfaces
+namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces
 {
     public interface IAdminFreelancerRepository
     {
@@ -22,5 +20,10 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
 
         // Method to generate a list of top freelancers for a given month
         Task<List<ApplicationUser>> GenerateTopPerformersReportAsync(int month, CancellationToken cancellationToken);
+        Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null);
+        Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<Freelancer> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken);
+        Task<Freelancer> GetFreelancerByPhoneNumberAsync(string phoneNumber, Guid? countryId, CancellationToken cancellationToken);
+        Task<bool> UpdateFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default);
     }
 }

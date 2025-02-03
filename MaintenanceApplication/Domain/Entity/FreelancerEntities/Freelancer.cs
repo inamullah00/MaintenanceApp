@@ -49,7 +49,7 @@ public enum AccountStatus
 
 public enum ExperienceLevel
 {
-    Newbie = 1,
+    New = 1,
     Experienced = 2,
     Expert = 3,
 }

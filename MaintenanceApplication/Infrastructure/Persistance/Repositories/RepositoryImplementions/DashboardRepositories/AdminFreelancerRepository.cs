@@ -1,17 +1,14 @@
-﻿using Domain.Entity.UserEntities;
+﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
-using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
-using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.Order_Limit_PerformanceReportin_interfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories
 {
@@ -24,6 +21,60 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         {
             _context = context;
         }
+
+        public async Task<Freelancer> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken)
+        {
+            return await _context.Freelancers.AsNoTracking().FirstOrDefaultAsync(a => a.Email.ToLower().Trim().Equals(email.ToLower().Trim()), cancellationToken);
+        }
+        public async Task<Freelancer> GetFreelancerByPhoneNumberAsync(string phoneNumber, Guid? countryId, CancellationToken cancellationToken)
+        {
+            return await _context.Freelancers.AsNoTracking().FirstOrDefaultAsync(f => !string.IsNullOrEmpty(f.PhoneNumber) && f.PhoneNumber.ToLower().Trim().Equals(phoneNumber.ToLower().Trim()) && f.CountryId == countryId, cancellationToken);
+        }
+
+        public async Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _context.Freelancers.AsNoTracking().Include(f => f.Country).FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+        }
+
+        public async Task<bool> UpdateFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default)
+        {
+            _context.Freelancers.Update(freelancer);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+
+        public async Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null)
+        {
+            var query = SpecificationEvaluator.Default.GetQuery(query: _context.Freelancers.AsNoTracking().AsQueryable(), specification: specification);
+
+            var filteredQuery = (from freelancer in query
+                                 join country in _context.Countries.AsNoTracking()
+                                     on freelancer.CountryId equals country.Id into countryGroup
+                                 from country in countryGroup.DefaultIfEmpty()
+                                 orderby freelancer.FullName
+                                 select new FreelancerResponseViewModel
+                                 {
+                                     Id = freelancer.Id.ToString(),
+                                     FullName = freelancer.FullName,
+                                     Email = freelancer.Email,
+                                     DialCode = country != null ? country.DialCode : string.Empty,
+                                     CountryId = freelancer.CountryId,
+                                     PhoneNumber = freelancer.PhoneNumber,
+                                     DateOfBirth = DateOnly.FromDateTime(freelancer.DateOfBirth),
+                                     ExperienceLevel = freelancer.ExperienceLevel,
+                                     Status = freelancer.Status,
+                                 });
+            var totalCount = await filteredQuery.CountAsync();
+
+            var freelancers = await filteredQuery.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+
+            return new PaginatedResponse<FreelancerResponseViewModel>(freelancers, totalCount, filter.PageNumber, filter.PageSize);
+        }
+
+
+
+
 
         // Check if the freelancer can accept new orders
         public async Task<(bool, ApplicationUser?, string? Message)> CanAcceptNewOrderAsync(string freelancerId, CancellationToken cancellationToken)

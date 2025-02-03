@@ -1,17 +1,12 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
-using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
-using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.Order_Limit_PerformanceReportin_interfaces;
-using Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Specification;
-using Maintenance.Application.Services.Freelance;
+using Maintenance.Application.Exceptions;
+using Maintenance.Application.Services.Admin.FreelancerSpecification;
+using Maintenance.Application.Services.Admin.FreelancerSpecification.Specification;
+using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Http;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention
 {
@@ -25,6 +20,46 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
+        public async Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter)
+        {
+            var specification = new FreelancerSearchList(filter);
+            return await _unitOfWork.AdminFreelancerRepository.GetFilteredFreelancersAsync(filter, specification);
+        }
+
+        public async Task<FreelancerEditViewModel> GetFreelancerForEditAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+            return new FreelancerEditViewModel
+            {
+                Id = freelancer.Id,
+                FullName = freelancer.FullName,
+                Email = freelancer.Email,
+                PhoneNumber = freelancer.PhoneNumber,
+                CountryId = freelancer.CountryId,
+                ExperienceLevel = freelancer.ExperienceLevel,
+                Status = freelancer.Status.ToString(),
+                DateOfBirth = freelancer.DateOfBirth.Date,
+                Bio = freelancer.Bio,
+                PreviousWork = freelancer.PreviousWork
+            };
+
+        }
+        public async Task EditFreelancerAsync(FreelancerEditViewModel model, CancellationToken cancellationToken)
+        {
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(model.Id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+
+            var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId);
+            var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
+            if (existingEmail != null && existingEmail.Id != model.Id) throw new CustomException($"Duplicate Email {model.Email}");
+            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.Email, model.CountryId, cancellationToken);
+            if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
+            _mapper.Map(model, freelancer);
+            freelancer.Country = country;
+
+            var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancerAsync(freelancer, cancellationToken);
+            if (!updateResult) throw new CustomException("Failed to update freelancer.");
+        }
+
 
         // Check if the freelancer can accept new orders
         public async Task<Result<CanAcceptNewOrderResponseDto>> CanAcceptNewOrderAsync(string freelancerId, CancellationToken cancellationToken)
