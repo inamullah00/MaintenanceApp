@@ -507,7 +507,7 @@ namespace Maintenance.API.Controllers.FreelancerController
             {
                 var result = await _serviceManager.FreelancerService.GetRequestedServicesAsync(cancellationToken, keyword);
 
-                if (result.IsSuccess)
+                if (result.IsSuccess)  
                 {
                     return Ok(new
                     {
