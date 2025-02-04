@@ -53,12 +53,6 @@ namespace Application.Mapper
             CreateMap<CreateOrderRequestDto, Order>().ReverseMap();
             CreateMap<UpdateOrderStatusDto, Order>().ReverseMap();
 
-
-
-            
-            
-
-
             #region Account Mapping
             CreateMap<ApplicationUser, UserProfileDto>().ReverseMap();
             CreateMap<ApplicationUser, UserProfileEditDto>().ReverseMap();

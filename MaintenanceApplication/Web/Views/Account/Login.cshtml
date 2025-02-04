@@ -1,30 +1,64 @@
-﻿@* @model UserLoginViewModel
+﻿@model UserLoginViewModel
 @{
     Layout = "~/Views/Shared/_BlankLayout.cshtml";
 }
 
 <div class="row w-100 mx-0 auth-page">
-    <div class="col-md-8 col-xl-6 mx-auto">
+    <div class="col-md-8 col-xl-5 mx-auto d-flex align-items-center justify-content-center">
         <div class="card">
             <div class="row">
-                <div class="col-md-12 ps-md-0">
-                    <div class="auth-form-wrapper px-4 py-5">
-                        <a href="#" class="noble-ui-logo d-block mb-2">Star<span>Booker</span></a>
-                        <h5 class="text-muted fw-normal mb-4">@_CommonLocalizer["LoginMsg"]</h5>
+                <div class="col-12 ps-md-0">
+                    <div class="auth-form-wrapper px-7 py-5">
+                        <div class="text-center mb-4">
+                            <a href="#" class="noble-ui-logo d-block mb-3">
+                                <h3 class="text-primary fw-bolder mb-0">@_CommonLocalizer["Shtabi"]</h3>
+                            </a>
+                            <h5 class="text-muted fw-normal">@_CommonLocalizer["LoginMsg"]</h5>
+                        </div>
+
                         <form class="forms-sample" method="post" asp-controller="Account" asp-action="Login">
                             <div class="mb-3">
-                                <label class="form-label">@_CommonLocalizer["UserName"]</label>
-                                <input asp-for="UserName" class="form-control" placeholder="@_CommonLocalizer["UserName"]">
-                                <span asp-validation-for="UserName" class="text-danger"></span>
+                                <label for="UserName" class="form-label">@_CommonLocalizer["UserName"]</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 bg-transparent">
+                                        <i data-feather="user" class="feather-16"></i>
+                                    </span>
+                                    <input asp-for="UserName"
+                                           class="form-control border-start-0"
+                                           placeholder="@_CommonLocalizer["UserName"]"
+                                           autocomplete="username">
+                                </div>
+                                <span asp-validation-for="UserName" class="text-danger small mt-1 d-block"></span>
                             </div>
+
                             <div class="mb-3">
-                                <label class="form-label">@_CommonLocalizer["Password"]</label>
-                                <input asp-for="Password" class="form-control" type="password" placeholder="@_CommonLocalizer["Password"]">
-                                <span asp-validation-for="Password" class="text-danger"></span>
+                                <label for="Password" class="form-label">@_CommonLocalizer["Password"]</label>
+                                <div class="input-group">
+                                    <span class="input-group-text border-end-0 bg-transparent">
+                                        <i data-feather="lock" class="feather-16"></i>
+                                    </span>
+                                    <input asp-for="Password"
+                                           class="form-control border-start-0 border-end-0"
+                                           type="password"
+                                           placeholder="@_CommonLocalizer["Password"]"
+                                           autocomplete="current-password">
+                                    <span class="input-group-text bg-transparent border-start-0"
+                                          role="button"
+                                          id="togglePassword">
+                                        <i data-feather="eye" class="feather-16"></i>
+                                    </span>
+                                </div>
+                                <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
                             </div>
+
                             <input type="hidden" asp-for="ReturnUrl" />
-                            <div>
-                                <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0 text-white">Login</button>
+
+                            <!-- Submit button -->
+                            <div class="mt-4">
+                                <button type="submit" class="btn btn-primary w-100 btn-icon-text">
+                                    <i data-feather="log-in" class="btn-icon-prepend feather-16"></i>
+                                    <span class="ms-1">Login</span>
+                                </button>
                             </div>
                         </form>
                     </div>
@@ -33,4 +67,28 @@
         </div>
     </div>
 </div>
- *@
+@section Scripts{
+    <script>
+        $(document).ready(function () {
+            if (typeof feather !== 'undefined') {
+                feather.replace();
+            }
+
+            $('#togglePassword').on('click', function () {
+                const passwordInput = $('#Password');
+                const toggleButton = $(this);
+
+                if (passwordInput.attr('type') === 'password') {
+                    passwordInput.attr('type', 'text');
+                    toggleButton.html('');
+                    toggleButton.html('<i data-feather="eye-off" class="feather-16"></i>');
+                } else {
+                    passwordInput.attr('type', 'password');
+                    toggleButton.html('');
+                    toggleButton.html('<i data-feather="eye" class="feather-16"></i>');
+                }
+            feather.replace();
+            });
+        });
+    </script>
+}

@@ -10,9 +10,12 @@ namespace Maintenance.Application.Services.Freelance.Specification
 {
     public class OrderStatusSearchList : Specification<Order>
     {
-        public OrderStatusSearchList(string Status)
+        public OrderStatusSearchList(OrderStatus status)
         {
-            
+            if (Enum.IsDefined(typeof(OrderStatus), status)) // Ensure the value is a valid enum
+            {
+                Query.Where(order => order.Status == status);
+            }
         }
     }
 }

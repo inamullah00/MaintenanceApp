@@ -15,7 +15,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount
         //public string City { get; set; }
         //public string Address { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public AreaOfExpertise? AreaOfExpertise { get; set; }
         public string Bio { get; set; }
         public string ExperienceLevel { get; set; }
         public string PreviousWork { get; set; }

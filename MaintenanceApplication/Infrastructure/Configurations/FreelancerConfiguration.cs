@@ -1,11 +1,6 @@
 ﻿using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Configurations
 {
@@ -40,10 +35,6 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasMaxLength(500) // Optional: Limit the length of ProfilePicture URL if stored as a string
                 .IsRequired(false); // Optional: profile picture
 
-            builder.Property(f => f.AreaOfExpertise)
-                .HasMaxLength(100) // Optional: Set max length for AreaOfExpertise
-                .IsRequired(); // Optional: the area of expertise
-
             builder.Property(f => f.Bio)
                 .HasMaxLength(500) // Limit bio to 500 characters
                 .IsRequired(false); // Bio is optional
@@ -55,10 +46,7 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasMaxLength(100) // Optional: max length for Civil ID
                 .IsRequired(false); // Optional: civil ID
 
-            builder.Property(f => f.ExperienceLevel)
-                .HasMaxLength(50) // Optional: limit the experience level string
-                .IsRequired(false); // Optional: experience level
-
+            
             builder.Property(f => f.PreviousWork)
                 .HasMaxLength(500) // Limit the previous work links to 500 characters
                 .IsRequired(false); // Optional: previous work
@@ -93,23 +81,14 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasForeignKey(feedback => feedback.FeedbackOnFreelancerId);
 
             // Many-to-Many: Freelancer to Services
-            builder.HasMany(f => f.FreelancerTopServices)
+            builder.HasMany(f => f.FreelancerServices)
                 .WithOne(fts => fts.Freelancer)
                 .HasForeignKey(fts => fts.FreelancerId);
 
-            // One-to-One: Freelancer to Country
-            builder.HasOne(f => f.country)
+            // One-to-Many: Freelancer to Country
+            builder.HasOne(f => f.Country)
                 .WithMany()
                 .HasForeignKey(f => f.CountryId)
-                .IsRequired(false);
-            
-
-            // BaseEntity properties (if applicable)
-            builder.Property(f => f.CreatedAt)
-                .HasDefaultValueSql("GETUTCDATE()")
-                .IsRequired();
-
-            builder.Property(f => f.UpdatedAt)
                 .IsRequired(false);
 
         }

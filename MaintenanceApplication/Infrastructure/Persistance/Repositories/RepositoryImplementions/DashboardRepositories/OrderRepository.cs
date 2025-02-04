@@ -1,6 +1,7 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Infrastructure.Persistance.Data;
@@ -134,6 +135,34 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         {
 
             return await _dbContext.Orders.FirstOrDefaultAsync(x => x.Id == id, cancellationToken); ;
+        }
+
+        public async Task<List<OrderStatusResponseDto>> GetOrdersByStatusAsync(CancellationToken cancellationToken, ISpecification<Order>? specification)
+        {
+
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+         query: _dbContext.Orders.AsQueryable(),
+         specification: specification);
+
+
+            return await (from orders in queryResult.AsSplitQuery()
+                          join client in _dbContext.Clients.AsNoTracking()
+                          on orders.ClientId equals client.Id
+                          join service in _dbContext.OfferedServices.AsNoTracking()
+                          on orders.ServiceId equals service.Id
+                          select new OrderStatusResponseDto
+                          {
+                              ClientName = client.FullName,
+                              ClientEmail = client.Email,
+                              //ClientLocation = client.location,
+                              ServiceTitle = service.Title,
+                              ServiceDescription = service.Description,
+                              //ServiceTime = service.PreferredTime,
+                              ServiceAddress = service.Location
+                          })
+                 .AsNoTracking()
+                 .ToListAsync(cancellationToken);
+
         }
     }
 }

@@ -12,6 +12,7 @@ using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.FreelancerAuth.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
 
-        public FreelancerAuthService(IUnitOfWork unitOfWork , IMapper mapper , IPasswordService passwordService , ITokenService tokenService)
+        public FreelancerAuthService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, ITokenService tokenService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -131,7 +132,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
         #region Get Freelancer Profile
-        public async Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId , CancellationToken cancellationToken)
+        public async Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId, CancellationToken cancellationToken)
         {
             if (freelancerId == Guid.Empty)
             {
@@ -182,7 +183,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             }
 
 
-            if (freelancer == null || !_passwordService.ValidatePassword(loginDto.Password,freelancer.Password))
+            if (freelancer == null || !_passwordService.ValidatePassword(loginDto.Password, freelancer.Password))
             {
                 return Result<FreelancerLoginResponseDto>.Failure("Invalid email or password.", StatusCodes.Status401Unauthorized);
             }
@@ -205,7 +206,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         #region Logout
         public async Task<Result<bool>> LogoutAsync(Guid freelancerId, CancellationToken cancellationToken)
         {
-            if (freelancerId!=Guid.Empty)
+            if (freelancerId != Guid.Empty)
             {
                 return Result<bool>.Failure("Freelancer ID is required.", StatusCodes.Status400BadRequest);
             }
@@ -223,7 +224,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             var FreelancerEntity = _mapper.Map<Freelancer>(freelancer);
 
             await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(FreelancerEntity);
-           
+
 
             return Result<bool>.Success(true, "Logout successful.", StatusCodes.Status200OK);
         }
@@ -244,7 +245,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             {
                 return Result<Freelancer>.Failure(ErrorMessages.EmailAlreadyExists, StatusCodes.Status409Conflict);
             }
-            
+
             // Map DTO to Freelancer entity
             var freelancer = _mapper.Map<Freelancer>(registrationDto);
 
@@ -252,6 +253,20 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             freelancer.Password = _passwordService.HashPassword(registrationDto.Password);
             freelancer.Status = AccountStatus.Pending; // Default status for new freelancers
 
+
+            // Handle Profile Picture Upload (Single File)
+            if (registrationDto.ProfilePicture != null)
+            {
+                var (uploadSuccess, uploadedImageUrl, uploadMessage) = await ImageUploadAsync(registrationDto.ProfilePicture);
+
+                if (!uploadSuccess)
+                {
+                    return Result<Freelancer>.Failure(uploadMessage, StatusCodes.Status400BadRequest);
+                }
+
+                // Store the uploaded image URL in the freelancer entity
+                freelancer.ProfilePicture = uploadedImageUrl;
+            }
 
             // Save the freelancer to the database
             var freelancerCreated = await _unitOfWork.FreelancerAuthRepository.AddFreelancerAsync(freelancer).ConfigureAwait(false);
@@ -313,7 +328,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<bool>.Failure("Freelancer ID is required.", StatusCodes.Status400BadRequest);
             }
 
-            var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByIdAsync(freelancerId,cancellationToken);
+            var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByIdAsync(freelancerId, cancellationToken);
 
             if (freelancer == null)
             {
@@ -358,13 +373,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             freelancer.PhoneNumber = EditProfileDto.PhoneNumber ?? freelancer.PhoneNumber;
             freelancer.ProfilePicture = EditProfileDto.ProfilePicture ?? freelancer.ProfilePicture;
             freelancer.Bio = EditProfileDto.Bio ?? freelancer.Bio;
-            freelancer.ExperienceLevel = EditProfileDto.ExperienceLevel ?? freelancer.ExperienceLevel;
             freelancer.PreviousWork = EditProfileDto.PreviousWork ?? freelancer.PreviousWork;
-
-            if (EditProfileDto.AreaOfExpertise.HasValue)
-            {
-                freelancer.AreaOfExpertise = EditProfileDto.AreaOfExpertise.Value;
-            }
             freelancer.UpdatedAt = DateTime.UtcNow; // Ensure timestamp is updated
 
             // Save changes
@@ -428,5 +437,49 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<Freelancer>.Success(UpdatedFreelancer, SuccessMessages.SuccessfullyApproved, StatusCodes.Status200OK);
         }
         #endregion
+
+
+
+
+        #region Image Upload
+        private async Task<(bool Success, string ImageUrl, string Message)> ImageUploadAsync(IFormFile imageFile)
+        {
+            if (imageFile == null)
+            {
+                return (false, string.Empty, "No image uploaded.");
+            }
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            try
+            {
+                // Generate a unique file name
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
+                var fullPath = Path.Combine(uploadPath, fileName);
+
+                // Save the file to the server
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                // Return the saved file path
+                return (true, $"/UploadedFiles/{fileName}", "File uploaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty, $"An error occurred during file upload: {ex.Message}");
+            }
+        }
+        #endregion
+
+
+
     }
 }
