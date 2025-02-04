@@ -334,7 +334,7 @@ namespace Maintenance.API.Controllers.AuthController
 
         #region Block-Freelancer
         [HttpPut]
-        [Route("Block-Freelancer/{FreelancerId:guid}")]
+        [Route("Block-Freelancer/{freelancerId:guid}")]
         public async Task<IActionResult> BlockFreelancer(Guid freelancerId , [FromBody] FreelancerStatusUpdateDto updateDto)
         {
             try
@@ -364,7 +364,7 @@ namespace Maintenance.API.Controllers.AuthController
 
         #region UnBlock-Freelancer
         [HttpPut]
-        [Route("UnBlock-Freelancer/{FreelancerId:guid}")]
+        [Route("UnBlock-Freelancer/{freelancerId:guid}")]
         public async Task<IActionResult> UnBlockFreelancer(Guid freelancerId , [FromBody] FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken)
         {
             try
@@ -459,7 +459,5 @@ namespace Maintenance.API.Controllers.AuthController
         #endregion
 
         #endregion
-
-
     }
 }

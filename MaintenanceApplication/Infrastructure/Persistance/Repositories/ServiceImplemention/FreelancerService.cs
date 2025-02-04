@@ -224,19 +224,20 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<List<RequestedServiceResponseDto>>.Success(serviceDtos, "Requested services fetched successfully.", StatusCodes.Status200OK);
         }
 
-        public async Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(string status, CancellationToken cancellationToken)
+        public async Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken)
         {
 
             var specification = new OrderStatusSearchList(status);
-            //var services = await _unitOfWork.OfferedServiceRepository.GetRequestedServicesAsync(specification, cancellationToken);
+            var orderStatusResponse = await _unitOfWork.OrderRepository.GetOrdersByStatusAsync(cancellationToken, specification);
 
-            //if (services == null || services.Count == 0)
-            //{
-            //    return Result<List<OrderStatusResponseDto>>.Success("No requested services found.", StatusCodes.Status200OK);
-            //}
+            if (orderStatusResponse == null || orderStatusResponse.Count == 0)
+            {
+                return Result<List<OrderStatusResponseDto>>.Success("No requested services found.", StatusCodes.Status200OK);
+            }
 
-            //var serviceDtos = _mapper.Map<List<RequestedServiceResponseDto>>(services);
-            return null;
+            return Result<List<OrderStatusResponseDto>>.Success(orderStatusResponse, "Orders Fetched Successfuly.", StatusCodes.Status200OK);
+
+
         }
     }
 }

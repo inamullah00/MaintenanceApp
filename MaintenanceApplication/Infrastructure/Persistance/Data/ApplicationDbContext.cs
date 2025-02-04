@@ -1,19 +1,13 @@
 ﻿
 using Domain.Entity.UserEntities;
-using Domain.Enums;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace Maintenance.Infrastructure.Persistance.Data
@@ -39,6 +33,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
         //public DbSet<Notification> Notifications { get; set; }
         public DbSet<Dispute> Disputes { get; set; }
         public DbSet<Content> Contents { get; set; }
+        public DbSet<Country> Countries { get; set; }
         //public DbSet<Payment> Payments { get; set; }
 
 
@@ -57,7 +52,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new DisputeConfiguration());
             builder.ApplyConfiguration(new ContentConfiguration());
             builder.ApplyConfiguration(new ServiceConfiguration());
-            builder.ApplyConfiguration(new FreelancerTopServicesConfiguration());
+            builder.ApplyConfiguration(new FreelancerServiceConfiguration());
             builder.ApplyConfiguration(new CountryConfiguration());
 
             #region Fluent Model
@@ -155,7 +150,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
 
             #endregion
 
-          
+
             #region Data Seeding
 
             // Seeding roles

@@ -1,15 +1,9 @@
 ﻿using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
-using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation
 {
@@ -78,7 +72,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                       FullName = f.FullName,
                       Email = f.Email,
                       ProfilePicture = f.ProfilePicture,
-                      AreaOfExpertise = f.AreaOfExpertise.ToString(),
                       Status = f.Status.ToString()
                   })
                   .ToListAsync();
@@ -106,11 +99,11 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             throw new NotImplementedException();
         }
 
-        public async Task<Freelancer> UpdateFreelancerAsync (Freelancer freelancer)
+        public async Task<Freelancer> UpdateFreelancerAsync(Freelancer freelancer)
         {
       
             _dbContext.Freelancers.Update(freelancer); // Update the freelancer in the DB
-           await _dbContext.SaveChangesAsync(); // Save changes to the database
+            await _dbContext.SaveChangesAsync(); // Save changes to the database
             return freelancer;
         }
 

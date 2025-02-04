@@ -1,17 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Domain.Enums
+﻿namespace Domain.Enums
 {
 
     public enum Role
     {
         Client = 1,        // 1 for Client
-        Freelancer = 2  ,   // 2 for Freelancer
-        Admin=3            // 3 for Admin
+        Freelancer = 2,   // 2 for Freelancer
+        Admin = 3            // 3 for Admin
     }
 
     // Assigning explicit values to UserStatus enum
@@ -43,5 +37,11 @@ namespace Domain.Enums
     {
         Success = 1,       // 1 for Success
         Failure = 2        // 2 for Failure
+    }
+    public enum Notify
+    {
+        Success = 1,
+        Error = 2,
+        Info = 3
     }
 }

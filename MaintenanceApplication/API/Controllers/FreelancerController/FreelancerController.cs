@@ -536,12 +536,12 @@ namespace Maintenance.API.Controllers.FreelancerController
         #region Ongoin-Completed-InProcess Orders
 
         #region Filtered Freelancer Orders
-        [HttpGet]
+        [HttpGet("Filter-Freelancer-Orders")]
         public async Task<IActionResult> GetFreelancerOrders(OrderStatus orderStatus , CancellationToken cancellationToken)
         {
             _logger.LogInformation("Fetching {Status} orders for FreelancerId: {FreelancerId}", orderStatus);
 
-            var result = await _serviceManager.FreelancerService.GetOrdersByStatusAsync(orderStatus.ToString() , cancellationToken);
+            var result = await _serviceManager.FreelancerService.GetOrdersByStatusAsync(orderStatus , cancellationToken);
             if (result.IsSuccess)
             {
                 return Ok(new

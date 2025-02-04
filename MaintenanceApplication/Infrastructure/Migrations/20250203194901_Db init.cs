@@ -91,7 +91,7 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Country",
+                name: "Countries",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -104,7 +104,7 @@ namespace Maintenance.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Country", x => x.Id);
+                    table.PrimaryKey("PK_Countries", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -265,11 +265,12 @@ namespace Maintenance.Infrastructure.Migrations
                     Password = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(20)", maxLength: 20, nullable: true),
                     ProfilePicture = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    AreaOfExpertise = table.Column<int>(type: "int", maxLength: 100, nullable: false),
                     Bio = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
+                    IsType = table.Column<int>(type: "int", nullable: false),
                     DateOfBirth = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CivilID = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    ExperienceLevel = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
                     PreviousWork = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     Status = table.Column<int>(type: "int", maxLength: 20, nullable: false),
                     CountryId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
@@ -280,9 +281,9 @@ namespace Maintenance.Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_Freelancers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Freelancers_Country_CountryId",
+                        name: "FK_Freelancers_Countries_CountryId",
                         column: x => x.CountryId,
-                        principalTable: "Country",
+                        principalTable: "Countries",
                         principalColumn: "Id");
                 });
 
@@ -325,7 +326,7 @@ namespace Maintenance.Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "FreelancerTopServices",
+                name: "FreelancerService",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
@@ -336,15 +337,15 @@ namespace Maintenance.Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_FreelancerTopServices", x => x.Id);
+                    table.PrimaryKey("PK_FreelancerService", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_FreelancerTopServices_Freelancers_FreelancerId",
+                        name: "FK_FreelancerService_Freelancers_FreelancerId",
                         column: x => x.FreelancerId,
                         principalTable: "Freelancers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_FreelancerTopServices_Service_ServiceId",
+                        name: "FK_FreelancerService_Service_ServiceId",
                         column: x => x.ServiceId,
                         principalTable: "Service",
                         principalColumn: "Id",
@@ -377,14 +378,13 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CustomPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfferDetails = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BidStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferedServiceId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     FreelancerId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    CurrentRating = table.Column<double>(type: "float", nullable: true),
-                    ArrivalTime = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Message = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
-                    BidDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CoverLetter = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false, defaultValueSql: "GETUTCDATE()"),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true)
                 },
@@ -538,20 +538,20 @@ namespace Maintenance.Infrastructure.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "0a1cb165-3ef7-4b26-80a6-3935799a7f75", null, "Freelancer", "FREELANCER" },
-                    { "be058a74-0327-48f6-adf3-a9009ff6c441", null, "Admin", "ADMIN" },
-                    { "f7523748-3324-44bd-9565-12108e39a124", null, "Client", "CLIENT" }
+                    { "222e458a-d461-449f-8359-f93610a3732a", null, "Admin", "ADMIN" },
+                    { "bda9dc53-b6ce-4db3-8a17-b10c3642b005", null, "Freelancer", "FREELANCER" },
+                    { "c67d0642-4b37-49e2-8282-e9a54bdde5d1", null, "Client", "CLIENT" }
                 });
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Discriminator", "Email", "EmailConfirmed", "FullName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "1791d2c4-968d-4fd4-903a-ec917eb5560f", 0, "7940b0e6-e14e-400f-a6e6-f1f71cf8e30e", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEBmopGyRYEadU5C3xjiBdG5/t2PtdCGUaGtSOjtjhvNoMlk5yITQgtdHFv/bE1EP9g==", null, false, "72a9ef4b-39fa-4ebf-ad38-7fd4ad25db1e", false, "admin" });
+                values: new object[] { "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522", 0, "74a81581-9d7a-4706-8e7a-297d6206e4a3", "ApplicationUser", "admin@gmail.com", true, "System Administrator", false, null, "ADMIN@GMAIL.COM", "ADMIN", "AQAAAAIAAYagAAAAEI60na5q3VR7HY/aqKY7riaW3Sdzl8KiVdrojSdBw12nEZNfkJVFbiuCv3bkT0JMfA==", null, false, "f00775d0-1f6f-45c8-a22f-35fe807a2bae", false, "admin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-                values: new object[] { "be058a74-0327-48f6-adf3-a9009ff6c441", "1791d2c4-968d-4fd4-903a-ec917eb5560f" });
+                values: new object[] { "222e458a-d461-449f-8359-f93610a3732a", "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -677,13 +677,13 @@ namespace Maintenance.Infrastructure.Migrations
                 column: "CountryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FreelancerTopServices_FreelancerId",
-                table: "FreelancerTopServices",
+                name: "IX_FreelancerService_FreelancerId",
+                table: "FreelancerService",
                 column: "FreelancerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_FreelancerTopServices_ServiceId",
-                table: "FreelancerTopServices",
+                name: "IX_FreelancerService_ServiceId",
+                table: "FreelancerService",
                 column: "ServiceId");
 
             migrationBuilder.CreateIndex(
@@ -748,7 +748,7 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "Feedbacks");
 
             migrationBuilder.DropTable(
-                name: "FreelancerTopServices");
+                name: "FreelancerService");
 
             migrationBuilder.DropTable(
                 name: "Notifications");
@@ -775,7 +775,7 @@ namespace Maintenance.Infrastructure.Migrations
                 name: "OfferedServices");
 
             migrationBuilder.DropTable(
-                name: "Country");
+                name: "Countries");
 
             migrationBuilder.DropTable(
                 name: "Clients");
