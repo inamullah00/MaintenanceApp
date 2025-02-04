@@ -46,7 +46,7 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasMaxLength(100) // Optional: max length for Civil ID
                 .IsRequired(false); // Optional: civil ID
 
-            
+
             builder.Property(f => f.PreviousWork)
                 .HasMaxLength(500) // Limit the previous work links to 500 characters
                 .IsRequired(false); // Optional: previous work
@@ -54,6 +54,13 @@ namespace Maintenance.Infrastructure.Configurations
             builder.Property(f => f.Status)
                 .HasMaxLength(20) // Limit status to 20 characters
                 .IsRequired(); // Status is required
+            builder.Property(f => f.IsType)
+               .HasMaxLength(20) // Limit status to 20 characters
+               .IsRequired(); // Status is required
+
+            builder.Property(f => f.ExperienceLevel)
+               .HasMaxLength(20) // Limit status to 20 characters
+               .IsRequired(); // Status is required
 
             builder.Property(f => f.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()") // Automatically set CreatedAt to UTC now if not set

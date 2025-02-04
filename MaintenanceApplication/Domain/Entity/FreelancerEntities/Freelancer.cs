@@ -13,7 +13,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string PhoneNumber { get; set; }
         public string? ProfilePicture { get; set; }  // Optional
         public string? Bio { get; set; }
-
+        public ExperienceLevel ExperienceLevel { get; set; }
         public UserType IsType { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string City { get; set; }
@@ -54,16 +54,14 @@ public enum AccountStatus
 {
     Pending = 1,       // Account is pending verification
     Suspended = 2,     // Account is suspended due to policy violations
-    Approved = 3       // Account is approved and can be used
-    Active = 2,        // Account is active and can be used
-    Suspended = 3,     // Account is suspended due to policy violations
-    Deactivated = 4,   // Account is deactivated by the user or system
-    Approved = 5
+    Approved = 3,
+    Active = 4,
+    Inactive = 5 // Account is approved and can be used
 }
 
 public enum UserType
 {
-    Freelancer =1,
+    Freelancer = 1,
     Company = 2
 
 }

@@ -26,6 +26,7 @@ namespace Application.Mapper
 
 
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
+            CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerEditViewModel>().ReverseMap();
 
 
