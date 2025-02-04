@@ -246,6 +246,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<Freelancer>.Failure(ErrorMessages.EmailAlreadyExists, StatusCodes.Status409Conflict);
             }
 
+
             // Map DTO to Freelancer entity
             var freelancer = _mapper.Map<Freelancer>(registrationDto);
 
@@ -279,6 +280,39 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<Freelancer>.Success(freelancer, SuccessMessages.UserRegisteredSuccessfully, StatusCodes.Status201Created);
         }
         #endregion
+
+        //public async Task<Result<FreelancerCreateViewModel>> CreateFreelancerAsync(FreelancerCreateViewModel model, CancellationToken cancellationToken = default)
+        //{
+        //    // 1️⃣ Validate Unique Email
+        //    var existingFreelancerByEmail = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
+        //    if (existingFreelancerByEmail != null)
+        //    {
+        //        return Result<FreelancerCreateViewModel>.Failure("Email is already registered.", StatusCodes.Status400BadRequest);
+        //    }
+
+        //    var hashedPassword = _passwordService.HashPassword(model.Password);
+
+        //    string profilePicturePath = null;
+        //    if (model.ProfilePicture != null)
+        //    {
+        //        profilePicturePath = await _fileService.UploadFileAsync(model.ProfilePicture, "profile_pictures");
+        //    }
+
+        //    string civilIdPath = null;
+        //    if (model.CivilID != null)
+        //    {
+        //        civilIdPath = await _fileService.UploadFileAsync(model.CivilID, "civil_ids");
+        //    }
+        //    var freelancer = _mapper.Map<Freelancer>(model);
+
+        //    await _unitOfWork.FreelancerAuthRepository.AddFreelancerAsync(freelancer);
+        //    await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+        //    // 🔟 Map Response DTO
+        //    var freelancerResponse = _mapper.Map<FreelancerResponseDto>(freelancer);
+        //    return Result<FreelancerResponseDto>.Success(freelancerResponse, "Freelancer created successfully.", StatusCodes.Status201Created);
+        //}
+
 
 
         public async Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword, CancellationToken cancellationToken)

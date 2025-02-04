@@ -57,7 +57,6 @@ namespace Maintenance.Web.Controllers
             {
                 await _serviceManager.AdminService.CreateAdmin(model);
                 this.NotifySuccess("User created Successfully");
-                return RedirectToAction(nameof(Index));
             }
             catch (CustomException ex)
             {
@@ -70,6 +69,7 @@ namespace Maintenance.Web.Controllers
                 this.NotifyError("Something went wrong. Please contact to administrator");
                 return View(model);
             }
+            return RedirectToAction(nameof(Index));
         }
 
         [HttpGet]
