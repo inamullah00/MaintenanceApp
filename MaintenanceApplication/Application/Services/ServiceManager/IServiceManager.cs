@@ -2,6 +2,7 @@
 using Maintenance.Application.Communication;
 using Maintenance.Application.Security;
 using Maintenance.Application.Services.Account;
+using Maintenance.Application.Services.Admin.AdminClientSpecification;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
@@ -36,7 +37,6 @@ namespace Maintenance.Application.Services.ServiceManager
         public IEmailService EmailService { get; }
         public IAdminService AdminService { get; }
         public ICountryService CountryService { get; }
-
-
+        public IAdminClientService AdminClientService { get; }
     }
 }

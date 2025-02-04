@@ -36,6 +36,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public IFreelancerAuthRepository FreelancerAuthRepository { get; }
         public ICountryRepository CountryRepository { get; }
+        public IAdminClientRepository AdminClientRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -50,6 +51,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             FeedbackRepository = new FeedbackRepository(dbContext);
             FreelancerAuthRepository = new FreelancerAuthRepository(dbContext);
             CountryRepository = new CountryRepository(dbContext);
+            AdminClientRepository = new AdminClientRepository(dbContext);
         }
 
         public void Dispose()
