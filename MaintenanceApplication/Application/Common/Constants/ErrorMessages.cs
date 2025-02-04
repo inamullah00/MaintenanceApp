@@ -20,6 +20,9 @@ namespace Maintenance.Application.Common.Constants
             public const string UserBanned = "The user account has been banned";
             public const string UserInactive = "The user account is inactive";
             public const string FreelancerRegistrationFailed = "Failled To Register!";
+            public const string AlreadyApproved = "The Specified Account is Already Approved!";
+            public const string ApprovalFailed = "Failed To Approve!. Please try again Later";
+            public const string UpdateFailed = "Failed To Update User Profile!. Please try again Later";
 
 
             // Authentication & Authorization-related error messages

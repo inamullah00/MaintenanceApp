@@ -443,36 +443,35 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("BidDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("BidStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<double?>("CurrentRating")
-                        .HasColumnType("float");
-
-                    b.Property<decimal>("CustomPrice")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<Guid?>("FreelancerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Message")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfferDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OfferedServiceId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -492,9 +491,17 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Bio")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CivilID")
                         .HasMaxLength(100)
@@ -516,14 +523,13 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ExperienceLevel")
-                        .HasMaxLength(50)
-                        .HasColumnType("int");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("IsType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -666,19 +672,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "8e42175e-a08d-4c16-9224-cbdf765e99d0",
+                            Id = "222e458a-d461-449f-8359-f93610a3732a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "288d8c9c-99db-4cd4-962b-84c2d697ff99",
+                            Id = "c67d0642-4b37-49e2-8282-e9a54bdde5d1",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "a2555a97-a1af-4a42-9afc-e470146de437",
+                            Id = "bda9dc53-b6ce-4db3-8a17-b10c3642b005",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -847,8 +853,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "579693bb-c961-427b-9810-3dacccbf0bb4",
-                            RoleId = "8e42175e-a08d-4c16-9224-cbdf765e99d0"
+                            UserId = "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522",
+                            RoleId = "222e458a-d461-449f-8359-f93610a3732a"
                         });
                 });
 
@@ -886,17 +892,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "579693bb-c961-427b-9810-3dacccbf0bb4",
+                            Id = "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ce8ecb21-208d-444c-952f-98b226c522b8",
+                            ConcurrencyStamp = "74a81581-9d7a-4706-8e7a-297d6206e4a3",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIiuuvfD/co0GVZF/ac7tlZ1lznIvVDJZyDkPY1jMLFsGKRC+sOP+nEqsaaRWvIl+g==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI60na5q3VR7HY/aqKY7riaW3Sdzl8KiVdrojSdBw12nEZNfkJVFbiuCv3bkT0JMfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "86d11c07-a28d-4a07-a596-98c192089ac5",
+                            SecurityStamp = "f00775d0-1f6f-45c8-a22f-35fe807a2bae",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"

@@ -10,26 +10,14 @@ namespace Application.Dto_s.ClientDto_s
 {
     public class OfferedServiceRequestDto
     {
- 
 
-        [Required]
-        public Guid ClientId { get; set; }
+        public Guid? ClientId { get; set; }
 
-        [Required]
-        public Guid CategoryID { get; set; }
-
-        [Required]
-        [MaxLength(100)]
+        public Guid? CategoryID { get; set; }
         public string Title { get; set; }
-
-        [Required]
-        [MaxLength(1000)]
         public string Description { get; set; }
-
-        [MaxLength(200)]
         public string Location { get; set; } // Optional location details
 
-        [MaxLength(500)]
         public List<IFormFile> VideoFiles { get; set; } // URL for the video related to the service
 
         public List<IFormFile> ImageFiles { get; set; }
@@ -45,7 +33,6 @@ namespace Application.Dto_s.ClientDto_s
         public string Street { get; set; }
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // Auto-assigned creation timestamp
-
         public DateTime? UpdatedAt { get; set; } = DateTime.UtcNow; // Timestamp for updates
     }
 }

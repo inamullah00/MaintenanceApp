@@ -46,10 +46,7 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasMaxLength(100) // Optional: max length for Civil ID
                 .IsRequired(false); // Optional: civil ID
 
-            builder.Property(f => f.ExperienceLevel)
-                .HasMaxLength(50) // Optional: limit the experience level string
-                .IsRequired(false); // Optional: experience level
-
+            
             builder.Property(f => f.PreviousWork)
                 .HasMaxLength(500) // Limit the previous work links to 500 characters
                 .IsRequired(false); // Optional: previous work

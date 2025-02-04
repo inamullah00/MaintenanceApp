@@ -16,27 +16,15 @@ namespace Maintenance.Application.Services.Freelance.Specification
         {
             if (minPrice.HasValue)
             {
-                _ = Query.Where(f => f.CustomPrice >= minPrice.Value);
+                _ = Query.Where(f => f.Price >= minPrice.Value);
             }
 
             if (maxPrice.HasValue)
             {
-                _ = Query.Where(f => f.CustomPrice <= maxPrice.Value);
+                _ = Query.Where(f => f.Price <= maxPrice.Value);
            
             }
 
-            if (minRating.HasValue)
-            {
-               
-                _ = Query.Where(f => f.CurrentRating >= minRating.Value);
-
-
-            }
-
-            if (maxRating.HasValue)
-            {
-                _ = Query.Where(f => f.CurrentRating <= maxRating.Value);
-            }
         }
     }
 

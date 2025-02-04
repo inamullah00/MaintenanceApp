@@ -20,27 +20,18 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasKey(b => b.Id);
 
             // Property Configurations
-            builder.Property(b => b.CustomPrice)
+            builder.Property(b => b.Price)
                 .HasColumnType("decimal(18, 2)") // Optional: Ensure that the price is stored as a decimal with 2 decimal places
                 .IsRequired(); // Make CustomPrice a required field
 
-            builder.Property(b => b.CurrentRating)
-                .HasColumnType("float") // Configure as a float for average rating
-                .IsRequired(false); // Rating is not required, it can be null initially
 
             builder.Property(b => b.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()") // Ensure that the CreatedAt column is automatically set to UTC now if not set
                 .IsRequired();
 
-            builder.Property(b => b.ArrivalTime)
-                .IsRequired(false); // ArrivalTime is optional
-
-            builder.Property(b => b.Message)
+            builder.Property(b => b.CoverLetter)
                 .HasMaxLength(500) // Optional: Add max length to Message field
                 .IsRequired(false); // Message is optional
-
-            builder.Property(b => b.BidDate)
-                .IsRequired(false); // BidDate is optional
 
             // Enum property configurations (optional)
             builder.Property(b => b.BidStatus)

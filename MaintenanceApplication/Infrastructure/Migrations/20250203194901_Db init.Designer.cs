@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250131142426_RemovedAreaOfExpertise")]
-    partial class RemovedAreaOfExpertise
+    [Migration("20250203194901_Db init")]
+    partial class Dbinit
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -446,36 +446,35 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<DateTime?>("ArrivalTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("BidDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("BidStatus")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoverLetter")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<double?>("CurrentRating")
-                        .HasColumnType("float");
-
-                    b.Property<decimal>("CustomPrice")
-                        .HasColumnType("decimal(18, 2)");
-
                     b.Property<Guid?>("FreelancerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Message")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OfferDetails")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid>("OfferedServiceId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -495,9 +494,17 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Bio")
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("CivilID")
                         .HasMaxLength(100)
@@ -519,14 +526,13 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.Property<int?>("ExperienceLevel")
-                        .HasMaxLength(50)
-                        .HasColumnType("int");
-
                     b.Property<string>("FullName")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("IsType")
+                        .HasColumnType("int");
 
                     b.Property<string>("Password")
                         .IsRequired()
@@ -592,7 +598,7 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Country");
+                    b.ToTable("Countries");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerService", b =>
@@ -669,19 +675,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "14cdd25a-c79f-465d-9246-d0b50c9b2ce8",
+                            Id = "222e458a-d461-449f-8359-f93610a3732a",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c50cda6c-fa8a-4041-9760-c753061a82c1",
+                            Id = "c67d0642-4b37-49e2-8282-e9a54bdde5d1",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "30964f5f-db56-407e-9965-8f3244ce4b66",
+                            Id = "bda9dc53-b6ce-4db3-8a17-b10c3642b005",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -850,8 +856,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "98d6d110-3b15-48fe-9029-096340d116b2",
-                            RoleId = "14cdd25a-c79f-465d-9246-d0b50c9b2ce8"
+                            UserId = "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522",
+                            RoleId = "222e458a-d461-449f-8359-f93610a3732a"
                         });
                 });
 
@@ -889,17 +895,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "98d6d110-3b15-48fe-9029-096340d116b2",
+                            Id = "b9d1f1c3-9ed9-43a0-8a0c-012254ff0522",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "f0f608f0-eb14-48dd-bc06-781373a81cf8",
+                            ConcurrencyStamp = "74a81581-9d7a-4706-8e7a-297d6206e4a3",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEOz6TSfELhIWM3Ahrhl8kuJ6H2CXzPMac3teaY6JD5TDF781M62qBHsM9tAnzAjD9w==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEI60na5q3VR7HY/aqKY7riaW3Sdzl8KiVdrojSdBw12nEZNfkJVFbiuCv3bkT0JMfA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "1bd495fc-7234-4fb8-8fcd-cb1798647494",
+                            SecurityStamp = "f00775d0-1f6f-45c8-a22f-35fe807a2bae",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"

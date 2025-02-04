@@ -8,6 +8,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount
 {
     public class FreelancerStatusUpdateDto
     {
-        public string Status { get; set; }
+        public AccountStatus Status { get; set; }
     }
 }
