@@ -21,5 +21,7 @@ namespace Maintenance.Application.Services.Admin.FreelancerSpecification
         Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter);
         Task EditFreelancerAsync(FreelancerEditViewModel model, CancellationToken cancellationToken);
         Task<FreelancerEditViewModel> GetFreelancerForEditAsync(Guid id, CancellationToken cancellationToken);
+        Task ApproveFreelancerAsync(Guid id, CancellationToken cancellationToken);
+        Task SuspendFreelancerAsync(Guid id, CancellationToken cancellationToken);
     }
 }

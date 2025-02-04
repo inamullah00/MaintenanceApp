@@ -24,6 +24,8 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Freelancer> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken);
         Task<Freelancer> GetFreelancerByPhoneNumberAsync(string phoneNumber, Guid? countryId, CancellationToken cancellationToken);
-        Task<bool> UpdateFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<bool> Suspend(Freelancer freelancer, CancellationToken cancellationToken = default);
     }
 }

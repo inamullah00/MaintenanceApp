@@ -1,8 +1,10 @@
-﻿using Maintenance.Application.Exceptions;
+﻿using Domain.Enums;
+using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Application.ViewModel;
 using Maintenance.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Maintenance.Web.Controllers
 {
@@ -25,20 +27,6 @@ namespace Maintenance.Web.Controllers
             return View(new FreelancerDatatableFilterViewModel());
         }
 
-        public async Task<IActionResult> Pending()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Approved()
-        {
-            return View();
-        }
-
-        public async Task<IActionResult> Rejected()
-        {
-            return View();
-        }
         [HttpPost]
         public async Task<IActionResult> GetFilteredFreelancers(FreelancerDatatableFilterViewModel model)
         {
@@ -112,36 +100,39 @@ namespace Maintenance.Web.Controllers
             }
         }
 
-        public async Task<IActionResult> ViewDetails()
+        public async Task<IActionResult> Approve(Guid id, CancellationToken cancellationToken)
         {
-            return View();
+            try
+            {
+                await _serviceManager.AdminFreelancerService.ApproveFreelancerAsync(id, cancellationToken);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully approved.");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Freelancer Approve");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
+            }
         }
-
-
-
-        public async Task<IActionResult> Approve(int id)
+        public async Task<IActionResult> Suspend(Guid id, CancellationToken cancellationToken)
         {
-            return View();
-        }
-
-
-        [HttpPatch]
-        public async Task<IActionResult> Reject(int id, string comment)
-        {
-            return View();
-        }
-
-
-        [HttpPatch]
-        public async Task<IActionResult> Activate(int id)
-        {
-            return View();
-        }
-
-        [HttpPatch]
-        public async Task<IActionResult> Deactivate(int id)
-        {
-            return View();
+            try
+            {
+                await _serviceManager.AdminFreelancerService.SuspendFreelancerAsync(id, cancellationToken);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Successfully suspended.");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on Freelancer Suspend");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact to administrator" }, Notify.Error.ToString());
+            }
         }
     }
 }

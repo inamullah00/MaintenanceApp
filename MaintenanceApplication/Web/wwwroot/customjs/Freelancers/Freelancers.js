@@ -23,21 +23,56 @@
                 }
             },
             { data: 'DateOfBirth', name: 'DateOfBirth', "autoWidth": true },
-            { data: 'ExperienceLevel', name: 'ExperienceLevel', "autoWidth": true },
             {
-                data: 'Status',
+                data: 'ExperienceLevel',
                 render: function (data) {
-                    return `<span class="badge bg-primary">${data}</span>`;
+                    let levelClass = "";
+                    switch (data) {
+                        case "New":
+                            levelClass = "bg-warning"; 
+                            break;
+                        case "Experienced":
+                            levelClass = "bg-primary"; 
+                            break;
+                        case "Expert":
+                            levelClass = "bg-success"; 
+                            break;
+                        default:
+                            levelClass = "bg-light text-dark"; 
+                    }
+                    return `<span class="badge ${levelClass}">${data}</span>`;
                 },
                 "autoWidth": true
             },
+
+            {
+                data: 'Status',
+                render: function (data) {
+                    let statusClass = "";
+                    switch (data) {
+                        case "Pending":
+                            statusClass = "bg-warning"; 
+                            break;
+                        case "Suspended":
+                            statusClass = "bg-danger"; 
+                            break;
+                        case "Approved":
+                            statusClass = "bg-success"; 
+                            break;
+                        default:
+                            statusClass = "bg-light text-dark";
+                    }
+                    return `<span class="badge ${statusClass}">${data}</span>`;
+                },
+                "autoWidth": true
+            },
+
             {
                 data: 'Id',
                 render: function (data, type, row) {
-                    console.log(data);  // This will log the 'Id' value for each row.
                     return `
             <div class="text-center">
-                <a href="/Freelancer/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Update">
+                <a href="/Freelancer/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                     <i class="btn-icon-prepend fa fa-edit"></i>
                 </a>
             </div>`;
@@ -51,9 +86,66 @@
         "lengthMenu": [[10, 25, 50], [10, 25, 50]]
     });
 
-    // Filter Button Click Event
     $("#filter").on("click", function () {
         event.preventDefault();
-        table.draw();  // Redraw the table with new filters
+        table.draw();  
     });
+
+    $(document).on("click", ".deactivate", function () {
+        const title = "Do you really want to deactivate this freelancer?";
+        const id = $(this).attr("data-id");
+        ShowDialog("Deactivate", title, "warning").then((result) => {
+            if (result.isConfirmed) {
+                blockwindow();
+                $.ajax({
+                    type: "PATCH",
+                    url: "/Freelancer/Deactivate?id=" + id,
+                    success: function (response) {
+                        if (response.Status === "Success") {
+                            SuccessToast(response.Message);
+                            table.draw();  
+                        } else {
+                            InfoToast(response.Errors.join("\n"));
+                        }
+                        unblockwindow();
+                    },
+                    error: function (response) {
+                        unblockwindow();
+                        handleAjaxError(response);
+                    },
+                });
+            }
+        });
+        return false;
+    });
+
+    $(document).on("click", ".activate", function () {
+        const title = "Do you really want to activate this freelancer?";
+        const id = $(this).attr("data-id");
+        ShowDialog("Activate", title, "warning").then((result) => {
+            if (result.isConfirmed) {
+                blockwindow();
+                $.ajax({
+                    type: "PATCH",
+                    url: "/Freelancer/Activate?id=" + id,
+                    success: function (response) {
+                        if (response.Status === "Success") {
+                            SuccessToast(response.Message);
+                            table.draw();  
+                        } else {
+                            InfoToast(response.Errors.join("\n"));
+                        }
+                        unblockwindow();
+                    },
+                    error: function (response) {
+                        unblockwindow();
+                        handleAjaxError(response);
+                    },
+                });
+            }
+        });
+        return false;
+    });
+
+   
 });

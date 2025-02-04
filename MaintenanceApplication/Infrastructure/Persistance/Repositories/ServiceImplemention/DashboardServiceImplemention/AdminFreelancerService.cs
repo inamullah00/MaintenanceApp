@@ -51,15 +51,32 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId);
             var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
             if (existingEmail != null && existingEmail.Id != model.Id) throw new CustomException($"Duplicate Email {model.Email}");
-            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.Email, model.CountryId, cancellationToken);
+            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
             if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
             _mapper.Map(model, freelancer);
             freelancer.Country = country;
 
-            var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancerAsync(freelancer, cancellationToken);
+            var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancer(freelancer, cancellationToken);
             if (!updateResult) throw new CustomException("Failed to update freelancer.");
         }
 
+        public async Task ApproveFreelancerAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+            if (freelancer.Status == AccountStatus.Approved) throw new CustomException("Freelancer is already approved.");
+            freelancer.MarkAsApproved();
+            var updateResult = await _unitOfWork.AdminFreelancerRepository.Approve(freelancer, cancellationToken);
+            if (!updateResult) throw new CustomException("Failed to approve freelancer.");
+        }
+
+        public async Task SuspendFreelancerAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+            if (freelancer.Status == AccountStatus.Suspended) throw new CustomException("Freelancer is already suspended.");
+            freelancer.MarkAsSuspended();
+            var updateResult = await _unitOfWork.AdminFreelancerRepository.Suspend(freelancer, cancellationToken);
+            if (!updateResult) throw new CustomException("Failed to suspend freelancer.");
+        }
 
         // Check if the freelancer can accept new orders
         public async Task<Result<CanAcceptNewOrderResponseDto>> CanAcceptNewOrderAsync(string freelancerId, CancellationToken cancellationToken)

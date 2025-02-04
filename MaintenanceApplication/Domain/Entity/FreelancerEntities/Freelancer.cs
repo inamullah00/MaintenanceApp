@@ -32,6 +32,16 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         [ForeignKey(nameof(CountryId))]
         public Country? Country { get; set; }
 
+
+
+        public void MarkAsApproved()
+        {
+            Status = AccountStatus.Approved;
+        }
+        public void MarkAsSuspended()
+        {
+            Status = AccountStatus.Suspended;
+        }
     }
 }
 
@@ -40,12 +50,9 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
 public enum AccountStatus
 {
     Pending = 1,       // Account is pending verification
-    Active = 2,        // Account is active and can be used
-    Suspended = 3,     // Account is suspended due to policy violations
-    Deactivated = 4    // Account is deactivated by the user or system
+    Suspended = 2,     // Account is suspended due to policy violations
+    Approved = 3       // Account is approved and can be used
 }
-
-
 
 public enum ExperienceLevel
 {
