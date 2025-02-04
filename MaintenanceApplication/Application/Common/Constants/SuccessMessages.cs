@@ -16,6 +16,8 @@ namespace Maintenance.Application.Common.Constants
         public const string OperationSuccessful = "The operation has been completed successfully.";
         public const string PasswordChangedSuccessfully = "Your password has been changed successfully.";
         public const string EmailVerifiedSuccessfully = "Your email has been verified successfully.";
+        public const string SuccessfullyApproved = "The Specified Account has been verified successfully.";
+        public const string ProfileUpdatedSuccessfully = "The Profile has been Updated successfully.";
 
         // Specific to user operations
         public const string UserProfileUpdatedSuccessfully = "User profile has been updated successfully.";

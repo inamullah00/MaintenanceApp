@@ -152,7 +152,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             //}
 
             // Generate a numeric OTP
-            var otp = GenerateNumericOtp(6); // Generate a 6-digit OTP
+            var otp = Helper.GenerateNumericOtp(6); // Generate a 6-digit OTP
 
             await SendSmsAsync("03191724454",otp);
             return (true, "User registered successfully.");
@@ -272,7 +272,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             }
 
             // Generate a numeric OTP
-            var otp = GenerateNumericOtp(6); // Generate a 6-digit OTP
+            var otp = Helper.GenerateNumericOtp(6); // Generate a 6-digit OTP
 
             // Store OTP in the database
             var userOtp = new UserOtp
@@ -564,22 +564,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
-        #region Generate-Otp
-
-        private string GenerateNumericOtp(int length)
-        {
-            var random = new Random();
-            var otp = new StringBuilder();
-
-            for (int i = 0; i < length; i++)
-            {
-                otp.Append(random.Next(0, 10)); // Append a random digit (0-9)
-            }
-
-            return otp.ToString();
-        }
-
-
-        #endregion
+     
     }
 }

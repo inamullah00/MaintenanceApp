@@ -1,12 +1,16 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
 using Maintenance.Application.Services.ServiceManager;
+using Maintenance.Application.Wrapper;
+using Maintenance.Domain.Entity.Dashboard;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.API.Controllers.FreelancerController
@@ -25,8 +29,8 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
 
 
-        #region Get Bids by Freelancer
-        [HttpGet("Bids")]
+        #region Get Total No of Bids by Freelancers
+        [HttpGet("TotalBidsByFreelancers")]
         public async Task<IActionResult> GetBidsByFreelancer(CancellationToken cancellationToken, string? Keyword = "")
         {
 
@@ -40,23 +44,24 @@ namespace Maintenance.API.Controllers.FreelancerController
                 if (result.IsSuccess)
                 {
                     _logger.LogInformation("Successfully fetched bids for Keyword: {Keyword}", Keyword);
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value
-                    });
+                    //return Ok(new
+                    //{
+                    //    StatusCode = result.StatusCode,
+                    //    Success = true,
+                    //    Message = result.Message,
+                    //    Data = result.Value
+                    //});
                 }
                 _logger.LogWarning("Failed to fetch bids for Keyword: {Keyword}. Message: {Message}", Keyword, result.Message);
 
 
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
+                return Helper.ProcessResult(result); // Using the static method
+                //return StatusCode(result.StatusCode, new
+                //{
+                //    StatusCode = result.StatusCode,
+                //    Success = false,
+                //    Message = result.Message
+                //});
             }
             catch (Exception ex)
             {
@@ -487,6 +492,136 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #endregion
+
+
+
+        #region Freelancer Orders Screens
+
+
+        #region Get Requested Services ( The Service Posted By Client and Freelancer sended Bid will be Display here)
+        [HttpGet("requested-Orders")]
+        public async Task<IActionResult> GetRequestedServices(CancellationToken cancellationToken, string? keyword = "")
+        {
+            _logger.LogInformation("Fetching requested services for freelancers with keyword: {Keyword}", keyword);
+            try
+            {
+                var result = await _serviceManager.FreelancerService.GetRequestedServicesAsync(cancellationToken, keyword);
+
+                if (result.IsSuccess)  
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching requested services");
+                return StatusCode(500, new { Success = false, Message = "Internal Server Error" });
+            }
+        }
+        #endregion
+
+        #region Ongoin-Completed-InProcess Orders
+
+        #region Filtered Freelancer Orders
+        [HttpGet("Filter-Freelancer-Orders")]
+        public async Task<IActionResult> GetFreelancerOrders(OrderStatus orderStatus , CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching {Status} orders for FreelancerId: {FreelancerId}", orderStatus);
+
+            var result = await _serviceManager.FreelancerService.GetOrdersByStatusAsync(orderStatus , cancellationToken);
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = true,
+                    Message = result.Message,
+                    Data = result.Value
+                });
+            }
+
+            return StatusCode(result.StatusCode, new
+            {
+                StatusCode = result.StatusCode,
+                Success = false,
+                Message = result.Message
+            });
+        }
+
+        #endregion
+
+        #region Cancel Service(Order) Request 
+        [HttpPost("{orderId}/cancel")]
+        public async Task<IActionResult> CancelOrder(Guid orderId, Guid freelancerId)
+        {
+            _logger.LogInformation("Freelancer {FreelancerId} canceling order {OrderId}", freelancerId, orderId);
+            //var result = await _serviceManager.FreelancerService.CancelOrderAsync(orderId, freelancerId);
+            //if (result.IsSuccess)
+            //{
+            //    return Ok(new
+            //    {
+            //        StatusCode = result.StatusCode,
+            //        Success = true,
+            //        Message = result.Message,
+            //        Data = result.Value
+            //    });
+            //}
+
+            //return StatusCode(result.StatusCode, new
+            //{
+            //    StatusCode = result.StatusCode,
+            //    Success = false,
+            //    Message = result.Message
+            //});
+            return null;
+        }
+        #endregion
+
+        #region Get Order Details
+        [HttpGet("{orderId}")]
+        public async Task<IActionResult> GetOrderDetails(Guid orderId)
+        {
+            _logger.LogInformation("Fetching details for order {OrderId}", orderId);
+            //var result = await _serviceManager.FreelancerService.GetOrderDetailsAsync(orderId);
+            //if (result.IsSuccess)
+            //{
+            //    return Ok(new
+            //    {
+            //        StatusCode = result.StatusCode,
+            //        Success = true,
+            //        Message = result.Message,
+            //        Data = result.Value
+            //    });
+            //}
+
+            //return StatusCode(result.StatusCode, new
+            //{
+            //    StatusCode = result.StatusCode,
+            //    Success = false,
+            //    Message = result.Message
+            //});
+            return null;
+        }
+        #endregion
+
+        #endregion
+
+
+
+        #endregion
     }
-    
+
 }

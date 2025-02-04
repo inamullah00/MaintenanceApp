@@ -1,4 +1,5 @@
 ﻿using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Identity;
 using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;

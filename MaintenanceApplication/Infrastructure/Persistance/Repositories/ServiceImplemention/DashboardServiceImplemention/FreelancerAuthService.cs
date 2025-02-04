@@ -1,7 +1,10 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
+using Domain.Entity.UserEntities;
+using Domain.Enums;
 using Maintenance.Application.Common;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerAccount;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Security;
@@ -9,7 +12,15 @@ using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.FreelancerAuth.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Microsoft.AspNetCore.Http;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using static System.Net.WebRequestMethods;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention
 {
@@ -65,15 +76,55 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             throw new NotImplementedException();
         }
 
-        public Task<bool> ForgotPasswordAsync(string email)
+        public async Task<Result<string>> ForgotPasswordAsync(string email, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrEmpty(email))
+            {
+                return Result<string>.Failure("Email cannot be empty.", StatusCodes.Status400BadRequest);
+            }
+
+            // Check if the freelancer exists in the system
+            var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByEmailAsync(email, cancellationToken);
+            if (freelancer == null)
+            {
+                return Result<string>.Failure("Freelancer with this email does not exist.", StatusCodes.Status404NotFound);
+            }
+
+            // Generate a 6-digit numeric OTP
+            var otp = Helper.GenerateNumericOtp(6);
+
+            // Store OTP in the database
+            //var freelancerOtp = new FreelancerOtp
+            //{
+            //    Id = Guid.NewGuid(),
+            //    FreelancerId = freelancer.Id,
+            //    Otp = otp,
+            //    CreatedAt = DateTime.UtcNow,
+            //    ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+            //    IsUsed = false
+            //};
+
+            //await _unitOfWork.FreelancerOtpRepository.AddAsync(freelancerOtp);
+            //await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            // Send the OTP to the freelancer via email
+            try
+            {
+                //await SendEmailAsync(
+                //    email,
+                //    "Your OTP Code",
+                //    $"Your OTP for password reset is: <b>{otp}</b>. This code is valid for 5 minutes."
+                //);
+
+                return Result<string>.Success(otp, "OTP sent successfully.", StatusCodes.Status200OK);
+            }
+            catch (Exception ex)
+            {
+                return Result<string>.Failure($"Failed to send OTP: {ex.Message}", StatusCodes.Status500InternalServerError);
+            }
         }
 
-        public Task<bool> FreelancerApprovalAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
+
 
         public Task<Result<FreelancerProfileDto>> FreelancerPaginatedAsync(int pageNumber, int pageSize)
         {
@@ -179,10 +230,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
-        public Task<bool> ReactivateAccountAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
 
         #region Register Freelancer
         public async Task<Result<Freelancer>> RegisterFreelancerAsync(FreelancerRegistrationDto registrationDto, CancellationToken cancellationToken)
@@ -204,8 +251,22 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             // Hash the password before saving
             freelancer.Password = _passwordService.HashPassword(registrationDto.Password);
-            //freelancer.Status = UserStatus.Pending; // Default status for new freelancers
+            freelancer.Status = AccountStatus.Pending; // Default status for new freelancers
 
+
+            // Handle Profile Picture Upload (Single File)
+            if (registrationDto.ProfilePicture != null)
+            {
+                var (uploadSuccess, uploadedImageUrl, uploadMessage) = await ImageUploadAsync(registrationDto.ProfilePicture);
+
+                if (!uploadSuccess)
+                {
+                    return Result<Freelancer>.Failure(uploadMessage, StatusCodes.Status400BadRequest);
+                }
+
+                // Store the uploaded image URL in the freelancer entity
+                freelancer.ProfilePicture = uploadedImageUrl;
+            }
 
             // Save the freelancer to the database
             var freelancerCreated = await _unitOfWork.FreelancerAuthRepository.AddFreelancerAsync(freelancer).ConfigureAwait(false);
@@ -220,17 +281,46 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         #endregion
 
 
-        public Task<bool> ResetPasswordAsync(string resetToken, string newPassword)
+        public async Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (string.IsNullOrWhiteSpace(resetToken) || string.IsNullOrWhiteSpace(newPassword))
+            {
+                return Result<bool>.Failure("Reset token and new password are required.", StatusCodes.Status400BadRequest);
+            }
+
+            // Find the user by the reset token
+            //var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByResetTokenAsync(resetToken, cancellationToken);
+
+            //if (freelancer == null)
+            //{
+            //    return Result<bool>.Failure("Invalid or expired reset token.", StatusCodes.Status400BadRequest);
+            //}
+
+            //// Validate reset token expiration (assuming you have an expiration field)
+            //if (freelancer.ResetTokenExpiry < DateTime.UtcNow)
+            //{
+            //    return Result<bool>.Failure("Reset token has expired.", StatusCodes.Status400BadRequest);
+            //}
+
+            //// Hash the new password
+            //var hashedPassword = _passwordService.HashPassword(newPassword);
+
+            //// Update the freelancer's password and reset token fields
+            //freelancer.Password = hashedPassword;
+            //freelancer.ResetToken = null; // Clear the token after reset
+            //freelancer.ResetTokenExpiry = null;
+
+            //// Save changes to the database
+            //_unitOfWork.FreelancerAuthRepository.UpdateFreelancer(freelancer);
+            //await _unitOfWork.SaveChangesAsync(cancellationToken);
+
+            //return Result<bool>.Success(true, "Password reset successful.", StatusCodes.Status200OK);
+            return null;
         }
 
-        public Task<bool> SuspendAccountAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
+        
 
-        public async Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken)
+        public async Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken)
         {
 
             if (freelancerId == Guid.Empty)
@@ -261,14 +351,135 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<bool>.Success(true, "Freelancer has been successfully Unblocked.", StatusCodes.Status200OK);
         }
 
-        public Task<Freelancer> UpdateProfileAsync(Guid freelancerId, FreelancerUpdateDto updateDto)
+        #region Update Freelancer Profile
+        public async Task<Result<Freelancer>> UpdateProfileAsync(Guid freelancerId, FreelancerEditProfileDto EditProfileDto , CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+
+            if (freelancerId == Guid.Empty || EditProfileDto == null)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.InvalidOrEmpty, StatusCodes.Status400BadRequest);
+            }
+
+            var freelancer = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByIdAsync(freelancerId, cancellationToken).ConfigureAwait(false);
+
+            if (freelancer == null)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.FreelancerNotFound, StatusCodes.Status404NotFound);
+            }
+
+            // Update fields
+            freelancer.FullName = EditProfileDto.FullName ?? freelancer.FullName;
+            freelancer.Email = EditProfileDto.Email ?? freelancer.Email;
+            freelancer.PhoneNumber = EditProfileDto.PhoneNumber ?? freelancer.PhoneNumber;
+            freelancer.ProfilePicture = EditProfileDto.ProfilePicture ?? freelancer.ProfilePicture;
+            freelancer.Bio = EditProfileDto.Bio ?? freelancer.Bio;
+            freelancer.PreviousWork = EditProfileDto.PreviousWork ?? freelancer.PreviousWork;
+            freelancer.UpdatedAt = DateTime.UtcNow; // Ensure timestamp is updated
+
+            // Save changes
+            var updatedFreelancer = await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(freelancer).ConfigureAwait(false);
+
+            if (updatedFreelancer == null)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.UpdateFailed, StatusCodes.Status500InternalServerError);
+            }
+
+            return Result<Freelancer>.Success(updatedFreelancer, SuccessMessages.ProfileUpdatedSuccessfully, StatusCodes.Status200OK);
+
+
+        }
+        #endregion
+
+        public async Task<Result<bool>> ValidateOtpAsync(string OTP, CancellationToken cancellationToken)
+        {
+            var existingOtp = await _unitOfWork.FreelancerAuthRepository.GetValidOtpAsync(OTP, cancellationToken);
+
+            if (existingOtp == null)
+            {
+                return Result<bool>.Failure("Invalid or expired OTP.", StatusCodes.Status400BadRequest);
+            }
+
+            return Result<bool>.Success(true, "OTP is valid.", StatusCodes.Status200OK);
         }
 
-        public Task<bool> VerifyAccountAsync(Guid freelancerId, string verificationCode)
+
+
+        #region Approve Freelancer
+        public async Task<Result<Freelancer>> ApproveFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto statusUpdateDto, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (freelancerId == Guid.Empty)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.InvalidOrEmpty, StatusCodes.Status400BadRequest);
+            }
+
+            var FreelancerEntity = await _unitOfWork.FreelancerAuthRepository.GetFreelancerByIdAsync(freelancerId, cancellationToken).ConfigureAwait(false);
+
+            if (FreelancerEntity == null)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.FreelancerNotFound, StatusCodes.Status404NotFound);
+            }
+
+            if (FreelancerEntity.Status is AccountStatus.Active)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.AlreadyApproved, StatusCodes.Status409Conflict);
+            }
+
+            FreelancerEntity.Status = statusUpdateDto.Status;
+            //freelancer.ApprovedAt = DateTime.UtcNow;
+
+            var UpdatedFreelancer = await _unitOfWork.FreelancerAuthRepository.UpdateFreelancerAsync(FreelancerEntity).ConfigureAwait(false);
+
+            if (UpdatedFreelancer == null)
+            {
+                return Result<Freelancer>.Failure(ErrorMessages.ApprovalFailed, StatusCodes.Status500InternalServerError);
+            }
+
+            return Result<Freelancer>.Success(UpdatedFreelancer, SuccessMessages.SuccessfullyApproved, StatusCodes.Status200OK);
         }
+        #endregion
+
+
+
+
+        #region Image Upload
+        private async Task<(bool Success, string ImageUrl, string Message)> ImageUploadAsync(IFormFile imageFile)
+        {
+            if (imageFile == null)
+            {
+                return (false, string.Empty, "No image uploaded.");
+            }
+
+            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
+
+            // Ensure the directory exists
+            if (!Directory.Exists(uploadPath))
+            {
+                Directory.CreateDirectory(uploadPath);
+            }
+
+            try
+            {
+                // Generate a unique file name
+                var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
+                var fullPath = Path.Combine(uploadPath, fileName);
+
+                // Save the file to the server
+                using (var stream = new FileStream(fullPath, FileMode.Create))
+                {
+                    await imageFile.CopyToAsync(stream);
+                }
+
+                // Return the saved file path
+                return (true, $"/UploadedFiles/{fileName}", "File uploaded successfully.");
+            }
+            catch (Exception ex)
+            {
+                return (false, string.Empty, $"An error occurred during file upload: {ex.Message}");
+            }
+        }
+        #endregion
+
+
+
     }
 }
