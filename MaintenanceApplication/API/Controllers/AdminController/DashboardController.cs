@@ -645,7 +645,7 @@ namespace Maintenance.API.Controllers.AdminController
         {
             try
             {
-                var result = await _serviceManager.FeedbackService.GetFeedbackByIdAsync(id, cancellationToken);
+                var result = await _serviceManager.FeedbackService.GetFeedbackRatingForFreelancerAsync(id, cancellationToken);
 
                 if (result.IsSuccess)
                 {

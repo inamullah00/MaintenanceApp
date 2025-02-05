@@ -1,8 +1,10 @@
 ﻿using Maintenance.Application.Wrapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -10,8 +12,7 @@ namespace Maintenance.Application.Common.Utility
 {
     public static class Helper
     {
-
-
+      
         #region Generate-Otp
 
         public static string GenerateNumericOtp(int length)
@@ -29,8 +30,6 @@ namespace Maintenance.Application.Common.Utility
 
 
         #endregion
-
-
 
         #region Process Result
 
