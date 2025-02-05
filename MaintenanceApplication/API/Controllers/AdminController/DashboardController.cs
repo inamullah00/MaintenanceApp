@@ -5,16 +5,8 @@ using Maintenance.Application.Dto_s.DashboardDtos.ContentDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos.DisputeResolvedDto;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
-using Maintenance.Application.Services.Admin.ContentSpecification;
-using Maintenance.Application.Services.Admin.DisputeSpecification;
-using Maintenance.Application.Services.Admin.FeedbackSpecification;
-using Maintenance.Application.Services.Admin.OrderSpecification;
-using Maintenance.Application.Services.Admin.SetOrderLimit_Performance_Report_Specification;
 using Maintenance.Application.Services.ServiceManager;
-using Maintenance.Application.Wrapper;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Threading;
 
 namespace Maintenance.API.Controllers.AdminController
 {
@@ -26,7 +18,7 @@ namespace Maintenance.API.Controllers.AdminController
         private readonly IServiceManager _serviceManager;
         private readonly ILogger<DashboardController> _logger;
 
-        public DashboardController(IServiceManager serviceManager , ILogger<DashboardController> logger)
+        public DashboardController(IServiceManager serviceManager, ILogger<DashboardController> logger)
         {
             _serviceManager = serviceManager;
             _logger = logger;
@@ -36,7 +28,7 @@ namespace Maintenance.API.Controllers.AdminController
 
         #region Get All Orders
         [HttpGet("Order")]
-        public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken , string Keyword = "")
+        public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken, string Keyword = "")
         {
 
             _logger.LogInformation("GetAllOrders called with Keyword: {Keyword}", Keyword);
@@ -50,10 +42,10 @@ namespace Maintenance.API.Controllers.AdminController
 
                     return Ok(new
                     {
-                        StatusCode = result.StatusCode,  
+                        StatusCode = result.StatusCode,
                         Success = true,
-                        Message = result.Message,  
-                        Data = result.Value 
+                        Message = result.Message,
+                        Data = result.Value
                     });
                 }
                 _logger.LogWarning("Failed to retrieve orders. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
@@ -87,8 +79,8 @@ namespace Maintenance.API.Controllers.AdminController
 
             try
             {
-               
-                var result = await _serviceManager.OrderService.GetOrderByIdAsync(Id,cancellationToken);
+
+                var result = await _serviceManager.OrderService.GetOrderByIdAsync(Id, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -128,7 +120,7 @@ namespace Maintenance.API.Controllers.AdminController
         #region Create Order
         [HttpPost]
         [Route("Order")]
-        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequestDto createOrderDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> CreateOrder([FromBody] CreateOrderRequestDto createOrderDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation("CreateOrder called with request: {@CreateOrderRequestDto}", createOrderDto);
 
@@ -174,7 +166,7 @@ namespace Maintenance.API.Controllers.AdminController
 
         #region Assign Order
         [HttpPut("{id:guid}/assign")]
-        public async Task<IActionResult> AssignOrder(Guid id, [FromBody] AssignOrderRequestDto assignOrderDto,CancellationToken cancellationToken)
+        public async Task<IActionResult> AssignOrder(Guid id, [FromBody] AssignOrderRequestDto assignOrderDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation("AssignOrder called for Order ID: {Id} with request: {@AssignOrderRequestDto}", id, assignOrderDto);
 

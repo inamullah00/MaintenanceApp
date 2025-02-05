@@ -4,6 +4,7 @@ using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250204153202_AddedExperienceLevelInFreelancer")]
+    partial class AddedExperienceLevelInFreelancer
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -53,40 +56,35 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid?>("CountryId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("ConfirmPassword")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FullName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Password")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CountryId");
-
                     b.HasIndex("Email")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[Email] IS NOT NULL");
 
                     b.HasIndex("PhoneNumber")
                         .IsUnique()
@@ -682,19 +680,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc3f9a53-dfff-44a4-a5a1-9c071ddab466",
+                            Id = "7ebb0d53-fb15-4645-af67-9e3d411d3a47",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "42c60ec7-0f47-4272-b4c3-3b099b096284",
+                            Id = "3eb1705e-ed83-4326-a5c2-6a1192eebcac",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "71cf198f-7aa8-4d2c-8091-99c627b42499",
+                            Id = "039ec9c7-beaf-46a9-9922-b1d29e9cea53",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -863,8 +861,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "914799c3-d7a7-48c3-ae11-fa6970b36a21",
-                            RoleId = "dc3f9a53-dfff-44a4-a5a1-9c071ddab466"
+                            UserId = "b20441d0-6d87-49c6-bdb2-fcca352d567a",
+                            RoleId = "7ebb0d53-fb15-4645-af67-9e3d411d3a47"
                         });
                 });
 
@@ -902,30 +900,21 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "914799c3-d7a7-48c3-ae11-fa6970b36a21",
+                            Id = "b20441d0-6d87-49c6-bdb2-fcca352d567a",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "37cfd9ba-99dd-4eee-831e-6ca208a8c444",
+                            ConcurrencyStamp = "42c6ad9d-762f-42b8-931e-46b75124eb99",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFAUfPZXh4unVY+ZLy3353oGzD2dypKTepY6uetmQg4hQ/Z+vVXMxHxYg32Idd0z4Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEL+seK0XqAXbrmIReJvYY37VITs1URjCUJk5agTPMivgq6TY9OJbdS2GunjpSMbxtw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f928873e-b889-4854-ad4b-b32fb7b84d81",
+                            SecurityStamp = "18c4b450-5aa7-4e0b-978d-844c79ca9bfe",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"
                         });
-                });
-
-            modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.Client", b =>
-                {
-                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Country", "Country")
-                        .WithMany()
-                        .HasForeignKey("CountryId");
-
-                    b.Navigation("Country");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.OfferedService", b =>

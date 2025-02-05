@@ -1,11 +1,6 @@
 ﻿using Maintenance.Domain.Entity.ClientEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Infrastructure.Configurations
 {
@@ -18,6 +13,10 @@ namespace Maintenance.Infrastructure.Configurations
 
             builder.HasKey(c => c.Id);
 
+            builder.Property(c => c.FullName).IsRequired().HasMaxLength(255);
+            builder.Property(c => c.Email).IsRequired().HasMaxLength(255);
+            builder.Property(c => c.PhoneNumber).HasMaxLength(50);
+            builder.Property(c => c.Password).IsRequired().HasMaxLength(255);
 
             // One-to-many relationship with Orders
             builder.HasMany(c => c.ClientOrders) // Client has many Orders
@@ -30,6 +29,12 @@ namespace Maintenance.Infrastructure.Configurations
                    .WithOne(f => f.Client) // Each Feedback is given by one Client
                    .HasForeignKey(f => f.FeedbackByClientId) // Feedback contains FeedbackByClientId as foreign key
                    .OnDelete(DeleteBehavior.Cascade); // Optional: Cascade delete or set null
+
+            // One-to-Many: Freelancer to Country
+            builder.HasOne(f => f.Country)
+                .WithMany()
+                .HasForeignKey(f => f.CountryId)
+                .IsRequired(false);
 
             // Optional: Adding constraints for unique fields like Email or PhoneNumber
             builder.HasIndex(c => c.Email).IsUnique();  // Email should be unique

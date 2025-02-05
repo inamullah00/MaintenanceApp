@@ -13,8 +13,7 @@
     <Folder Include="Services\Admin\DisputeSpecification\Filter\" />
     <Folder Include="Services\Admin\FeedbackSpecification\Filter\" />
     <Folder Include="Services\Admin\OrderSpecification\Filter\" />
-    <Folder Include="Services\Admin\SetOrderLimit_Performance_Report_Specification\Filter\" />
-    <Folder Include="Services\Admin\SetOrderLimit_Performance_Report_Specification\Specification\" />
+    <Folder Include="Services\Admin\FreelancerSpecification\Filter\" />
     <Folder Include="Services\Client\Filter\" />
     <Folder Include="Services\Freelance\Filter\" />
     <Folder Include="Services\OffereServiceCategory\Filter\" />

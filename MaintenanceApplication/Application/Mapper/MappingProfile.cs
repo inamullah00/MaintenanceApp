@@ -10,18 +10,14 @@ using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
+using Maintenance.Application.ViewModel;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Mapper
 {
-    public class MappingProfile:Profile
+    public class MappingProfile : Profile
     {
         public MappingProfile()
         {
@@ -29,13 +25,14 @@ namespace Application.Mapper
             CreateMap<UserDetailsResponseDto, ApplicationUser>().ReverseMap();
 
 
-            CreateMap<Freelancer , FreelancerRegistrationDto>().ReverseMap();
-            CreateMap<Freelancer , FreelancerProfileDto>().ReverseMap();
-            
-            
+            CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
+            CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
+            CreateMap<Freelancer, FreelancerEditViewModel>().ReverseMap();
 
 
-            CreateMap<OfferedService,OfferedServiceResponseDto>().ReverseMap();
+
+
+            CreateMap<OfferedService, OfferedServiceResponseDto>().ReverseMap();
             CreateMap<OfferedServiceRequestDto, OfferedService>().ReverseMap();
             CreateMap<OfferedUpdateRequestDto, OfferedService>().ReverseMap();
 
@@ -47,7 +44,7 @@ namespace Application.Mapper
             CreateMap<Bid, BidResponseDto>().ReverseMap();
             CreateMap<BidRequestDto, Bid>().ReverseMap();
             CreateMap<BidUpdateDto, Bid>().ReverseMap();
-            CreateMap<Bid,ApproveBidRequestDto>().ReverseMap();
+            CreateMap<Bid, ApproveBidRequestDto>().ReverseMap();
 
             CreateMap<Order, OrderResponseDto>().ReverseMap();
             CreateMap<CreateOrderRequestDto, Order>().ReverseMap();
@@ -68,13 +65,14 @@ namespace Application.Mapper
             CreateMap<Content, ContentResponseDto>().ReverseMap();
             CreateMap<CreateContentRequestDto, Content>().ReverseMap();
             CreateMap<UpdateContentRequestDto, Content>().ReverseMap();
-            #endregion   
-            
+            #endregion
+
             #region Content Mapping
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
             CreateMap<CreateFeedbackRequestDto, Feedback>().ReverseMap();
             CreateMap<UpdateFeedbackRequestDto, Feedback>().ReverseMap();
             #endregion
+
         }
     }
 }
