@@ -248,7 +248,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             // Map DTO to Freelancer entity
             var freelancer = _mapper.Map<Freelancer>(registrationDto);
-
+              
             // Hash the password before saving
             freelancer.Password = _passwordService.HashPassword(registrationDto.Password);
             freelancer.Status = AccountStatus.Pending; // Default status for new freelancers
