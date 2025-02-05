@@ -12,9 +12,10 @@ namespace Maintenance.Application.Services.Admin.FeedbackSpecification
     {
         // Get all feedback with optional keyword search
         Task<Result<List<FeedbackResponseDto>>> GetAllFeedbackAsync(CancellationToken cancellationToken, string keyword = "");
+        Task<Result<List<FeedbackResponseDto>>> FilterRatingsAsync(FilterRatingsDto filterRatingsDto ,CancellationToken cancellationToken);
 
         // Get feedback by its ID
-        Task<Result<FeedbackResponseDto>> GetFeedbackByIdAsync(Guid feedbackId, CancellationToken cancellationToken);
+        Task<Result<FeedbackResponseDto>> GetFeedbackRatingForFreelancerAsync(Guid feedbackId, CancellationToken cancellationToken);
 
         // Create new feedback
         Task<Result<FeedbackResponseDto>> CreateFeedbackAsync(CreateFeedbackRequestDto createFeedbackRequestDto, CancellationToken cancellationToken);
