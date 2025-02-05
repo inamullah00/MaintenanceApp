@@ -16,6 +16,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
 
         // Get feedback by its ID
         Task<Feedback?> GetByIdAsync(Guid feedbackId, CancellationToken cancellationToken);
+        Task<FeedbackResponseDto?> GetFeedbackRatingByIdAsync(Guid feedbackId, CancellationToken cancellationToken);
 
         // Create new feedback
         Task<Feedback> CreateAsync(Feedback feedback, CancellationToken cancellationToken);
