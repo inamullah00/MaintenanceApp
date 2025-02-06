@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntities;
+using Maintenance.Domain.Entity.UserEntities;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Maintenance.Domain.Entity.FreelancerEntites
@@ -28,6 +29,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public ICollection<Order> FreelancerOrders { get; set; } // Orders completed by the freelancer
 
         public ICollection<Feedback> ClientFeedbacks { get; set; }
+        public ICollection<FreelancerOtp> FreelancerOtps { get; set; }
 
         // Many-to-many relationship with Service (Freelancer selects multiple services)
         public ICollection<FreelancerService> FreelancerServices { get; set; }
@@ -62,7 +64,8 @@ public enum AccountStatus
 public enum UserType
 {
     Freelancer = 1,
-    Company = 2
+    Client = 2,
+    Company = 3
 
 }
 
@@ -74,49 +77,3 @@ public enum ExperienceLevel
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//public float? Rating { get; set; } = 0;
-//public string? Experience { get; set; }
-//public string? Skills { get; set; }  // Freelancer's skill set (e.g., Plumbing, Electrical)
-//public decimal? HourlyRate { get; set; }  // Freelancer's hourly or project rate
-//public bool? IsApprove { get; set; } = false; // Whether the freelancer is Approve by the admin
-//public bool IsSuspended { get; set; } = false;
-//public int? MonthlyLimit { get; set; } // Maximum number of orders the freelancer can complete in a month
-//public int? OrdersCompleted { get; set; } // Number of orders completed by the freelancer in the specified month
-//public decimal? TotalEarnings { get; set; } // Total earnings of the freelancer for the month
-//public DateTime? ReportMonth { get; set; } // Specifies the month being tracked (typically the first day of the month)
-//public double? CurrentRating { get; set; } // Average rating (e.g., 4.5 out of 5)

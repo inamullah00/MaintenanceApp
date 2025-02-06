@@ -275,14 +275,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             var otp = Helper.GenerateNumericOtp(6); // Generate a 6-digit OTP
 
             // Store OTP in the database
-            var userOtp = new UserOtp
-            {
-                Id = Guid.NewGuid(),
-                Otp = otp,
-                CreatedAt = DateTime.UtcNow,
-                ExpiresAt = DateTime.UtcNow.AddMinutes(5),
-                IsUsed = false
-            };
+            //var userOtp = new UserOtp
+            //{
+            //    Id = Guid.NewGuid(),
+            //    Otp = otp,
+            //    CreatedAt = DateTime.UtcNow,
+            //    ExpiresAt = DateTime.UtcNow.AddMinutes(5),
+            //    IsUsed = false
+            //};
 
             //await _genericRepository.OtpAsync<UserOtp,Guid>(userOtp);
 

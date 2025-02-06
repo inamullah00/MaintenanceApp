@@ -2,6 +2,7 @@
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.UserEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -114,11 +115,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
           .FirstOrDefaultAsync(f => f.Email == email, cancellationToken);
         }
 
-        public async Task<UserOtp?> GetValidOtpAsync(string otp, CancellationToken cancellationToken)
+        public async Task<FreelancerOtp> GetValidOtpAsync(string otp, CancellationToken cancellationToken)
         {
-            return await _dbContext.UserOtps
-                    .Where(o => o.Otp == otp && o.ExpiresAt > DateTime.UtcNow && !o.IsUsed)
-                    .FirstOrDefaultAsync(cancellationToken);
+            //return await _dbContext.FreelancerOtps
+            //        .Where(o => o.Otp == otp && o.ExpiresAt > DateTime.UtcNow && !o.IsUsed)
+            //        .FirstOrDefaultAsync(cancellationToken);
+            return null;
         }
     }
 }
