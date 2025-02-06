@@ -4,6 +4,7 @@ using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250206125616_ENTITES Added")]
+    partial class ENTITESAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,6 +24,31 @@ namespace Maintenance.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entity.UserEntities.UserOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Otp")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("UserOtps");
+                });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.Client", b =>
                 {
@@ -747,19 +775,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "eee74791-4202-4e3d-a56c-64a37491a364",
+                            Id = "c47a55d9-6b16-4019-a237-a881ee5f1c45",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "5c2d980c-b414-4948-9e4b-beec614a8c32",
+                            Id = "7c292b81-11ec-4161-bf09-232b7bf06cce",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "0f845e3d-43d2-4373-811b-ceab15b3b290",
+                            Id = "e365faa4-40b4-4334-ac92-a403f3c87414",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -928,8 +956,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "f6665896-ae75-45d2-a872-cbf78f64f6a4",
-                            RoleId = "eee74791-4202-4e3d-a56c-64a37491a364"
+                            UserId = "04e3259e-e1ac-4086-a66e-c5e49fbdfd0c",
+                            RoleId = "c47a55d9-6b16-4019-a237-a881ee5f1c45"
                         });
                 });
 
@@ -967,17 +995,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "f6665896-ae75-45d2-a872-cbf78f64f6a4",
+                            Id = "04e3259e-e1ac-4086-a66e-c5e49fbdfd0c",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "d922ece7-d43e-4f6a-a5bb-ebcb429974ae",
+                            ConcurrencyStamp = "57aa7056-cb10-41b3-bba8-e340ab3ac124",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEI8juRnCgOlan/gf2cYfqkWEnp4+WCb4W4TFP+/nVvSTShXkzx+yQ+hyiEWKP238zg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEC3Xp9XT718/bSQWd8F+XPVW84e42e2yrpbuECME7bdCiFGl8xyqQvSxTpQwHzM39Q==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "fc02773b-13ca-43b3-8958-ef1e147bd001",
+                            SecurityStamp = "4069cae5-c28e-4bc9-a7fc-9fa604ea10c8",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"

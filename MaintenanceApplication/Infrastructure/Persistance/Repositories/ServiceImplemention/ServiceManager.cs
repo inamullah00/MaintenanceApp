@@ -79,7 +79,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper);
             PaymentService = new PaymentService(unitOfWork, mapper);
             NotificationService = new NotificationService(unitOfWork, mapper, logger);
-            FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService);
+            FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService, configuration);
             PasswordService = new PasswordService();
             TokenService = new TokenService(configuration);
             EmailService = new EmailService(configuration);

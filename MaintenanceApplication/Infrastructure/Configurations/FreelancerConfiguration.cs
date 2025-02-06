@@ -98,6 +98,11 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasForeignKey(f => f.CountryId)
                 .IsRequired(false);
 
+            // One-to-many relationship with FreelancerOtp
+            builder.HasMany(f => f.FreelancerOtps) // Freelancer can have many OTPs
+                .WithOne(o => o.Freelancer) // Each OTP is linked to one Freelancer
+                .HasForeignKey(o => o.FreelancerId);
+
         }
     }
 }

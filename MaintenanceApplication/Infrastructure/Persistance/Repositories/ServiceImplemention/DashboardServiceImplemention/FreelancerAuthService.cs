@@ -2,6 +2,8 @@
 using AutoMapper;
 using Domain.Entity.UserEntities;
 using Domain.Enums;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Maintenance.Application.Common;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Common.Utility;
@@ -14,6 +16,8 @@ using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Configuration;
+using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +25,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using static System.Net.WebRequestMethods;
+using File = System.IO.File;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention
 {
@@ -30,13 +35,16 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         private readonly IMapper _mapper;
         private readonly IPasswordService _passwordService;
         private readonly ITokenService _tokenService;
+        private readonly IConfiguration _configuration;
 
-        public FreelancerAuthService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, ITokenService tokenService)
+        public FreelancerAuthService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService,
+            ITokenService tokenService , IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _passwordService = passwordService;
             _tokenService = tokenService;
+            _configuration = configuration;
         }
         #region Block Freelancer
         public async Task<Result<bool>> BlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken = default)
@@ -249,7 +257,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             // Map DTO to Freelancer entity
             var freelancer = _mapper.Map<Freelancer>(registrationDto);
-
+              
             // Hash the password before saving
             freelancer.Password = _passwordService.HashPassword(registrationDto.Password);
             freelancer.Status = AccountStatus.Pending; // Default status for new freelancers
@@ -276,6 +284,21 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             {
                 return Result<Freelancer>.Failure(ErrorMessages.FreelancerRegistrationFailed, StatusCodes.Status500InternalServerError);
             }
+
+            // Send Welcome Email (Registration should fail if email sending fails)
+            try
+            {
+
+               var otp = Helper.GenerateNumericOtp(6);
+                await SendEmailAsync(registrationDto.Email,otp).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                // Rollback freelancer creation if email sending fails
+                await _unitOfWork.FreelancerAuthRepository.DeleteFreelancerAsync(freelancer.Id).ConfigureAwait(false);
+                return Result<Freelancer>.Failure($"Registration failed due to email sending error: {ex.Message}", StatusCodes.Status500InternalServerError);
+            }
+
 
             return Result<Freelancer>.Success(freelancer, SuccessMessages.UserRegisteredSuccessfully, StatusCodes.Status201Created);
         }
@@ -472,9 +495,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
-
-
-
+        
+        
+        
+        
         #region Image Upload
         private async Task<(bool Success, string ImageUrl, string Message)> ImageUploadAsync(IFormFile imageFile)
         {
@@ -513,6 +537,57 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
+
+        #region Mail
+        public async Task SendEmailAsync(string ToEmail,string otp)
+        {
+            var email = new MimeMessage();
+
+            email.Sender = MailboxAddress.Parse(_configuration.GetSection("MailSettings:Mail").Value);
+            email.To.Add(MailboxAddress.Parse(ToEmail));
+            email.Subject = "OTP Verification!";
+
+
+            // Load Email Template 
+
+            var RootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Templates/EmailTemplate");
+            var FullPath = Path.Combine(RootPath, "Welcome_EmailTemplate.html");
+
+            if (!File.Exists(FullPath))
+            {
+                throw new FileNotFoundException("The email template file was not found.", FullPath);
+            }
+
+            var EmailBody = await File.ReadAllTextAsync(FullPath);
+
+            EmailBody.Replace("{OTP}", otp);
+            var builder = new BodyBuilder();
+
+
+            builder.HtmlBody = EmailBody;
+            email.Body = builder.ToMessageBody();
+            using var smtp = new SmtpClient();
+
+
+            var host = _configuration.GetSection("MailSettings:Host").Value;
+            var port = int.Parse(_configuration.GetSection("MailSettings:Port").Value);
+            var emailAddress = _configuration.GetSection("MailSettings:Mail").Value;
+            var emailPassword = _configuration.GetSection("MailSettings:Password").Value;
+
+            // Connect to SMTP server
+            await smtp.ConnectAsync(host, port, SecureSocketOptions.StartTls);
+
+            // Authenticate
+            await smtp.AuthenticateAsync(emailAddress, emailPassword);
+
+            // Send email
+            await smtp.SendAsync(email);
+
+            // Disconnect
+            await smtp.DisconnectAsync(true);
+
+        }
+        #endregion
 
 
     }

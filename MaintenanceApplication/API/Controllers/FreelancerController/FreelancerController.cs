@@ -1,6 +1,7 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Common.Utility;
+using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Services.Admin.OrderSpecification;
@@ -622,6 +623,100 @@ namespace Maintenance.API.Controllers.FreelancerController
 
 
         #endregion
+
+
+
+        #region Freelancer Rating Screens Api's
+
+        #region Get All Ratings & Reviews for a Freelancer
+        [HttpGet("freelancer-ratings/{freelancerId:guid}")]
+        public async Task<IActionResult> GetFreelancerRatings(Guid freelancerId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching ratings and reviews for freelancer with ID: {FreelancerId}", freelancerId);
+            try
+            {
+                var result = await _serviceManager.FeedbackService.GetFeedbackRatingForFreelancerAsync(freelancerId, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching ratings for freelancer ID: {FreelancerId}", freelancerId);
+                return StatusCode(500, new { Success = false, Message = "Internal Server Error" });
+            }
+        }
+        #endregion
+
+
+
+        #region Filter Ratings & Reviews
+        [HttpGet("filter-ratings")]
+        public async Task<IActionResult> FilterRatings(CancellationToken cancellationToken, FilterRatingsDto filterRatingsDto )
+        {
+            _logger.LogInformation("Filtering ratings with parameters: {@FilterDto}", filterRatingsDto);
+
+            try
+            {
+                //var filterCriteria = new RatingFilterCriteria
+                //{
+                //    FreelancerId = freelancerId,
+                //    MinRating = minRating,
+                //    MaxRating = maxRating,
+                //    FromDate = fromDate,
+                //    ToDate = toDate,
+                //    ServiceId = serviceId
+                //};
+
+                var result = await _serviceManager.FeedbackService.FilterRatingsAsync(filterRatingsDto, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error filtering ratings");
+                return StatusCode(500, new { Success = false, Message = "Internal Server Error" });
+            }
+        }
+        #endregion
+
+
+
+        #endregion
+
     }
 
 }
