@@ -188,8 +188,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                            where bid.BidStatus == BidStatus.Pending
                                            select new RequestedServiceResponseDto
                                            {
-                                               CoverLetter = bid.CoverLetter,
-                                               BidPrice = bid.Price.ToString(),
+                                               CoverLetter = bid.OfferDetails,
+                                               BidPrice = bid.PackagePrice.ToString(),
                                                FreelancerName = freelancer.FullName,
                                                TotalNoOfFreelancerApplied = _dbContext.Bids.Count(b => b.OfferedServiceId == service.Id).ToString(),
                                                Title = service.Title,

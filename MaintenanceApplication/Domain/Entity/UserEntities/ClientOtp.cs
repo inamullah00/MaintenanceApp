@@ -23,7 +23,7 @@ namespace Maintenance.Domain.Entity.UserEntities
 
         [Required]
         [MaxLength(6)]
-        public string OtpCode { get; set; } // The generated OTP code
+        public int OtpCode { get; set; } // The generated OTP code
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // When OTP was generated

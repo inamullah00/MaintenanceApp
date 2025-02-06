@@ -115,12 +115,30 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
           .FirstOrDefaultAsync(f => f.Email == email, cancellationToken);
         }
 
-        public async Task<FreelancerOtp> GetValidOtpAsync(string otp, CancellationToken cancellationToken)
+        public async Task<FreelancerOtp?> GetValidOtpAsync(int otp, CancellationToken cancellationToken)
         {
-            //return await _dbContext.FreelancerOtps
-            //        .Where(o => o.Otp == otp && o.ExpiresAt > DateTime.UtcNow && !o.IsUsed)
-            //        .FirstOrDefaultAsync(cancellationToken);
-            return null;
+            return await _dbContext.FreelancerOtps
+                    .Where(o => o.OtpCode == otp && o.ExpiresAt > DateTime.UtcNow)
+                    .FirstOrDefaultAsync(cancellationToken);
+
+        }
+
+        public async Task<FreelancerOtp> AddFreelancerOTP(FreelancerOtp otp)
+        {
+            await _dbContext.FreelancerOtps.AddAsync(otp);
+            return otp;
+        }
+
+        public async Task<FreelancerOtp?> DeleteFreelancerOTP(Guid Id)
+        {
+           var entity = await _dbContext.FreelancerOtps.FirstOrDefaultAsync(f => f.Id == Id).ConfigureAwait(false);
+             _dbContext.Remove(entity);
+            return entity;
+        }
+
+        public async Task<FreelancerOtp?> GetFreelancerOTPByEmail(string Email)
+        {
+            return await _dbContext.FreelancerOtps.Where(f => f.Email == Email).FirstOrDefaultAsync();
         }
     }
 }

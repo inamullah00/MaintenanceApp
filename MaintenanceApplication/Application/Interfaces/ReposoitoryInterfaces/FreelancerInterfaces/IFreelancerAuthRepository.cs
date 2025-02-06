@@ -15,6 +15,11 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         // Add a new freelancer to the database
         Task<Freelancer> AddFreelancerAsync(Freelancer freelancer);
 
+        // Add a freelancer OTP to the database
+        Task<FreelancerOtp> AddFreelancerOTP(FreelancerOtp otp);
+        Task<FreelancerOtp?> DeleteFreelancerOTP(Guid Id);
+        Task<FreelancerOtp?> GetFreelancerOTPByEmail(string Email);
+
         // Get freelancer by ID
         Task<Freelancer> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken);
 
@@ -49,7 +54,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         // Reactivate a suspended freelancer
         Task<bool> ReactivateFreelancerAsync(Guid freelancerId);
 
-        Task<FreelancerOtp> GetValidOtpAsync(string otp, CancellationToken cancellationToken);
+        Task<FreelancerOtp?> GetValidOtpAsync(int otp, CancellationToken cancellationToken);
 
         // Paginated list of freelancers
         Task<(List<Freelancer>, int)> GetFreelancersPaginatedAsync(int pageNumber, int pageSize);
