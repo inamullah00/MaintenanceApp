@@ -23,6 +23,8 @@ namespace Maintenance.Infrastructure.Persistance.Data
 
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Freelancer> Freelancers { get; set; }
+        public DbSet<FreelancerService> FreelancerServices { get; set; }
+        public DbSet<Service> Services { get; set; }
         public DbSet<FreelancerOtp> FreelancerOtps { get; set; }
         public DbSet<ClientOtp> ClientOtps { get; set; }
         public DbSet<Client> Clients { get; set; }
