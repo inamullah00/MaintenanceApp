@@ -20,7 +20,7 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasKey(b => b.Id);
 
             // Property Configurations
-            builder.Property(b => b.Price)
+            builder.Property(b => b.PackagePrice)
                 .HasColumnType("decimal(18, 2)") // Optional: Ensure that the price is stored as a decimal with 2 decimal places
                 .IsRequired(); // Make CustomPrice a required field
 
@@ -29,7 +29,7 @@ namespace Maintenance.Infrastructure.Configurations
                 .HasDefaultValueSql("GETUTCDATE()") // Ensure that the CreatedAt column is automatically set to UTC now if not set
                 .IsRequired();
 
-            builder.Property(b => b.CoverLetter)
+            builder.Property(b => b.OfferDetails)
                 .HasMaxLength(500) // Optional: Add max length to Message field
                 .IsRequired(false); // Message is optional
 

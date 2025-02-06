@@ -4,6 +4,7 @@ using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace Maintenance.Domain.Entity.UserEntities
 
         [Required]
         [MaxLength(6)]
-        public string OtpCode { get; set; } // The generated OTP code
+        public int OtpCode { get; set; } // The generated OTP code
 
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow; // When OTP was generated
@@ -36,6 +37,8 @@ namespace Maintenance.Domain.Entity.UserEntities
 
         [Required]
         public Guid FreelancerId { get; set; } // The User ID linked to this OTP
+
+        [ForeignKey(nameof(FreelancerId))]
         public Freelancer Freelancer { get; set; }
     }
 

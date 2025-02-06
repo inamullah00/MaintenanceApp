@@ -13,14 +13,13 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
 {
     public class Bid : BaseEntity
     {
-        public decimal Price { get; set; }
-        public string Name  { get; set; }
+        public decimal PackagePrice { get; set; }
+        public string PackageName  { get; set; }
         public string OfferDetails { get; set; }
         public BidStatus BidStatus { get; set; } = BidStatus.Pending;
         public Guid OfferedServiceId { get; set; }
         public Guid? FreelancerId { get; set; }
-        public string CoverLetter { get; set; }
-
+   
 
         [ForeignKey(nameof(OfferedServiceId))]
         public OfferedService OfferedService { get; set; }
