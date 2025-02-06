@@ -288,9 +288,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             // Send Welcome Email (Registration should fail if email sending fails)
             try
             {
-                var subject = "Welcome to Our Platform!";
-                var body = $"Hi {registrationDto.FullName},<br><br>Thank you for registering! We're excited to have you onboard.";
-                await SendEmailAsync(registrationDto.Email, subject, body).ConfigureAwait(false);
+
+               var otp = Helper.GenerateNumericOtp(6);
+                await SendEmailAsync(registrationDto.Email,otp).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -539,13 +539,13 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
 
         #region Mail
-        public async Task SendEmailAsync(string ToEmail, string Subject, string Body)
+        public async Task SendEmailAsync(string ToEmail,string otp)
         {
             var email = new MimeMessage();
 
             email.Sender = MailboxAddress.Parse(_configuration.GetSection("MailSettings:Mail").Value);
             email.To.Add(MailboxAddress.Parse(ToEmail));
-            email.Subject = Subject;
+            email.Subject = "OTP Verification!";
 
 
             // Load Email Template 
@@ -560,6 +560,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             var EmailBody = await File.ReadAllTextAsync(FullPath);
 
+            EmailBody.Replace("{OTP}", otp);
             var builder = new BodyBuilder();
 
 

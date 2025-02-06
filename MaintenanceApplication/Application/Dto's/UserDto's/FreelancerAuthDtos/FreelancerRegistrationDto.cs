@@ -14,6 +14,7 @@ namespace Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos
         public string? Bio { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string? CivilID { get; set; }
+        public ExperienceLevel ExperienceLevel { get; set; }
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
         public UserType IsType { get; set; }
         public Guid? CountryId { get; set; }

@@ -1,6 +1,8 @@
 ﻿using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Domain.Entity.UserEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Maintenance.Infrastructure.Configurations
 {
@@ -32,9 +34,15 @@ namespace Maintenance.Infrastructure.Configurations
 
             // One-to-Many: Freelancer to Country
             builder.HasOne(f => f.Country)
-                .WithMany()
+            .WithMany()
                 .HasForeignKey(f => f.CountryId)
                 .IsRequired(false);
+
+            // One - to - many relationship with ClientOtp
+            builder.HasMany(c => c.clientOtps) // Client has many OTPs
+                   .WithOne(o => o.Client) // Each OTP is linked to one Client
+                   .HasForeignKey(o => o.ClientId);
+
 
             // Optional: Adding constraints for unique fields like Email or PhoneNumber
             builder.HasIndex(c => c.Email).IsUnique();  // Email should be unique
