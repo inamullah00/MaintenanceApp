@@ -1,12 +1,20 @@
-﻿namespace Maintenance.Domain.Entity.FreelancerEntities
+﻿using Domain.Common;
+using Domain.Entity.UserEntities;
+
+namespace Maintenance.Domain.Entity.FreelancerEntities
 {
 
-    public class Service
+    public class Service : BaseEntity
     {
-        public Guid Id { get; set; }
-        public string Name { get; set; } // e.g., Plumbing, Electrician, etc.
+        public string Name { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsUserCreated { get; set; } // Indicates if a user added this service
+        public bool IsApproved { get; set; } // Admin approval for dynamic services
+        public string? ActionById { get; set; }
 
-        // Navigation property to the many-to-many relationship
+
+        public ApplicationUser? ActionBy { get; set; } // Tracks who created/approved the service
         public ICollection<FreelancerService> FreelancerServices { get; set; }
     }
+
 }

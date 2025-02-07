@@ -2,6 +2,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
+using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
@@ -39,22 +40,42 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                           select new FeedbackResponseDto
                           {
                               Id = feedback.Id,
-                              FeedbackByClientId = feedback.FeedbackByClientId,
+                              //FeedbackByClientId = feedback.FeedbackByClientId,
                               Comment = feedback.Comment,
                               Rating = feedback.Rating,
-                              CreatedAt = feedback.CreatedAt,
-                              UpdatedAt = feedback.UpdatedAt.Value
+                              //CreatedAt = feedback.CreatedAt,
+                              //UpdatedAt = feedback.UpdatedAt.Value
                           })
                 .AsNoTracking()
                 .ToListAsync(cancellationToken);
         }
 
-        public async Task<Feedback?> GetByIdAsync(Guid feedbackId, CancellationToken cancellationToken)
+        public async Task<FeedbackResponseDto?> GetFeedbackRatingByIdAsync(Guid feedbackId, CancellationToken cancellationToken)
         {
-            return await (from feedback in _dbContext.Feedbacks.AsNoTracking()
+            return await (from feedback in _dbContext.Feedbacks
+                          join client in _dbContext.Clients
+                          on feedback.FeedbackByClientId equals client.Id
+
+                          join order in _dbContext.Orders
+                          on feedback.OrderId equals order.Id
+
+                          join service in _dbContext.OfferedServices
+                          on order.ServiceId equals service.Id
+
                           where feedback.Id == feedbackId
-                          select feedback)
-                .FirstOrDefaultAsync(cancellationToken);
+                          select new FeedbackResponseDto
+                          {
+                              Id = feedback.Id,
+                              ClientName = client.FullName,  // Client's full name
+                              ServiceName = service.Title,    // Service name
+                              OrderId = feedback.OrderId,
+                              Rating = feedback.Rating,
+                              Comment = feedback.Comment,
+                              FeedbackDate = feedback.CreatedAt  // Assuming BaseEntity contains CreatedAt
+                          })
+                              .AsNoTracking()
+                              .FirstOrDefaultAsync(cancellationToken);
+
         }
 
         public async Task<Feedback> RemoveAsync(Feedback feedback, CancellationToken cancellationToken)
@@ -71,6 +92,15 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return (true, feedback);
         }
 
+        public async Task<Feedback?> GetByIdAsync(Guid feedbackId, CancellationToken cancellationToken)
+        {
 
+            return await _dbContext.Feedbacks
+                .AsNoTracking()
+                .Include(f => f.Client)  // Include client details
+                .Include(f => f.Order)   // Include order details
+                .Include(f => f.FeedbackOnFreelancer) // Include freelancer details (if applicable)
+                .FirstOrDefaultAsync(f => f.Id == feedbackId, cancellationToken);
+        }
     }
 }

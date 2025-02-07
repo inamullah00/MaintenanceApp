@@ -61,6 +61,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<string>.Failure(ErrorMessages.ResourceNotFound, StatusCodes.Status404NotFound);
             }
 
+
             var deletedFeedback = await _unitOfWork.FeedbackRepository.RemoveAsync(feedback, cancellationToken);
 
             if (deletedFeedback == null)
@@ -78,7 +79,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<List<FeedbackResponseDto>>.Success(feedbackList, SuccessMessages.FeedbackFetched, StatusCodes.Status200OK);
         }
 
-        public async Task<Result<FeedbackResponseDto>> GetFeedbackByIdAsync(Guid feedbackId, CancellationToken cancellationToken)
+        public async Task<Result<FeedbackResponseDto>> GetFeedbackRatingForFreelancerAsync(Guid feedbackId, CancellationToken cancellationToken)
         {
             if (feedbackId == Guid.Empty)
             {
@@ -88,7 +89,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 );
             }
 
-            var feedback = await _unitOfWork.FeedbackRepository.GetByIdAsync(feedbackId, cancellationToken);
+            var feedback = await _unitOfWork.FeedbackRepository.GetFeedbackRatingByIdAsync(feedbackId, cancellationToken);
 
             if (feedback == null)
             {
@@ -139,6 +140,13 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 SuccessMessages.ServiceUpdated,
                 StatusCodes.Status200OK
             );
+        }
+
+       public async Task<Result<List<FeedbackResponseDto>>> FilterRatingsAsync(FilterRatingsDto filterRatingsDto, CancellationToken cancellationToken)
+        {
+            FilterRatingSpecification specification = new(filterRatingsDto);
+            var feedbackList = await _unitOfWork.FeedbackRepository.GetAllAsync(cancellationToken, specification);
+            return Result<List<FeedbackResponseDto>>.Success(feedbackList, SuccessMessages.FeedbackFetched, StatusCodes.Status200OK);
         }
     }
 }

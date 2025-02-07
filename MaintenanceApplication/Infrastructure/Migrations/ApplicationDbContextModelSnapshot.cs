@@ -22,31 +22,6 @@ namespace Maintenance.Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Entity.UserEntities.UserOtp", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Otp")
-                        .IsRequired()
-                        .HasMaxLength(6)
-                        .HasColumnType("nvarchar(6)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserOtps");
-                });
-
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.Client", b =>
                 {
                     b.Property<Guid>("Id")
@@ -452,10 +427,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("CoverLetter")
-                        .HasMaxLength(500)
-                        .HasColumnType("nvarchar(500)");
-
                     b.Property<DateTime>("CreatedAt")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("datetime2")
@@ -464,19 +435,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<Guid?>("FreelancerId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OfferDetails")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<Guid>("OfferedServiceId")
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18, 2)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -572,6 +532,21 @@ namespace Maintenance.Infrastructure.Migrations
                     b.ToTable("Freelancers", (string)null);
                 });
 
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.BidPackage", b =>
+                {
+                    b.Property<Guid>("BidId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("PackageId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("BidId", "PackageId");
+
+                    b.HasIndex("PackageId");
+
+                    b.ToTable("BidPackages", (string)null);
+                });
+
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Country", b =>
                 {
                     b.Property<Guid>("Id")
@@ -634,7 +609,41 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.HasIndex("ServiceId");
 
-                    b.ToTable("FreelancerService");
+                    b.ToTable("FreelancerServices");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Package", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<string>("OfferDetails")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18, 2)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FreelancerId");
+
+                    b.ToTable("Packages", (string)null);
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Service", b =>
@@ -643,14 +652,122 @@ namespace Maintenance.Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("ActionById")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsApproved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUserCreated")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
                     b.HasKey("Id");
 
-                    b.ToTable("Service");
+                    b.HasIndex("ActionById");
+
+                    b.ToTable("Services");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.UserEntities.ClientOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("ClientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("ClientId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("OtpCode")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("ClientId1");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.ToTable("ClientOtps", (string)null);
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.UserEntities.FreelancerOtp", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<DateTime>("ExpiresAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("FreelancerId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("FreelancerId1")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<bool>("IsUsed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
+                    b.Property<int>("OtpCode")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("FreelancerId");
+
+                    b.HasIndex("FreelancerId1");
+
+                    b.ToTable("FreelancerOtps", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -682,19 +799,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "dc3f9a53-dfff-44a4-a5a1-9c071ddab466",
+                            Id = "03cc8cb0-899b-46ac-ac6d-357dd986c655",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "42c60ec7-0f47-4272-b4c3-3b099b096284",
+                            Id = "39b314f7-5a42-4a82-abd1-416facad5e3e",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "71cf198f-7aa8-4d2c-8091-99c627b42499",
+                            Id = "32dc0d43-39a5-4743-829c-d4fab21cb473",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -863,8 +980,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "914799c3-d7a7-48c3-ae11-fa6970b36a21",
-                            RoleId = "dc3f9a53-dfff-44a4-a5a1-9c071ddab466"
+                            UserId = "1d4e8241-98aa-4649-bdc3-162686f355d5",
+                            RoleId = "03cc8cb0-899b-46ac-ac6d-357dd986c655"
                         });
                 });
 
@@ -902,17 +1019,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "914799c3-d7a7-48c3-ae11-fa6970b36a21",
+                            Id = "1d4e8241-98aa-4649-bdc3-162686f355d5",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "37cfd9ba-99dd-4eee-831e-6ca208a8c444",
+                            ConcurrencyStamp = "392baf0f-82d6-4ef7-9bc9-9de7394a0437",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEFAUfPZXh4unVY+ZLy3353oGzD2dypKTepY6uetmQg4hQ/Z+vVXMxHxYg32Idd0z4Q==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIrGW0vP9R+ugRZe2VGibPwPIIS47GDCHs2wCFmkcmdIJdYXVUNGfq3XF3Gthd7rjg==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f928873e-b889-4854-ad4b-b32fb7b84d81",
+                            SecurityStamp = "2db020e3-022f-44ee-8b03-6454498c79a4",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"
@@ -1058,6 +1175,25 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Navigation("Country");
                 });
 
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.BidPackage", b =>
+                {
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Bid", "Bid")
+                        .WithMany("BidPackages")
+                        .HasForeignKey("BidId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Package", "Package")
+                        .WithMany("BidPackages")
+                        .HasForeignKey("PackageId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Bid");
+
+                    b.Navigation("Package");
+                });
+
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.FreelancerService", b =>
                 {
                     b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", "Freelancer")
@@ -1075,6 +1211,57 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Navigation("Freelancer");
 
                     b.Navigation("Service");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Package", b =>
+                {
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", "Freelancer")
+                        .WithMany("Packages")
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Freelancer");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Service", b =>
+                {
+                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "ActionBy")
+                        .WithMany()
+                        .HasForeignKey("ActionById")
+                        .OnDelete(DeleteBehavior.NoAction);
+
+                    b.Navigation("ActionBy");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.UserEntities.ClientOtp", b =>
+                {
+                    b.HasOne("Maintenance.Domain.Entity.ClientEntities.Client", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Maintenance.Domain.Entity.ClientEntities.Client", null)
+                        .WithMany("clientOtps")
+                        .HasForeignKey("ClientId1");
+
+                    b.Navigation("Client");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.UserEntities.FreelancerOtp", b =>
+                {
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", "Freelancer")
+                        .WithMany()
+                        .HasForeignKey("FreelancerId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", null)
+                        .WithMany("FreelancerOtps")
+                        .HasForeignKey("FreelancerId1");
+
+                    b.Navigation("Freelancer");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -1133,6 +1320,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Navigation("ClientOrders");
 
                     b.Navigation("TotalProvidedFeedbacksByClient");
+
+                    b.Navigation("clientOtps");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.OfferedService", b =>
@@ -1154,6 +1343,11 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Navigation("Feedbacks");
                 });
 
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntites.Bid", b =>
+                {
+                    b.Navigation("BidPackages");
+                });
+
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntites.Freelancer", b =>
                 {
                     b.Navigation("Bids");
@@ -1162,7 +1356,16 @@ namespace Maintenance.Infrastructure.Migrations
 
                     b.Navigation("FreelancerOrders");
 
+                    b.Navigation("FreelancerOtps");
+
                     b.Navigation("FreelancerServices");
+
+                    b.Navigation("Packages");
+                });
+
+            modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Package", b =>
+                {
+                    b.Navigation("BidPackages");
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.FreelancerEntities.Service", b =>

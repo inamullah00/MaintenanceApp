@@ -4,6 +4,7 @@ using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
+using Maintenance.Domain.Entity.UserEntities;
 using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -22,11 +23,16 @@ namespace Maintenance.Infrastructure.Persistance.Data
 
         public DbSet<ApplicationUser> Users { get; set; }
         public DbSet<Freelancer> Freelancers { get; set; }
+        public DbSet<FreelancerService> FreelancerServices { get; set; }
+        public DbSet<Service> Services { get; set; }
+        public DbSet<FreelancerOtp> FreelancerOtps { get; set; }
+        public DbSet<ClientOtp> ClientOtps { get; set; }
         public DbSet<Client> Clients { get; set; }
-        public DbSet<UserOtp> UserOtps { get; set; }
         public DbSet<OfferedService> OfferedServices { get; set; }
         public DbSet<OfferedServiceCategory> OfferedServiceCategories { get; set; }
         public DbSet<Bid> Bids { get; set; }
+        public DbSet<BidPackage> BidPackages { get; set; }
+        public DbSet<Package> Packages { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Order> Orders { get; set; }
 
@@ -54,6 +60,10 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new ServiceConfiguration());
             builder.ApplyConfiguration(new FreelancerServiceConfiguration());
             builder.ApplyConfiguration(new CountryConfiguration());
+            builder.ApplyConfiguration(new ClientOtpConfiguration());
+            builder.ApplyConfiguration(new FreelancerOtpConfiguration());
+            builder.ApplyConfiguration(new BidPackageConfiguration());
+            builder.ApplyConfiguration(new PackageConfiguration());
 
             #region Fluent Model
 

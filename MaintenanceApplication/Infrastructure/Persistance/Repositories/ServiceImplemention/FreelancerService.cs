@@ -5,11 +5,13 @@ using AutoMapper;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -29,6 +31,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             _mapper = mapper;
             _unitOfWork = unitOfWork;
         }
+
 
         #region DeleteBidAsync
         public async Task<Result<string>> DeleteBidAsync(Guid bidId)
@@ -210,6 +213,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
         #endregion
 
+        #region GetRequestedServicesAsync
         public async Task<Result<List<RequestedServiceResponseDto>>> GetRequestedServicesAsync(CancellationToken cancellationToken, string? keyword)
         {
             var specification = new RequestedServiceSpecification(keyword);
@@ -223,7 +227,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             var serviceDtos = _mapper.Map<List<RequestedServiceResponseDto>>(services);
             return Result<List<RequestedServiceResponseDto>>.Success(serviceDtos, "Requested services fetched successfully.", StatusCodes.Status200OK);
         }
+        #endregion
 
+        #region GetOrdersByStatusAsync
         public async Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken)
         {
 
@@ -238,6 +244,90 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return Result<List<OrderStatusResponseDto>>.Success(orderStatusResponse, "Orders Fetched Successfuly.", StatusCodes.Status200OK);
 
 
+        }
+        #endregion
+
+       public async Task<Result<Package>> GetPackageByIdAsync(Guid packageId , CancellationToken cancellationToken)
+        {
+            var package = await _unitOfWork.FreelancerRepository.GetPackageByIdAsync(packageId, cancellationToken);
+
+            if (package == null)
+            {
+
+                return Result<Package>.Failure("Package not found.", StatusCodes.Status404NotFound);
+            }
+
+            return Result<Package>.Success(package, "Package fetched successfully.",StatusCodes.Status200OK);
+        }
+
+        public async Task<Result<List<Package>>> GetPackagesAsync(CancellationToken cancellationToken)
+        {
+            var packages = await _unitOfWork.FreelancerRepository.GetAllPackagesAsync(cancellationToken);
+
+            if (packages == null || !packages.Any())
+            {
+                return Result<List<Package>>.Failure("No packages found.", StatusCodes.Status404NotFound);
+            }
+
+            //_mapper.Map(package)
+
+            return Result<List<Package>>.Success(packages, "Packages fetched successfully.");
+        }
+
+        public async Task<Result<Package>> CreatePackageAsync(CreatePackageRequestDto packageRequestDto, CancellationToken cancellationToken)
+        {
+
+            if (packageRequestDto == null)
+            {
+                return Result<Package>.Failure(ErrorMessages.InvalidOrEmpty, StatusCodes.Status400BadRequest);
+            }
+
+            var packageEntity = _mapper.Map<Package>(packageRequestDto);
+
+            var result = await _unitOfWork.FreelancerRepository.CreatePackageAsync(packageEntity , cancellationToken);
+
+            if (result == null)
+            {
+                return Result<Package>.Failure(ErrorMessages.PackageCreationFailed, StatusCodes.Status500InternalServerError);
+            }
+
+            await _unitOfWork.FreelancerRepository.CreatePackageAsync(packageEntity, cancellationToken);
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result<Package>.Success(SuccessMessages.PackageCreated, StatusCodes.Status201Created);
+        }
+
+        public async Task<Result<Package>> UpdatePackageAsync(Guid packageId, Package package ,CancellationToken cancellationToken)
+        {
+            var existingPackage = await _unitOfWork.FreelancerRepository.GetPackageByIdAsync(packageId,cancellationToken);
+
+            if (existingPackage == null)
+            {
+                return Result<Package>.Failure("Package not found.", StatusCodes.Status404NotFound);
+            }
+
+            // Update properties
+            existingPackage.Name = package.Name;
+            existingPackage.Price = package.Price;
+            existingPackage.OfferDetails = package.OfferDetails;
+
+            await _unitOfWork.SaveChangesAsync();
+
+            return Result<Package>.Success(existingPackage, "Package updated successfully.");
+        }
+
+        public async Task<Result<bool>> DeletePackageAsync(Guid packageId , CancellationToken cancellationToken)
+        {
+            var package = await _unitOfWork.FreelancerRepository.GetPackageByIdAsync(packageId, cancellationToken);
+
+            if (package == null)
+            {
+                return Result<bool>.Failure("Package not found.", StatusCodes.Status404NotFound);
+            }
+
+            await _unitOfWork.FreelancerRepository.DeletePackageAsync(package.Id , cancellationToken);
+            await _unitOfWork.SaveChangesAsync();
+            return Result<bool>.Success(true, "Package deleted successfully.");
         }
     }
 }

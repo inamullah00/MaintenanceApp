@@ -8,17 +8,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
 {
     public class BidResponseDto
     {
-        //public Guid Id { get; set; } 
-
-        //public Guid OfferedServiceId { get; set; } 
-
-        //public Guid FreelancerId { get; set; }
-
-        //public decimal BidAmount { get; set; }
-
-        //public string Status { get; set; }
-
-        //public DateTime CreatedAt { get; set; } = DateTime.Now;
 
         public Guid Id { get; set; } // Bid ID
 

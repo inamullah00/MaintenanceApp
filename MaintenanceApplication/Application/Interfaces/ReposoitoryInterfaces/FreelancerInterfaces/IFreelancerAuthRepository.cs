@@ -1,6 +1,7 @@
 ﻿using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.UserEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +14,11 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
     {
         // Add a new freelancer to the database
         Task<Freelancer> AddFreelancerAsync(Freelancer freelancer);
+
+        // Add a freelancer OTP to the database
+        Task<FreelancerOtp> AddFreelancerOTP(FreelancerOtp otp);
+        Task<FreelancerOtp?> DeleteFreelancerOTP(Guid Id);
+        Task<FreelancerOtp?> GetFreelancerOTPByEmail(string Email);
 
         // Get freelancer by ID
         Task<Freelancer> GetFreelancerByIdAsync(Guid freelancerId , CancellationToken cancellationToken);
@@ -48,7 +54,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         // Reactivate a suspended freelancer
         Task<bool> ReactivateFreelancerAsync(Guid freelancerId);
 
-        Task<UserOtp?> GetValidOtpAsync(string otp, CancellationToken cancellationToken);
+        Task<FreelancerOtp?> GetValidOtpAsync(int otp, CancellationToken cancellationToken);
 
         // Paginated list of freelancers
         Task<(List<Freelancer>, int)> GetFreelancersPaginatedAsync(int pageNumber, int pageSize);

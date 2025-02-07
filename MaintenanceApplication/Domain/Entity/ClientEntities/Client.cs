@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntities;
+using Maintenance.Domain.Entity.UserEntities;
 
 namespace Maintenance.Domain.Entity.ClientEntities
 {
@@ -14,6 +15,7 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public Country? Country { get; set; }
         public ICollection<Order> ClientOrders { get; set; } // Orders placed by the client
         public ICollection<Feedback> TotalProvidedFeedbacksByClient { get; set; } // Feedback given by Client
+        public ICollection<ClientOtp> clientOtps { get; set; }
 
 
     }

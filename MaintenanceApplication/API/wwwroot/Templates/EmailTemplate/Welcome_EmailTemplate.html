@@ -33,6 +33,7 @@
 
         .email-body {
             padding: 20px;
+            text-align: center;
         }
 
             .email-body h2 {
@@ -46,16 +47,15 @@
                 margin: 10px 0;
             }
 
-            .email-body .button {
-                display: inline-block;
-                margin: 20px 0;
-                padding: 10px 20px;
-                background-color: #4caf50;
-                color: #ffffff;
-                text-decoration: none;
-                border-radius: 5px;
-                font-size: 16px;
-            }
+        .otp-box {
+            font-size: 18px;
+            font-weight: bold;
+            background-color: #eeeeee;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            margin: 15px 0;
+        }
 
         .email-footer {
             background-color: #f1f1f1;
@@ -77,15 +77,15 @@
             Welcome to Our Platform!
         </div>
         <div class="email-body">
-            <h2>Hi Inam,</h2>
+            <h2>Hi App User,</h2>
             <p>
                 Thank you for registering on our platform! We’re excited to have you on board.
                 You can now explore all the amazing features we have to offer.
             </p>
             <p>
-                To get started, please confirm your email by clicking the button below:
+                To get started, please enter the OTP below to confirm your email:
             </p>
-            <a href="{6}" class="button">Confirm Email</a>
+            <div class="otp-box">{OTP}</div>
             <p>
                 If you have any questions or need help, feel free to contact us at any time.
             </p>

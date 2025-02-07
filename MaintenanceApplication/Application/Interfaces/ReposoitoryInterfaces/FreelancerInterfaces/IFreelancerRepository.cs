@@ -2,6 +2,7 @@
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +27,16 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
 
         Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
         Task<List<FilteredFreelancerResponseDto>> GetByFilterAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
-
-
         Task<Bid> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
+
+
+        // Package Methods
+        Task<Package> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken);
+        Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken);
+        Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken);
+        Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken);
+        Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken);
 
     }
 }

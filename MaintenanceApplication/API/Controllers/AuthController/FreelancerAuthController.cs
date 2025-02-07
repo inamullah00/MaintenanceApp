@@ -43,7 +43,7 @@ namespace Maintenance.API.Controllers.AuthController
 
                 var result = await _serviceManager.FreelancerAuthService.RegisterFreelancerAsync(request, cancellationToken).ConfigureAwait(false);
 
-                if (result != null)
+                if (result == null)
                 {
                     _logger.LogWarning("SignUp failed for freelancer: {FullName}, Message: {Message}", request.FullName, result.Message);
                     return BadRequest(result.Message);
@@ -207,7 +207,7 @@ namespace Maintenance.API.Controllers.AuthController
 
         [HttpPost]
         [Route("Validate-Otp")]
-        public async Task<IActionResult> ValidateOtp([FromBody] string otp , CancellationToken cancellationToken)
+        public async Task<IActionResult> ValidateOtp([FromBody] int otp , CancellationToken cancellationToken)
         {
             try
             {
