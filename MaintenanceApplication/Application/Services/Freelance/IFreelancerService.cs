@@ -1,8 +1,10 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Ardalis.Specification;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,6 +27,13 @@ namespace Maintenance.Application.Services.Freelance
         Task<Result<List<RequestedServiceResponseDto>>> GetRequestedServicesAsync(CancellationToken cancellationToken, string? keyword);
 
 
+
+        // Package Methods
+        Task<Result<Package>> GetPackageByIdAsync(Guid packageId , CancellationToken cancellationToken);
+        Task<Result<List<Package>>> GetPackagesAsync(CancellationToken cancellationToken);
+        Task<Result<Package>> CreatePackageAsync(CreatePackageRequestDto packageRequestDto, CancellationToken cancellationToken);
+        Task<Result<Package>> UpdatePackageAsync(Guid packageId, Package package, CancellationToken cancellationToken);
+        Task<Result<bool>> DeletePackageAsync(Guid packageId, CancellationToken cancellationToken);
 
 
     }

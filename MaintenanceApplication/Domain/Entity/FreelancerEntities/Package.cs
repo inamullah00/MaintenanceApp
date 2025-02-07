@@ -20,7 +20,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntities
         public Freelancer Freelancer { get; set; }
 
         // Many-to-Many Relationship: A package can be used in multiple bids
-        public ICollection<BidPackage> BidPackages { get; set; } = new List<BidPackage>();
+        public ICollection<BidPackage> BidPackages { get; set; }
     }
 
 }

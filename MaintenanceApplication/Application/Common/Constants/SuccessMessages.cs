@@ -40,6 +40,14 @@ namespace Maintenance.Application.Common.Constants
         public const string CategoryDeleted = "Category deleted successfully.";
         public const string CategoryFetched = "Category fetched successfully.";
         public const string CategoriesFetched = "Categories fetched successfully.";
+        
+        
+        // Package Messages
+        
+        public const string PackageCreated = "Package Created successfully.";
+        public const string PackageFetched = "Package Retriveing Operation has been Done successfully.";
+
+
 
 
         #region Service Messages

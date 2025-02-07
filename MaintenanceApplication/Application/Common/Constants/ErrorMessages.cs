@@ -198,5 +198,9 @@ namespace Maintenance.Application.Common.Constants
 
         // Freelancer as a Usre
         public const string FreelancerNotFound = "Freelancer not found with the provided ID";
+
+        // Package Messages
+
+        public const string PackageCreationFailed = "Failed To Create Package. Please try again ";
     }
 }

@@ -8,12 +8,14 @@ using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.ContentDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Dto_s.UserDto_s;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.ViewModel;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 
 namespace Application.Mapper
 {
@@ -28,6 +30,12 @@ namespace Application.Mapper
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerEditViewModel>().ReverseMap();
+
+
+            //Package
+            CreateMap<Package, PackageResponseDto>().ReverseMap();
+            CreateMap<CreatePackageRequestDto, Package>().ReverseMap();
+            CreateMap<UpdatePackageRequestDto, Package>().ReverseMap();
 
 
 
