@@ -25,6 +25,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public Guid? CountryId { get; set; }
 
         public ICollection<Bid> Bids { get; set; } // Bids placed by the freelancer
+        public ICollection<Package> Packages { get; set; } // Bids placed by the freelancer
 
         public ICollection<Order> FreelancerOrders { get; set; } // Orders completed by the freelancer
 

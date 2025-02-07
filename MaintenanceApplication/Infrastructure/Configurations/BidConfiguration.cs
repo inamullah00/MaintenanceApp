@@ -19,20 +19,12 @@ namespace Maintenance.Infrastructure.Configurations
             // Primary Key Configuration
             builder.HasKey(b => b.Id);
 
-            // Property Configurations
-            builder.Property(b => b.Price)
-                .HasColumnType("decimal(18, 2)") // Optional: Ensure that the price is stored as a decimal with 2 decimal places
-                .IsRequired(); // Make CustomPrice a required field
-
-
+            
             builder.Property(b => b.CreatedAt)
                 .HasDefaultValueSql("GETUTCDATE()") // Ensure that the CreatedAt column is automatically set to UTC now if not set
                 .IsRequired();
 
-            builder.Property(b => b.CoverLetter)
-                .HasMaxLength(500) // Optional: Add max length to Message field
-                .IsRequired(false); // Message is optional
-
+            
             // Enum property configurations (optional)
             builder.Property(b => b.BidStatus)
                 .HasConversion<string>() // Convert BidStatus enum to string in the database
@@ -50,7 +42,11 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasOne(b => b.Freelancer)
                 .WithMany(f => f.Bids) // Freelancer has many bids
                 .HasForeignKey(b => b.FreelancerId); // Foreign key to Freelancer
-                //.OnDelete(DeleteBehavior.Restrict); // Restrict delete behavior if necessary
+
+            // Many-to-Many Relationship: Bid <-> Package (via BidPackage)
+            builder.HasMany(b => b.BidPackages)
+                .WithOne(bp => bp.Bid)
+                .HasForeignKey(bp => bp.BidId);
         }
     }
 }

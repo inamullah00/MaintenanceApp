@@ -4,6 +4,7 @@ using AutoMapper;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -82,7 +83,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                     FreelancerId = bid.FreelancerId,
                                     FreelancerName = freelancer.FullName,
                                     ServiceTitle = service.Title,
-                                    BidAmount = bid.Price,
                                     Status = bid.BidStatus.ToString(),
                                     CreatedAt = bid.CreatedAt,
                                     CategoryName = category.CategoryName,
@@ -124,8 +124,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               Id = Bid.Id,
                               OfferedServiceId = Bid.OfferedServiceId,
                               FreelancerId = Bid.FreelancerId,
-                              ServiceTitle = OfferedService.Title,
-                              BidAmount = Bid.Price,
                               Status = Bid.BidStatus.ToString(),
                               CreatedAt = Bid.CreatedAt,
                               CategoryName = Category.CategoryName,
@@ -160,7 +158,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                 return (false, null);
             }
 
-            existingEntity.Price = entity.Price;
+            //existingEntity.PackagePrice = entity.PackagePrice;
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
             return (true, existingEntity);
@@ -202,7 +200,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                        {
                                            FreelancerId = freelancer.Id,
                                            Name = freelancer.FullName,
-                                           BidPrice = bid.Price,
                                            //Rating = (float)freelancer.Rating, // Assuming Rating is a property in Users table
                                            //SkillSet = freelancer.Skills // Assuming SkillSet is a property in Users table
                                        })
@@ -210,6 +207,31 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             return filteredQuery;
 
+        }
+
+        public async Task<Package> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

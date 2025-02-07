@@ -16,33 +16,31 @@ namespace Maintenance.Application.Services.FreelancerAuth
     {
 
         // Register a new freelancer account
-        Task<Result<Freelancer>> RegisterFreelancerAsync(FreelancerRegistrationDto registrationDto, CancellationToken cancellationToken);
+       public Task<Result<Freelancer>> RegisterFreelancerAsync(FreelancerRegistrationDto registrationDto, CancellationToken cancellationToken);
 
         // Login a freelancer
-        Task<Result<FreelancerLoginResponseDto>> LoginAsync(FreelancerLoginDto loginDto, CancellationToken cancellationToken);
+        public Task<Result<FreelancerLoginResponseDto>> LoginAsync(FreelancerLoginDto loginDto, CancellationToken cancellationToken);
 
         // Logout method for Freelancer
-        Task<Result<bool>> LogoutAsync(Guid freelancerId, CancellationToken cancellationToken);
+        public Task<Result<bool>> LogoutAsync(Guid freelancerId, CancellationToken cancellationToken);
 
         // Update freelancer profile information
-        Task<Result<Freelancer>> UpdateProfileAsync(Guid freelancerId, FreelancerEditProfileDto EditProfileDto , CancellationToken cancellationToken);
+        public Task<Result<Freelancer>> UpdateProfileAsync(Guid freelancerId, FreelancerEditProfileDto EditProfileDto , CancellationToken cancellationToken);
 
         // Change freelancer password
-        Task<bool> ChangePasswordAsync(Guid freelancerId, string oldPassword, string newPassword);
+        public Task<bool> ChangePasswordAsync(Guid freelancerId, string oldPassword, string newPassword);
 
         // Get freelancer profile by ID
-        Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId,CancellationToken cancellationToken);
-        Task<Result<List<FreelancerProfileDto>>> GetFreelancersAsync(string Keyword);
+        public Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId,CancellationToken cancellationToken);
+        public Task<Result<List<FreelancerProfileDto>>> GetFreelancersAsync(string Keyword);
 
         // Forgot password (send reset email)
-        Task<Result<string>> ForgotPasswordAsync(string email , CancellationToken cancellationToken);
+        public Task<Result<string>> ForgotPasswordAsync(string email , CancellationToken cancellationToken);
 
         // Reset password using a reset token
-        Task<Result<bool>> ValidateOtpAsync (string OTP, CancellationToken cancellationToken);
-        Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword , CancellationToken cancellationToken);
-        Task<Result<FreelancerProfileDto>> FreelancerPaginatedAsync(int pageNumber, int pageSize); // Paginated list of freelancer
-        Task<Result<bool>> BlockFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken = default);
-        Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken); // Unblock a freelancer
-        Task<Result<Freelancer>> ApproveFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto statusUpdateDto, CancellationToken cancellationToken);
+        public Task<Result<bool>> ValidateOtpAsync (int OTP, CancellationToken cancellationToken);
+        public Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword , CancellationToken cancellationToken);        public Task<Result<bool>> BlockFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken = default);
+        public Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken); // Unblock a freelancer
+        public Task<Result<Freelancer>> ApproveFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto statusUpdateDto, CancellationToken cancellationToken);
     }
 }
