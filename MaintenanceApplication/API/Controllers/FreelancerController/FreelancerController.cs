@@ -4,12 +4,14 @@ using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.Freelance.Specification;
 using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -495,7 +497,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
 
-
         #region Freelancer Orders Screens
 
 
@@ -624,8 +625,6 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #endregion
 
-
-
         #region Freelancer Rating Screens Api's
 
         #region Get All Ratings & Reviews for a Freelancer
@@ -662,8 +661,6 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
         }
         #endregion
-
-
 
         #region Filter Ratings & Reviews
         [HttpGet("filter-ratings")]
@@ -713,10 +710,199 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
         #endregion
 
-
-
         #endregion
 
+
+        #region Freelancer Packages Screens Api's
+
+        #region Create Package
+        [HttpPost]
+        public async Task<IActionResult> CreatePackage([FromBody] CreatePackageRequestDto packageRequest , CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("CreatePackage called with Package: {PackageName}", packageRequest.Name);
+
+            try
+            {
+                var result = await _serviceManager.FreelancerService.CreatePackageAsync(packageRequest, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully created Package: {PackageName}", packageRequest.Name);
+
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Failed to create Package: {PackageName}. Message: {Message}", packageRequest.Name, result.Message);
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while creating Package: {PackageName}", packageRequest.Name);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Get Package by Id
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetPackageById(Guid id,CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("GetPackageById called for PackageId: {PackageId}", id);
+
+            try
+            {
+                var result = await _serviceManager.FreelancerService.GetPackageByIdAsync(id , cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully fetched Package with Id: {PackageId}", id);
+
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Failed to fetch Package with Id: {PackageId}. Message: {Message}", id, result.Message);
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching Package with Id: {PackageId}", id);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Update Package
+        [HttpPut("{id:guid}")]
+        public async Task<IActionResult> UpdatePackage(Guid id, [FromBody] Package package , CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("UpdatePackage called for PackageId: {PackageId}", id);
+
+            try
+            {
+                var result = await _serviceManager.FreelancerService.UpdatePackageAsync(id, package ,cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully updated Package with Id: {PackageId}", id);
+
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Failed to update Package with Id: {PackageId}. Message: {Message}", id, result.Message);
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while updating Package with Id: {PackageId}", id);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Delete Package
+        [HttpDelete("{id:guid}")]
+        public async Task<IActionResult> DeletePackage(Guid id , CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("DeletePackage called for PackageId: {PackageId}", id);
+
+            try
+            {
+                var result = await _serviceManager.FreelancerService.DeletePackageAsync(id,cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully deleted Package with Id: {PackageId}", id);
+
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message
+                    });
+                }
+
+                _logger.LogWarning("Failed to delete Package with Id: {PackageId}. Message: {Message}", id, result.Message);
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while deleting Package with Id: {PackageId}", id);
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
     }
 
+
+    #endregion
+
 }
+

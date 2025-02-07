@@ -62,6 +62,8 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new CountryConfiguration());
             builder.ApplyConfiguration(new ClientOtpConfiguration());
             builder.ApplyConfiguration(new FreelancerOtpConfiguration());
+            builder.ApplyConfiguration(new BidPackageConfiguration());
+            builder.ApplyConfiguration(new PackageConfiguration());
 
             #region Fluent Model
 

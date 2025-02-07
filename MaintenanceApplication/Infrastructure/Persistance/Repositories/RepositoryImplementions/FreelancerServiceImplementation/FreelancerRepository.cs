@@ -4,6 +4,7 @@ using AutoMapper;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -206,6 +207,31 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             return filteredQuery;
 
+        }
+
+        public async Task<Package> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }
