@@ -1,6 +1,7 @@
 ﻿using Domain.Common;
 using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -13,9 +14,6 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
 {
     public class Bid : BaseEntity
     {
-        public decimal PackagePrice { get; set; }
-        public string PackageName  { get; set; }
-        public string OfferDetails { get; set; }
         public BidStatus BidStatus { get; set; } = BidStatus.Pending;
         public Guid OfferedServiceId { get; set; }
         public Guid? FreelancerId { get; set; }
@@ -26,6 +24,10 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
 
         [ForeignKey(nameof(FreelancerId))]
         public  Freelancer Freelancer { get; set; }
+
+
+        // Many-to-Many Relationship: A bid can have multiple packages
+        public ICollection<BidPackage> BidPackages { get; set; } = new List<BidPackage>();
     }
 
 }

@@ -8,8 +8,6 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s
 {
     public class RequestedServiceResponseDto
     {
-        public string CoverLetter { get; set; }
-        public string BidPrice { get; set; }
         public string FreelancerName { get; set; }
         public string TotalNoOfFreelancerApplied { get; set; }
         public string Title { get; set; } // OfferedService Title

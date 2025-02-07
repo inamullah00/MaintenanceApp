@@ -82,7 +82,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                     FreelancerId = bid.FreelancerId,
                                     FreelancerName = freelancer.FullName,
                                     ServiceTitle = service.Title,
-                                    BidAmount = bid.PackagePrice,
                                     Status = bid.BidStatus.ToString(),
                                     CreatedAt = bid.CreatedAt,
                                     CategoryName = category.CategoryName,
@@ -124,8 +123,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               Id = Bid.Id,
                               OfferedServiceId = Bid.OfferedServiceId,
                               FreelancerId = Bid.FreelancerId,
-                              ServiceTitle = OfferedService.Title,
-                              BidAmount = Bid.PackagePrice,
                               Status = Bid.BidStatus.ToString(),
                               CreatedAt = Bid.CreatedAt,
                               CategoryName = Category.CategoryName,
@@ -160,7 +157,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                 return (false, null);
             }
 
-            existingEntity.PackagePrice = entity.PackagePrice;
+            //existingEntity.PackagePrice = entity.PackagePrice;
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
 
             return (true, existingEntity);
@@ -202,7 +199,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                        {
                                            FreelancerId = freelancer.Id,
                                            Name = freelancer.FullName,
-                                           BidPrice = bid.PackagePrice,
                                            //Rating = (float)freelancer.Rating, // Assuming Rating is a property in Users table
                                            //SkillSet = freelancer.Skills // Assuming SkillSet is a property in Users table
                                        })
