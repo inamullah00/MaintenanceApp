@@ -31,6 +31,8 @@ namespace Maintenance.Infrastructure.Persistance.Data
         public DbSet<OfferedService> OfferedServices { get; set; }
         public DbSet<OfferedServiceCategory> OfferedServiceCategories { get; set; }
         public DbSet<Bid> Bids { get; set; }
+        public DbSet<BidPackage> BidPackages { get; set; }
+        public DbSet<Package> Packages { get; set; }
         public DbSet<Feedback> Feedbacks { get; set; }
         public DbSet<Order> Orders { get; set; }
 
