@@ -12,6 +12,7 @@ using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemention
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.OfferedServiceImplementation;
+using Maintenance.Infrastructure.Repositories;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.UnitofWorkImplementation
 {
@@ -37,6 +38,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public IFreelancerAuthRepository FreelancerAuthRepository { get; }
         public ICountryRepository CountryRepository { get; }
         public IAdminClientRepository AdminClientRepository { get; }
+        public IAdminServiceRepository AdminServiceRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -52,6 +54,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             FreelancerAuthRepository = new FreelancerAuthRepository(dbContext);
             CountryRepository = new CountryRepository(dbContext);
             AdminClientRepository = new AdminClientRepository(dbContext);
+            AdminServiceRepository = new AdminServiceRepository(dbContext);
         }
 
         public void Dispose()

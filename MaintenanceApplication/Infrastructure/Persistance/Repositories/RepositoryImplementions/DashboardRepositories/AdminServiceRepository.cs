@@ -1,11 +1,16 @@
 ﻿using Ardalis.Specification;
+using Ardalis.Specification.EntityFrameworkCore;
+using Domain.Entity.UserEntities;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
+using Maintenance.Application.ViewModel;
+using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Repositories
 {
-    public class AdminServiceRepository
+    public class AdminServiceRepository : IAdminServiceRepository
     {
         private readonly ApplicationDbContext _context;
 
@@ -14,46 +19,49 @@ namespace Maintenance.Infrastructure.Repositories
             _context = context;
         }
 
-        //public async Task<PaginatedResponse<ServiceResponseViewModel>> GetFilteredServiceAsync(ServiceFilterViewModel filter, ISpecification<Service>? specification = null)
-        //{
-        //    var query = SpecificationEvaluator.Default.GetQuery(query: _context.Services.AsNoTracking().AsQueryable(), specification: specification);
-
-        //    var filteredQuery = (from Service in query
-        //                         select new ServiceResponseViewModel
-        //                         {
-        //                             Id = Service.Id.ToString(),
-        //                             Name = Service.Name,
-        //                         });
-        //    var totalCount = await filteredQuery.CountAsync();
-        //    var services = await filteredQuery.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
-        //    return new PaginatedResponse<ServiceResponseViewModel>(services, totalCount, filter.PageNumber, filter.PageSize);
-        //}
-
-        public async Task<FreelancerService> GetByIdAsync(Guid freelancerId, Guid serviceId)
+        public async Task<PaginatedResponse<ServiceResponseViewModel>> GetFilteredServiceAsync(ServiceFilterViewModel filter, ISpecification<Service>? specification = null)
         {
-            return await _context.FreelancerServices.Include(fs => fs.Freelancer).Include(fs => fs.Service).FirstOrDefaultAsync(fs => fs.FreelancerId == freelancerId && fs.ServiceId == serviceId);
-        }
+            var query = SpecificationEvaluator.Default.GetQuery(query: _context.Services.AsNoTracking().AsQueryable(), specification: specification);
 
-        public async Task AddAsync(FreelancerService freelancerService)
-        {
-            await _context.FreelancerServices.AddAsync(freelancerService);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task UpdateAsync(FreelancerService freelancerService)
-        {
-            _context.FreelancerServices.Update(freelancerService);
-            await _context.SaveChangesAsync();
-        }
-
-        public async Task DeleteAsync(Guid freelancerId, Guid serviceId)
-        {
-            var entity = await GetByIdAsync(freelancerId, serviceId);
-            if (entity != null)
+            var filteredQuery = query.Select(s => new ServiceResponseViewModel
             {
-                _context.FreelancerServices.Remove(entity);
-                await _context.SaveChangesAsync();
-            }
+                Id = s.Id.ToString(),
+                Name = s.Name,
+                IsActive = s.IsActive,
+                IsUserCreated = s.IsUserCreated,
+                IsApproved = s.IsApproved
+            });
+
+            var totalCount = await filteredQuery.CountAsync();
+            var services = await filteredQuery.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+
+            return new PaginatedResponse<ServiceResponseViewModel>(services, totalCount, filter.PageNumber, filter.PageSize);
         }
+
+        public async Task<ApplicationUser?> GetAdminByIdAsync(string adminId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Users.FirstOrDefaultAsync(s => s.Id == adminId, cancellationToken);
+        }
+
+        public async Task<Service?> GetServiceByIdAsync(Guid serviceId, CancellationToken cancellationToken = default)
+        {
+            return await _context.Services.AsNoTracking().FirstOrDefaultAsync(s => s.Id == serviceId, cancellationToken);
+        }
+
+        public async Task<bool> AddServiceAsync(Service service, CancellationToken cancellationToken = default)
+        {
+            await _context.Services.AddAsync(service, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+        public async Task<bool> UpdateServiceAsync(Service service, CancellationToken cancellationToken = default)
+        {
+            _context.Services.Update(service);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+
     }
 }

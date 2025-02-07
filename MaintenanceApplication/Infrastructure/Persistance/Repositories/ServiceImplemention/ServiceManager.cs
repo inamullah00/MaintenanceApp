@@ -4,8 +4,10 @@ using Domain.Entity.UserEntities;
 using Maintenance.Application.Common;
 using Maintenance.Application.Communication;
 using Maintenance.Application.Security;
+using Maintenance.Application.Services;
 using Maintenance.Application.Services.Account;
 using Maintenance.Application.Services.Admin.AdminClientSpecification;
+using Maintenance.Application.Services.Admin.AdminServiceSpecification;
 using Maintenance.Application.Services.Admin.AdminSpecification;
 using Maintenance.Application.Services.Admin.ContentSpecification;
 using Maintenance.Application.Services.Admin.DisputeSpecification;
@@ -52,6 +54,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
         public IEmailService EmailService { get; private set; }
         public IAdminClientService AdminClientService { get; private set; }
+        public IAdminSevService AdminSevService { get; private set; }
 
         public ServiceManager(IUnitOfWork unitOfWork,
                               UserManager<ApplicationUser> userManager,
@@ -86,6 +89,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             AdminService = new AdminService(userManager, dbContext);
             CountryService = new CountryService(unitOfWork);
             AdminClientService = new AdminClientService(unitOfWork, mapper);
+            AdminSevService = new AdminSevService(unitOfWork, mapper);
         }
     }
 }

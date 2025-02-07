@@ -1,12 +1,17 @@
-﻿@model ClientDatatableFilterViewModel
+﻿@model ServiceDatatableFilterViewModel
 @{
-    ViewBag.Title = "Client List";
+    ViewBag.Title = "Service List";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="row card-title align-middle">
+                    <div class="col-md-12 align-items-center d-flex mt-1">
+                        <a href="@Url.Action("Create", "Service")" class="btn btn-primary btn-xs btn-icon-text">
+                            <i class="btn-icon-prepend" data-feather="plus"></i>@_CommonLocalizer["Create"]
+                        </a>
+                    </div>
                     <div class="col-md-12 mt-1">
                         <form id="filterForm">
                             <div>
@@ -14,10 +19,8 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label class="form-label">@_CommonLocalizer["Search"]</label>
-                                            <input type="text" id="searchFullName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
+                                            <input type="text" id="searchServiceName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
                                         </div>
-
-                                        <!-- Filter Button -->
                                         <div class="col-md-2 mt-4">
                                             <button type="button" id="filter" class="mt-1 search-button btn btn-primary waves-effect waves-light form-control">
                                                 @_CommonLocalizer["Filter"]
@@ -31,12 +34,11 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table id="clientsTable" class="datatables-products table">
+                    <table id="servicesTable" class="datatables-products table">
                         <thead class="bg-primary">
                             <tr>
-                                <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["FullName"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-envelope link-icon fa-fw"></i> @_CommonLocalizer["Email"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-mobile-alt link-icon fa-fw"></i> @_CommonLocalizer["Mobile"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["ServiceName"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-check-circle link-icon fa-fw"></i> @_CommonLocalizer["Status"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>
                             </tr>
                         </thead>
@@ -48,5 +50,5 @@
 </div>
 
 @section Scripts {
-    <script src="/customjs/Clients/Client.js" asp-append-version="true"></script>
+    <script src="/customjs/Services/Index.js" asp-append-version="true"></script>
 }

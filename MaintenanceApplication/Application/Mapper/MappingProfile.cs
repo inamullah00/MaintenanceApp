@@ -14,6 +14,7 @@ using Maintenance.Application.ViewModel;
 using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 
 namespace Application.Mapper
 {
@@ -73,6 +74,10 @@ namespace Application.Mapper
             CreateMap<UpdateFeedbackRequestDto, Feedback>().ReverseMap();
             #endregion
 
+            #region Admin Sev Service Mapping
+            CreateMap<ServiceCreateViewModel, Service>().ReverseMap();
+            CreateMap<ServiceEditViewModel, Service>().ReverseMap();
+            #endregion
         }
     }
 }

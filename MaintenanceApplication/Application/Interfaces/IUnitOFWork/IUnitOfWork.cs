@@ -22,6 +22,7 @@ namespace Application.Interfaces.IUnitOFWork
         public IFreelancerAuthRepository FreelancerAuthRepository { get; }
         public ICountryRepository CountryRepository { get; }
         public IAdminClientRepository AdminClientRepository { get; }
+        public IAdminServiceRepository AdminServiceRepository { get; }
 
         Task<int> SaveChangesAsync();
     }
