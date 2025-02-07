@@ -1,6 +1,7 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
@@ -17,6 +18,11 @@ namespace Maintenance.Infrastructure.Repositories
         public AdminServiceRepository(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public async Task<bool> ServiceExistsAsync(string serviceName)
+        {
+            string normalizedName = NormalizeNamesHelper.NormalizeNames(serviceName);
+            return await _context.Services.AnyAsync(s => s.Name.ToLower() == normalizedName.ToLower());
         }
 
         public async Task<PaginatedResponse<ServiceResponseViewModel>> GetFilteredServiceAsync(ServiceFilterViewModel filter, ISpecification<Service>? specification = null)
@@ -61,6 +67,8 @@ namespace Maintenance.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
+
+
 
 
     }

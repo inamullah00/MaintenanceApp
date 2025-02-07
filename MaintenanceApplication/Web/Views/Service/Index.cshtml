@@ -21,6 +21,14 @@
                                             <label class="form-label">@_CommonLocalizer["Search"]</label>
                                             <input type="text" id="searchServiceName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
                                         </div>
+                                        <div class="col-md-3">
+                                            <label class="form-label">@_CommonLocalizer["CreatedBy"]</label>
+                                            <select id="createdBy" class="form-select">
+                                                <option value="">All</option>
+                                                <option value="true">Freelancer</option>
+                                                <option value="false">Admin</option>
+                                            </select>
+                                        </div>
                                         <div class="col-md-2 mt-4">
                                             <button type="button" id="filter" class="mt-1 search-button btn btn-primary waves-effect waves-light form-control">
                                                 @_CommonLocalizer["Filter"]
@@ -38,6 +46,7 @@
                         <thead class="bg-primary">
                             <tr>
                                 <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["ServiceName"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["CreatedBy"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-check-circle link-icon fa-fw"></i> @_CommonLocalizer["Status"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>
                             </tr>

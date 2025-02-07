@@ -2,6 +2,7 @@
 using AutoMapper;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Exceptions;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Services.Admin.FreelancerSpecification;
 using Maintenance.Application.Services.Admin.FreelancerSpecification.Specification;
 using Maintenance.Application.ViewModel;
@@ -14,11 +15,15 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IFileUploaderService _fileUploaderService;
+        private readonly string _baseImageUrl;
 
-        public AdminFreelancerService(IUnitOfWork unitOfWork, IMapper mapper)
+        public AdminFreelancerService(IUnitOfWork unitOfWork, IMapper mapper, IFileUploaderService fileUploaderService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _fileUploaderService = fileUploaderService;
+            _baseImageUrl = _fileUploaderService.GetImageBaseUrl();
         }
         public async Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter)
         {
@@ -40,7 +45,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 Status = freelancer.Status.ToString(),
                 DateOfBirth = freelancer.DateOfBirth.Date,
                 Bio = freelancer.Bio,
-                PreviousWork = freelancer.PreviousWork
+                PreviousWork = freelancer.PreviousWork,
+                ProfilePicture = !string.IsNullOrEmpty(freelancer.ProfilePicture) ? _baseImageUrl + freelancer.ProfilePicture : string.Empty,
+
             };
 
         }
@@ -55,6 +62,15 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
             _mapper.Map(model, freelancer);
             freelancer.Country = country;
+            if (model.ProfilePictureFile != null)
+            {
+                if (!string.IsNullOrEmpty(freelancer.ProfilePicture))
+                {
+                    _fileUploaderService.RemoveFile(freelancer.ProfilePicture);
+                }
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, "Freelancer");
+                freelancer.ProfilePicture = imageFileName;
+            }
 
             var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancer(freelancer, cancellationToken);
             if (!updateResult) throw new CustomException("Failed to update freelancer.");

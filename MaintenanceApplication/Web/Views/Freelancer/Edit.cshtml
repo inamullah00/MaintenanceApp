@@ -10,10 +10,20 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Edit" asp-controller="Freelancer" method="post" class="form-freelancer">
+                <form asp-action="Edit" asp-controller="Freelancer" method="post" class="form-freelancer" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
                     <div class="row">
                         <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label">@_CommonLocalizer["Image"]</label>
+                                <div class="col-sm-9">
+                                    <div class="d-flex align-items-center">
+                                        <img class="img-lg" src="@(string.IsNullOrEmpty(Model.ProfilePicture)? "/images/others/placeholder.jpg":Model.ProfilePicture)" alt="" id="profilePicture" style="width: 150px; height: 150px; object-fit: cover; border: 1px solid #ccc;">
+                                    </div>
+                                    <input type="file" class="form-control mt-1" data-image-container="profilePicture" asp-for="ProfilePictureFile" accept=".jpg, .jpeg, .png" onchange="previewImage(event)">
+                                    <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
+                                </div>
+                            </div>
                             <div class="mb-3">
                                 <label asp-for="FullName" class="form-label">@_CommonLocalizer["FullName"]</label>
                                 <input type="text" class="form-control" asp-for="FullName" placeholder="@_CommonLocalizer["FullName"]">
@@ -47,6 +57,17 @@
                                 </div>
                             </div>
 
+                           
+
+                            @*<div class="mb-3">
+        <label asp-for="ProfilePicture" class="form-label">Profile Picture</label>
+        <input type="file" class="form-control" name="ProfilePictureFile" accept="image/*">
+        <span asp-validation-for="ProfilePicture" class="text-danger"></span>
+        </div>*@
+
+                        </div>
+
+                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label asp-for="DateOfBirth" class="form-label">@_CommonLocalizer["DOB"]</label>
                                 <div class="input-group">
@@ -54,15 +75,6 @@
                                     <span class="input-group-text input-group-addon" data-toggle><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
-
-                            @*<div class="mb-3">
-            <label asp-for="ProfilePicture" class="form-label">Profile Picture</label>
-            <input type="file" class="form-control" name="ProfilePictureFile" accept="image/*">
-            <span asp-validation-for="ProfilePicture" class="text-danger"></span>
-            </div>*@
-                        </div>
-
-                        <div class="col-md-6">
                             <div class="mb-3">
                                 <label asp-for="ExperienceLevel" class="form-label">@_CommonLocalizer["ExperienceLevel"]</label>
                                 <select asp-for="ExperienceLevel" class="form-select">
@@ -82,10 +94,10 @@
                             </div>
 
                             @*<div class="mb-3">
-            <label asp-for="CivilID" class="form-label">Civil ID (PDF)</label>
-            <input type="file" class="form-control" name="CivilIDFile" accept=".pdf">
-            <span asp-validation-for="CivilID" class="text-danger"></span>
-            </div>*@
+        <label asp-for="CivilID" class="form-label">Civil ID (PDF)</label>
+        <input type="file" class="form-control" name="CivilIDFile" accept=".pdf">
+        <span asp-validation-for="CivilID" class="text-danger"></span>
+        </div>*@
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
@@ -94,8 +106,8 @@
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="PreviousWork" class="form-label">@_CommonLocalizer["PreviousWork"]</label>
-                                <textarea asp-for="PreviousWork" class="form-control" rows="4" placeholder="@_CommonLocalizer["Enter previous work experience"]"></textarea>
+                                <label asp-for="PreviousWork" class="form-label">@_CommonLocalizer["Note"]</label>
+                                <textarea asp-for="PreviousWork" class="form-control" rows="4" placeholder="@_CommonLocalizer["Enter note"]"></textarea>
                                 <span asp-validation-for="PreviousWork" class="text-danger"></span>
                             </div>
                         </div>

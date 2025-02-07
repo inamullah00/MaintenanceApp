@@ -17,12 +17,12 @@
             { data: 'Name', name: 'ServiceName', "autoWidth": true },
             {
                 data: 'IsUserCreated',  
-                name: 'Created By',
+                name: 'CreatedBy',
                 render: function (data) {
-                    return data === true ? 'Freelancer' : 'System';  
+                    return data === true ? 'Freelancer' : 'Admin';  
                 },
                 "autoWidth": true
-            }
+            },
             {
                 data: 'IsApproved',
                 name : 'Status',

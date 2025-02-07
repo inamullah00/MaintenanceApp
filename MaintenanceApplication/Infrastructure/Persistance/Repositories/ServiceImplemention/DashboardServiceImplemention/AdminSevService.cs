@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
 using Maintenance.Application.Exceptions;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Services.Admin.AdminServiceSpecification;
 using Maintenance.Application.Services.Admin.AdminServiceSpecification.Specification;
 using Maintenance.Application.ViewModel;
@@ -34,6 +35,7 @@ namespace Maintenance.Application.Services
                 Id = service.Id,
                 Name = service.Name,
                 IsUserCreated = service.IsUserCreated,
+                IsApproved = service.IsApproved,
             };
 
         }
@@ -42,11 +44,19 @@ namespace Maintenance.Application.Services
         {
             var adminId = AppHttpContext.GetAdminCurrentUserId();
             var user = await _unitOfWork.AdminServiceRepository.GetAdminByIdAsync(adminId) ?? throw new CustomException("User Not Found.");
-            var service = _mapper.Map<Service>(model);
-            service.CreatedAt = DateTime.UtcNow;
-            service.MarkAsApproved();
-            service.Activate();
+            model.Name = NormalizeNamesHelper.NormalizeNames(model.Name);
+            bool serviceExists = await _unitOfWork.AdminServiceRepository.ServiceExistsAsync(model.Name);
+            if (serviceExists) throw new CustomException("A service with this name already exists.");
+
+            var service = new Service
+            {
+                Name = model.Name,
+                IsApproved = true,
+                IsActive = true,
+                CreatedAt = DateTime.UtcNow,
+            };
             service.MarkAsSystemCreated(user);
+
             await _unitOfWork.AdminServiceRepository.AddServiceAsync(service);
         }
 
@@ -55,7 +65,11 @@ namespace Maintenance.Application.Services
             var adminId = AppHttpContext.GetAdminCurrentUserId();
             var service = await _unitOfWork.AdminServiceRepository.GetServiceByIdAsync(model.Id) ?? throw new CustomException("Service not found");
             var user = await _unitOfWork.AdminServiceRepository.GetAdminByIdAsync(adminId) ?? throw new CustomException("User Not Found.");
-            _mapper.Map(model, service);
+            model.Name = NormalizeNamesHelper.NormalizeNames(model.Name);
+            bool serviceExists = await _unitOfWork.AdminServiceRepository.ServiceExistsAsync(model.Name);
+            if (serviceExists) throw new CustomException("A service with this name already exists.");
+
+            service.Name = model.Name;
             service.UpdatedAt = DateTime.UtcNow;
             service.MarkAsApproved();
             service.Activate();

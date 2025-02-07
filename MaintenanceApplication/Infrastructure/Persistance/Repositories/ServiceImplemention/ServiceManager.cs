@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain.Entity.UserEntities;
 using Maintenance.Application.Common;
 using Maintenance.Application.Communication;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Security;
 using Maintenance.Application.Services;
 using Maintenance.Application.Services.Account;
@@ -28,6 +29,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
@@ -67,7 +69,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                               IMapper mapper,
                               ILogger<NotificationService> logger,
                              ITokenService tokenService,
-                              IPasswordService PasswordService
+                              IPasswordService PasswordService,
+                              IFileUploaderService fileUploaderService
 
             )
         {
@@ -79,7 +82,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             ContentService = new ContentService(unitOfWork, mapper);
             DisputeService = new DisputeService(unitOfWork, mapper);
             FeedbackService = new FeedbackService(unitOfWork, mapper);
-            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper);
+            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper, fileUploaderService);
             PaymentService = new PaymentService(unitOfWork, mapper);
             NotificationService = new NotificationService(unitOfWork, mapper, logger);
             FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService, configuration);

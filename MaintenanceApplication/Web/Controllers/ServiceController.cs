@@ -27,9 +27,11 @@ namespace Maintenance.Web.Controllers
         [HttpPost]
         public async Task<IActionResult> GetFilteredServices(ServiceDatatableFilterViewModel model)
         {
+            var isUserCreated = model.IsUserCreated == "true" ? true : model.IsUserCreated == "false" ? false : (bool?)null;
             var result = await _serviceManager.AdminSevService.GetFilteredServicesAsync(new ServiceFilterViewModel
             {
                 Name = model.Name,
+                IsUserCreated = isUserCreated,
                 PageNumber = (model.start / model.length) + 1,
                 PageSize = model.length,
             });

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.Http;
+using System.ComponentModel.DataAnnotations;
 
 namespace Maintenance.Application.ViewModel
 {
@@ -15,8 +16,8 @@ namespace Maintenance.Application.ViewModel
 
         [RegularExpression(@"^\d{8,15}$", ErrorMessage = "Enter Phone Number with 8 to 15 digits.")]
         public string PhoneNumber { get; set; }
-
-        //public IFormFile? ProfilePicture { get; set; }
+        public IFormFile? ProfilePictureFile { get; set; }
+        public string? ProfilePicture { get; set; }
 
         [StringLength(500, ErrorMessage = "Bio cannot exceed 500 characters.")]
         public string? Bio { get; set; }

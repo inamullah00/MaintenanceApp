@@ -1,5 +1,6 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using Maintenance.Application.Common;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Security;
 using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.UnitofWorkImplementation;
@@ -24,6 +25,7 @@ namespace API.DependancyContainer
             //services.AddScoped<IAdminFreelancerService,AdminFreelancerService>();
             services.AddScoped<IPasswordService, PasswordService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<IFileUploaderService, FileUploaderService>();
 
 
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());

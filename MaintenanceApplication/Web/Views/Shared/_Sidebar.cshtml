@@ -43,7 +43,7 @@
                 </div>
             </li>
 
-            <li class="nav-item" active-when-controllers="Service" active-when-actions="Index,Create,Edit,UserCreated">
+            <li class="nav-item" active-when-controllers="Service" active-when-actions="Index,Create,Edit">
                 <a class="nav-link" data-bs-toggle="collapse" href="#service" role="button" aria-expanded="false">
                     <i class="link-icon" data-feather="users"></i>
                     <span class="link-title">@_CommonLocalizer["Service"]</span>
@@ -52,13 +52,12 @@
                 <div class="collapse" id="service">
                     <ul class="nav sub-menu">
                         <li class="nav-item">
-                            <a href="@Url.Action("Index", "Service")" class="nav-link" active-when-controllers="Service" active-when-actions="Index">@_CommonLocalizer["SystemCreated"]</a>
+                            <a href="@Url.Action("Index", "Service")" class="nav-link" active-when-controllers="Service" active-when-actions="Index">@_CommonLocalizer["All"]</a>
                         </li>
                         <li class="nav-item">
                             <a href="@Url.Action("Create", "Service")" class="nav-link" active-when-controllers="Service" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
                         </li>
                         <li class="nav-item">
-                            <a href="@Url.Action("UserCreated", "Service")" class="nav-link" active-when-controllers="Service" active-when-actions="UserCreated">@_CommonLocalizer["UserCreated"]</a>
                         </li>
                     </ul>
                 </div>

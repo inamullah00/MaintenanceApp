@@ -9,6 +9,7 @@ namespace Maintenance.Application.ViewModel
         [StringLength(30, MinimumLength = 3, ErrorMessage = "Service name should be between 3 and 30 characters")]
         public string Name { get; set; }
         public bool IsUserCreated { get; set; }
+        public bool IsApproved { get; set; }
 
     }
 }
