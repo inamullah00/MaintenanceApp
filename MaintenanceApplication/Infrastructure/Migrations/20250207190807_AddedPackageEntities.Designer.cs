@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250207083847_PackageEntitiesAdded")]
-    partial class PackageEntitiesAdded
+    [Migration("20250207190807_AddedPackageEntities")]
+    partial class AddedPackageEntities
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -802,19 +802,19 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "03cc8cb0-899b-46ac-ac6d-357dd986c655",
+                            Id = "77f163b3-3501-454d-a109-3c7ae9bd206d",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "39b314f7-5a42-4a82-abd1-416facad5e3e",
+                            Id = "1fd8edcc-f981-498d-8286-4419c9d81c77",
                             Name = "Client",
                             NormalizedName = "CLIENT"
                         },
                         new
                         {
-                            Id = "32dc0d43-39a5-4743-829c-d4fab21cb473",
+                            Id = "1065269c-471e-4ffa-8dc0-6b5e0dd08083",
                             Name = "Freelancer",
                             NormalizedName = "FREELANCER"
                         });
@@ -983,8 +983,8 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "1d4e8241-98aa-4649-bdc3-162686f355d5",
-                            RoleId = "03cc8cb0-899b-46ac-ac6d-357dd986c655"
+                            UserId = "21bc9b2f-6401-40c1-9440-72e293f41a12",
+                            RoleId = "77f163b3-3501-454d-a109-3c7ae9bd206d"
                         });
                 });
 
@@ -1022,17 +1022,17 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1d4e8241-98aa-4649-bdc3-162686f355d5",
+                            Id = "21bc9b2f-6401-40c1-9440-72e293f41a12",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "392baf0f-82d6-4ef7-9bc9-9de7394a0437",
+                            ConcurrencyStamp = "bf3fb958-fb10-4378-bc88-b1cbe2ab4396",
                             Email = "admin@gmail.com",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@GMAIL.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAEIrGW0vP9R+ugRZe2VGibPwPIIS47GDCHs2wCFmkcmdIJdYXVUNGfq3XF3Gthd7rjg==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEH9HO+lhg95tCxFrOSto0d5PGJm6yWkLEhxommrujlTsBFl/npLid/EIGsyYJbo8Cw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "2db020e3-022f-44ee-8b03-6454498c79a4",
+                            SecurityStamp = "c7afa4a4-a75c-4818-baff-a44f2bac79d2",
                             TwoFactorEnabled = false,
                             UserName = "admin",
                             FullName = "System Administrator"

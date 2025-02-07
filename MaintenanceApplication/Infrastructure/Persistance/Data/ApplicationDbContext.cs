@@ -192,11 +192,13 @@ namespace Maintenance.Infrastructure.Persistance.Data
             );
 
 
+            var adminId = "21bc9b2f-6401-40c1-9440-72e293f41a12"; // FIXED GUID
+
 
             // Seeding For Admin
             var Admin = new ApplicationUser
             {
-                Id = Guid.NewGuid().ToString(),
+                Id = adminId,
                 UserName = "admin",
                 NormalizedUserName = "ADMIN",
                 Email = "admin@gmail.com",
@@ -216,7 +218,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
             {
                 RoleId = AdminRoleId,
-                UserId = Admin.Id.ToString()
+                UserId = adminId
             });
             builder.Entity<IdentityUserRole<string>>().HasKey(iur => new { iur.UserId, iur.RoleId });
             #endregion
