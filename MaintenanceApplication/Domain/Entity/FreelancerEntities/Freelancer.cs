@@ -21,6 +21,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public string Address { get; set; }
         public string? CivilID { get; set; }
         public string? PreviousWork { get; set; } // Portfolio or links to previous work (Optional)
+        public string? Note { get; set; } // note for freelancer by admin
         public AccountStatus Status { get; set; }  // Account status (e.g., Pending, Active, Suspended)
         public Guid? CountryId { get; set; }
 

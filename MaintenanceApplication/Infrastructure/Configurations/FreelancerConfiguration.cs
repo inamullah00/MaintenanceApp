@@ -50,6 +50,9 @@ namespace Maintenance.Infrastructure.Configurations
             builder.Property(f => f.PreviousWork)
                 .HasMaxLength(500) // Limit the previous work links to 500 characters
                 .IsRequired(false); // Optional: previous work
+            builder.Property(f => f.Note)
+                .HasMaxLength(500) // Limit the previous work links to 500 characters
+                .IsRequired(false); // Optional: previous work
 
             builder.Property(f => f.Status)
                 .HasMaxLength(20) // Limit status to 20 characters
