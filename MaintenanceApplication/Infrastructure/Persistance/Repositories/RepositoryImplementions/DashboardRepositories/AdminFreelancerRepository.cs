@@ -36,6 +36,13 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return await _context.Freelancers.AsNoTracking().Include(f => f.Country).FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
         }
 
+        public async Task<bool> AddFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default)
+        {
+            await _context.Freelancers.AddAsync(freelancer, cancellationToken);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
         public async Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default)
         {
             _context.Freelancers.Update(freelancer);

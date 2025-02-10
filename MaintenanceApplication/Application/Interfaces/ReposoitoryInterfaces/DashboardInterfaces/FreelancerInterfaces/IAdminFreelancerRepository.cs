@@ -27,5 +27,6 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task<bool> Suspend(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<bool> AddFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default);
     }
 }

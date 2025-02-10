@@ -82,7 +82,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             ContentService = new ContentService(unitOfWork, mapper);
             DisputeService = new DisputeService(unitOfWork, mapper);
             FeedbackService = new FeedbackService(unitOfWork, mapper);
-            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper, fileUploaderService);
+            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper, fileUploaderService, PasswordService);
             PaymentService = new PaymentService(unitOfWork, mapper);
             NotificationService = new NotificationService(unitOfWork, mapper, logger);
             FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService, configuration);

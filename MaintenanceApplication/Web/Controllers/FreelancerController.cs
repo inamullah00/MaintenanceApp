@@ -50,7 +50,37 @@ namespace Maintenance.Web.Controllers
         public async Task<IActionResult> Create()
         {
             await PrepareViewBags();
-            return View(new FreelancerEditViewModel());
+            return View(new FreelancerCreateViewModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(FreelancerCreateViewModel model, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    this.NotifyModelStateErrors();
+                    await PrepareViewBags();
+                    return View(model);
+                }
+
+                await _serviceManager.AdminFreelancerService.CreateFreelancerAsync(model, cancellationToken);
+                this.NotifySuccess("Freelancer created successfully.");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (CustomException ex)
+            {
+                this.NotifyInfo(ex.Message);
+                await PrepareViewBags();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding freelancer");
+                this.NotifyError("Something went wrong. Please contact the administrator.");
+                await PrepareViewBags();
+                return View(model);
+            }
         }
 
         [HttpGet]

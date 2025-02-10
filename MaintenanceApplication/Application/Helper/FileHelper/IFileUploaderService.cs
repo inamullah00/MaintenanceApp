@@ -6,7 +6,6 @@ namespace Maintenance.Application.Helper
     {
         Task<string> SaveFileAsync(IFormFile file, string directoryName);
         void RemoveFile(string filePath);
-        void ValidateImageFiles(List<IFormFile> files);
         string GetImageBaseUrl();
     }
 }

@@ -1,25 +1,20 @@
-﻿@model FreelancerEditViewModel
+﻿@model FreelancerCreateViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
+    ViewBag.ModuleName = _CommonLocalizer["Create Freelancer"];
     ViewBag.ModuleIcon = "user";
     var countries = ViewBag.Countries as List<CountryResponseViewModel> ?? new List<CountryResponseViewModel>();
-    var dob = Model.DateOfBirth.ToString("yyyy-MM-dd");
 }
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Edit" asp-controller="Freelancer" method="post" class="form-freelancer" enctype="multipart/form-data">
-                    <input type="hidden" asp-for="Id" />
+                <form asp-action="Create" asp-controller="Freelancer" method="post" class="form-freelancer" enctype="multipart/form-data">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
                                 <label class="form-label">@_CommonLocalizer["Image"]</label>
                                 <div class="col-sm-9">
-                                    <div class="d-flex align-items-center">
-                                        <img class="img-lg" src="@(string.IsNullOrEmpty(Model.ProfilePicture)? "/images/others/placeholder.jpg":Model.ProfilePicture)" alt="" id="profilePicture" style="width: 150px; height: 150px; object-fit: cover; border: 1px solid #ccc;">
-                                    </div>
                                     <input type="file" class="form-control mt-1" data-image-container="profilePicture" asp-for="ProfilePictureFile" accept=".jpg, .jpeg, .png" onchange="previewImage(event)">
                                     <span asp-validation-for="ProfilePictureFile" class="text-danger"></span>
                                 </div>
@@ -35,7 +30,6 @@
                                 <input type="text" class="form-control" asp-for="Email" placeholder="@_CommonLocalizer["Email"]">
                                 <span asp-validation-for="Email" class="text-danger"></span>
                             </div>
-
 
                             <div class="row mb-3 align-items-center">
                                 <div class="col-md-6">
@@ -56,22 +50,34 @@
                                     </select>
                                 </div>
                             </div>
-
-                           
-
-                            @*<div class="mb-3">
-        <label asp-for="ProfilePicture" class="form-label">Profile Picture</label>
-        <input type="file" class="form-control" name="ProfilePictureFile" accept="image/*">
-        <span asp-validation-for="ProfilePicture" class="text-danger"></span>
-        </div>*@
-
+                            <div class="mb-3">
+                                <label class="form-label">@_CommonLocalizer["Password"]</label>
+                                <input type="password" autocomplete="new-password" class="form-control" asp-for="Password" placeholder="@_CommonLocalizer["Password"]">
+                                <span asp-validation-for="Password" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">@_CommonLocalizer["ConfirmPassword"]</label>
+                                <input type="password" autocomplete="new-password" class="form-control" asp-for="ConfirmPassword" placeholder="@_CommonLocalizer["ConfirmPassword"]">
+                                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                            </div>
                         </div>
 
                         <div class="col-md-6">
                             <div class="mb-3">
+                                <label asp-for="City" class="form-label">@_CommonLocalizer["City"]</label>
+                                <input type="text" class="form-control" asp-for="City" placeholder="@_CommonLocalizer["City"]">
+                                <span asp-validation-for="City" class="text-danger"></span>
+                            </div>
+
+                            <div class="mb-3">
+                                <label asp-for="Address" class="form-label">@_CommonLocalizer["Address"]</label>
+                                <input type="text" class="form-control" asp-for="Address" placeholder="@_CommonLocalizer["Address"]">
+                                <span asp-validation-for="Address" class="text-danger"></span>
+                            </div>
+                            <div class="mb-3">
                                 <label asp-for="DateOfBirth" class="form-label">@_CommonLocalizer["DOB"]</label>
                                 <div class="input-group">
-                                    <input type="text" asp-for="DateOfBirth" class="form-control datetime-picker" placeholder="@_CommonLocalizer["Select"]" data-input value="@dob" data-type="date" data-show="past" />
+                                    <input type="text" asp-for="DateOfBirth" class="form-control datetime-picker" placeholder="@_CommonLocalizer["Select"]" data-type="date" data-show="past" />
                                     <span class="input-group-text input-group-addon" data-toggle><i data-feather="calendar"></i></span>
                                 </div>
                             </div>
@@ -88,16 +94,10 @@
                             </div>
 
                             <div class="mb-3">
-                                <label asp-for="Status" class="form-label">@_CommonLocalizer["AccountStatus"]</label>
-                                <input type="text" class="form-control disablePointerEvents" asp-for="Status" placeholder="@_CommonLocalizer["AccountStatus"]">
-                                <span asp-validation-for="Status" class="text-danger"></span>
+                                <label asp-for="CivilID" class="form-label">Civil ID (PDF)</label>
+                                <input type="file" class="form-control" name="CivilIDFile" accept=".pdf">
+                                <span asp-validation-for="CivilID" class="text-danger"></span>
                             </div>
-
-                            @*<div class="mb-3">
-        <label asp-for="CivilID" class="form-label">Civil ID (PDF)</label>
-        <input type="file" class="form-control" name="CivilIDFile" accept=".pdf">
-        <span asp-validation-for="CivilID" class="text-danger"></span>
-        </div>*@
                         </div>
                         <div class="col-12">
                             <div class="mb-3">
@@ -115,21 +115,7 @@
                         <div class="d-flex justify-content-between">
                             <div>
                                 <a asp-action="Index" class="btn btn-secondary me-2"><i data-feather="x"></i> @_CommonLocalizer["Cancel"]</a>
-                                <button type="submit" class="btn btn-primary"><i data-feather="save"></i> @_CommonLocalizer["Edit"]</button>
-                            </div>
-                            <div>
-                                @if (Model.Status == "Approved")
-                                {
-                                    <button type="button" id="suspend-freelancer" data-id="@Model.Id" class="btn btn-danger">
-                                        <i data-feather="slash"></i>@_CommonLocalizer["Suspend"]
-                                    </button>
-                                }
-                                else
-                                {
-                                    <button type="button" id="approve-freelancer" data-id="@Model.Id" class="btn btn-success">
-                                        <i data-feather="check"></i>@_CommonLocalizer["Approve"]
-                                    </button>
-                                }
+                                <button type="submit" class="btn btn-primary"><i data-feather="save"></i> @_CommonLocalizer["Create"]</button>
                             </div>
                         </div>
 
@@ -140,71 +126,3 @@
     </div>
 </div>
 
-@section Scripts{ 
-
-<script>
-    $(document).ready(function () {
-        $(document).on("click", "#approve-freelancer", function () {
-            const title = "Do you really want to approve?";
-            const freelancerId = $(this).attr("data-id");
-
-            ShowDialog("Approve Freelancer", title, "warning").then((result) => {
-                if (result.isConfirmed) {
-                    blockwindow();
-                    $.ajax({
-                        type: "PATCH",
-                        url: "/Freelancer/Approve?id=" + freelancerId,
-                        success: function (response) {
-                            if (response.Status === "Success") {
-                                SuccessToast(response.Message);
-                                $("#approve-freelancer").hide();
-                                $("#suspend-freelancer").show();
-                            } else {
-                                InfoToast(response.Errors.join("\n"));
-                            }
-                            unblockwindow();
-                            window.location.href = "/Freelancer";
-                        },
-                        error: function (response) {
-                            unblockwindow();
-                            handleAjaxError(response);
-                        },
-                    });
-                }
-            });
-            return false;
-        });
-
-        $(document).on("click", "#suspend-freelancer", function () {
-            const title = "Do you really want to suspend?";
-            const freelancerId = $(this).attr("data-id");
-
-            ShowDialog("Suspend Freelancer", title, "warning").then((result) => {
-                if (result.isConfirmed) {
-                    blockwindow();
-                    $.ajax({
-                        type: "PATCH",
-                        url: "/Freelancer/Suspend?id=" + freelancerId,
-                        success: function (response) {
-                            if (response.Status === "Success") {
-                                SuccessToast(response.Message);
-                                $("#suspend-freelancer").hide();
-                                $("#approve-freelancer").show();
-                            } else {
-                                InfoToast(response.Errors.join("\n"));
-                            }
-                            unblockwindow();
-                            window.location.href = "/Freelancer";
-                        },
-                        error: function (response) {
-                            unblockwindow();
-                            handleAjaxError(response);
-                        },
-                    });
-                }
-            });
-            return false;
-        });
-    });
-</script>
-}

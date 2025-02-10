@@ -1,5 +1,4 @@
-﻿using Maintenance.Application.Exceptions;
-using Maintenance.Application.Interfaces.RepositoryInterfaces;
+﻿using Maintenance.Application.Interfaces.RepositoryInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
@@ -22,8 +21,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public async Task<Country> GetByIdAsync(Guid? id)
         {
-            var country = await _context.Countries.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id) ?? throw new CustomException("Country Not Found");
-            return country;
+            return await _context.Countries.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
         }
 
         public async Task<bool> ExistsAsync(Guid? countryId)
