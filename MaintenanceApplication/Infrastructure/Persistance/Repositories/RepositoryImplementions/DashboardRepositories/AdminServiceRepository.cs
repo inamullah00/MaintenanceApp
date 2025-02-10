@@ -31,7 +31,7 @@ namespace Maintenance.Infrastructure.Repositories
 
             var filteredQuery = query.Select(s => new ServiceResponseViewModel
             {
-                Id = s.Id.ToString(),
+                Id = s.Id,
                 Name = s.Name,
                 IsActive = s.IsActive,
                 IsUserCreated = s.IsUserCreated,
@@ -43,6 +43,16 @@ namespace Maintenance.Infrastructure.Repositories
 
             return new PaginatedResponse<ServiceResponseViewModel>(services, totalCount, filter.PageNumber, filter.PageSize);
         }
+        public async Task<IList<ServiceResponseViewModel>> GetAllAsync()
+        {
+            var freelancerServices = await _context.Services.Where(a => a.IsActive && a.IsApproved).Select(a => new ServiceResponseViewModel
+            {
+                Id = a.Id,
+                Name = a.Name,
+                IsActive = a.IsActive
+            }).ToListAsync().ConfigureAwait(false);
+            return freelancerServices;
+        }
 
         public async Task<ApplicationUser?> GetAdminByIdAsync(string adminId, CancellationToken cancellationToken = default)
         {
@@ -51,7 +61,7 @@ namespace Maintenance.Infrastructure.Repositories
 
         public async Task<Service?> GetServiceByIdAsync(Guid serviceId, CancellationToken cancellationToken = default)
         {
-            return await _context.Services.AsNoTracking().FirstOrDefaultAsync(s => s.Id == serviceId, cancellationToken);
+            return await _context.Services.FirstOrDefaultAsync(s => s.Id == serviceId, cancellationToken);
         }
 
         public async Task<bool> AddServiceAsync(Service service, CancellationToken cancellationToken = default)
@@ -60,16 +70,12 @@ namespace Maintenance.Infrastructure.Repositories
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
-
         public async Task<bool> UpdateServiceAsync(Service service, CancellationToken cancellationToken = default)
         {
             _context.Services.Update(service);
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
-
-
-
 
     }
 }

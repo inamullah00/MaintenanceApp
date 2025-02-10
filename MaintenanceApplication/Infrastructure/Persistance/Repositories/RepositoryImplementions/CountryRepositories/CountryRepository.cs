@@ -19,10 +19,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return await _context.Countries.OrderBy(a => a.Name).ToListAsync();
         }
 
-        public async Task<Country> GetByIdAsync(Guid? id)
+        public async Task<Country?> GetByIdAsync(Guid? id)
         {
-            return await _context.Countries.AsNoTracking().FirstOrDefaultAsync(a => a.Id == id);
+            if (id == null) return null; // Explicitly handle null case
+            return await _context.Countries.FirstOrDefaultAsync(a => a.Id == id);
         }
+
 
         public async Task<bool> ExistsAsync(Guid? countryId)
         {

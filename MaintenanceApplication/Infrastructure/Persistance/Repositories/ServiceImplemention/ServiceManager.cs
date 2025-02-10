@@ -75,7 +75,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             )
         {
             OfferedServiceCategory = new OfferedServiceCategory(unitOfWork, mapper);
-            FreelancerService = new FreelancerService(mapper, unitOfWork);
+            FreelancerService = new FreelancerSevService(mapper, unitOfWork);
             RegisterationService = new RegistrationService(userManager, roleManager, signInManager, configuration, httpContextAccessor, memoryCache, dbContext, mapper);
             OfferedServices = new OfferedServices(unitOfWork, mapper);
             OrderService = new OrderService(unitOfWork, mapper);

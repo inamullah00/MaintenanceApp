@@ -16,8 +16,13 @@ namespace Maintenance.Application.ViewModel
         [RegularExpression(@"^\d{8,15}$", ErrorMessage = "Enter Phone Number with 8 to 15 digits.")]
         public string PhoneNumber { get; set; }
 
+        [Required(ErrorMessage = "Freelancer service is required")]
+        public List<Guid> FreelancerServiceIds { get; set; }
+
+
         [Required(ErrorMessage = "City is required.")]
         public string City { get; set; }
+
         [Required(ErrorMessage = "Address is required.")]
         public string Address { get; set; }
 

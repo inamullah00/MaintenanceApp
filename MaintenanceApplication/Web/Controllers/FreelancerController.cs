@@ -20,6 +20,7 @@ namespace Maintenance.Web.Controllers
         }
         private async Task PrepareViewBags()
         {
+            ViewBag.FreelancerServices = await _serviceManager.AdminSevService.GetAllServicesAsync().ConfigureAwait(false);
             ViewBag.Countries = await _serviceManager.CountryService.GetAllAsync().ConfigureAwait(false);
         }
         public IActionResult Index()

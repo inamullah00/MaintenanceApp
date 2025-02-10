@@ -7,6 +7,7 @@ using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         {
             _context = context;
         }
+        public async Task<List<FreelancerService>> GetFreelancerServicesAsync(Guid freelancerId, CancellationToken cancellationToken)
+        {
+            return await _context.FreelancerServices.Where(fs => fs.FreelancerId == freelancerId).ToListAsync(cancellationToken);
+        }
 
         public async Task<Freelancer> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken)
         {
@@ -31,11 +36,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return await _context.Freelancers.AsNoTracking().FirstOrDefaultAsync(f => !string.IsNullOrEmpty(f.PhoneNumber) && f.PhoneNumber.ToLower().Trim().Equals(phoneNumber.ToLower().Trim()) && f.CountryId == countryId, cancellationToken);
         }
 
-        public async Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken)
-        {
-            return await _context.Freelancers.AsNoTracking().Include(f => f.Country).FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
-        }
-
         public async Task<bool> AddFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default)
         {
             await _context.Freelancers.AddAsync(freelancer, cancellationToken);
@@ -43,11 +43,61 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return true;
         }
 
+        public async Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken, bool trackChanges = false)
+        {
+            var query = _context.Freelancers
+                .Include(f => f.FreelancerServices)
+             .ThenInclude(fs => fs.Service)
+                .AsQueryable();
+
+            if (!trackChanges)
+                query = query.AsNoTracking();
+
+            return await query.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+        }
         public async Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default)
         {
-            _context.Freelancers.Update(freelancer);
+            // Since the freelancer is already tracked by the context,
+            // we do not need to call Update().
             await _context.SaveChangesAsync(cancellationToken);
             return true;
+        }
+
+        public async Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken)
+        {
+            var existingServiceIds = freelancer.FreelancerServices.Select(fs => fs.ServiceId).ToHashSet();
+            var servicesToRemove = freelancer.FreelancerServices.Where(fs => !newServiceIds.Contains(fs.ServiceId)).ToList();
+
+            // Remove services that are no longer needed
+            if (servicesToRemove.Any())
+            {
+                _context.FreelancerServices.RemoveRange(servicesToRemove);
+            }
+
+            // Add new services
+            var servicesToAdd = newServiceIds.Except(existingServiceIds).ToList();
+            foreach (var serviceId in servicesToAdd)
+            {
+                var service = await _context.Services.FindAsync(serviceId);
+                if (service != null)
+                {
+                    _context.FreelancerServices.Add(new FreelancerService
+                    {
+                        FreelancerId = freelancer.Id,
+                        ServiceId = service.Id,
+                        CreatedAt = DateTime.UtcNow
+                    });
+                }
+            }
+
+            await _context.SaveChangesAsync(cancellationToken);
+        }
+
+
+
+        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            await _context.SaveChangesAsync(cancellationToken);
         }
 
         public async Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default)

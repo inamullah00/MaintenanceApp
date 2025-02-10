@@ -16,6 +16,9 @@ namespace Maintenance.Application.ViewModel
 
         [RegularExpression(@"^\d{8,15}$", ErrorMessage = "Enter Phone Number with 8 to 15 digits.")]
         public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "FreelancerService is required.")]
+        public List<Guid> FreelancerServiceIds { get; set; }
+
         [Required(ErrorMessage = "City is required.")]
         public string City { get; set; }
         [Required(ErrorMessage = "Address is required.")]
@@ -28,10 +31,11 @@ namespace Maintenance.Application.ViewModel
 
         [Required(ErrorMessage = "Date of Birth is required.")]
         public DateTime DateOfBirth { get; set; }
-        public IFormFile? CivilIdFile { get; set; }
+        public IFormFile? CivilId { get; set; }
+        public string? CivilIdString { get; set; }
 
         [Required(ErrorMessage = "Experience Level is required.")]
-        public ExperienceLevel? ExperienceLevel { get; set; }
+        public ExperienceLevel ExperienceLevel { get; set; }
 
         [StringLength(1000, ErrorMessage = "Previous Work description cannot exceed 1000 characters.")]
         public string? Note { get; set; }  // Optional
