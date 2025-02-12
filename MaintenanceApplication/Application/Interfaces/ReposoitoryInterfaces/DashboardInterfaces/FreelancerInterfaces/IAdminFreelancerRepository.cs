@@ -4,6 +4,7 @@ using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReporti
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.FreelancerEntites;
+using Maintenance.Domain.Entity.FreelancerEntities;
 
 namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces
 {
@@ -21,11 +22,14 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         // Method to generate a list of top freelancers for a given month
         Task<List<ApplicationUser>> GenerateTopPerformersReportAsync(int month, CancellationToken cancellationToken);
         Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null);
-        Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Freelancer> GetFreelancerByEmailAsync(string email, CancellationToken cancellationToken);
         Task<Freelancer> GetFreelancerByPhoneNumberAsync(string phoneNumber, Guid? countryId, CancellationToken cancellationToken);
-        Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task<bool> Suspend(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<bool> AddFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task<List<FreelancerService>> GetFreelancerServicesAsync(Guid freelancerId, CancellationToken cancellationToken);
+        Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken, bool trackChanges = false);
+        Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
+        Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken);
     }
 }

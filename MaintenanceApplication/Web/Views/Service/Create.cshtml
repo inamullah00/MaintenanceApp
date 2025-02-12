@@ -1,7 +1,7 @@
 ﻿@model ServiceCreateViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Service"];
-    ViewBag.ModuleIcon = "user";
+    ViewBag.ModuleName = _CommonLocalizer["Category"];
+    ViewBag.ModuleIcon = "layers";
 }
 
 <div class="row">
@@ -12,8 +12,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <label asp-for="Name" class="form-label">@_CommonLocalizer["ServiceName"]</label>
-                                <input type="text" class="form-control" asp-for="Name" placeholder="@_CommonLocalizer["ServiceName"]">
+                                <label asp-for="Name" class="form-label">@_CommonLocalizer["CategoryName"]</label>
+                                <input type="text" class="form-control" asp-for="Name" placeholder="@_CommonLocalizer["CategoryName"]">
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                         </div>

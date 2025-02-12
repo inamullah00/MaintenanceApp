@@ -34,13 +34,16 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
         public ICollection<FreelancerOtp> FreelancerOtps { get; set; }
 
         // Many-to-many relationship with Service (Freelancer selects multiple services)
-        public ICollection<FreelancerService> FreelancerServices { get; set; }
+        public ICollection<FreelancerService> FreelancerServices { get; set; } = new List<FreelancerService>();
 
         [ForeignKey(nameof(CountryId))]
         public Country? Country { get; set; }
 
 
-
+        //public void AddFreelancerServices(Service service)
+        //{
+        //    FreelancerServices.Add(new FreelancerService(this, service));
+        //}
         public void MarkAsApproved()
         {
             Status = AccountStatus.Approved;

@@ -1,6 +1,7 @@
 ﻿@model ServiceDatatableFilterViewModel
 @{
-    ViewBag.Title = "Service List";
+    ViewBag.ModuleName = _CommonLocalizer["Category"];
+    ViewBag.ModuleIcon = "layers";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -45,7 +46,7 @@
                     <table id="servicesTable" class="datatables-products table">
                         <thead class="bg-primary">
                             <tr>
-                                <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["ServiceName"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["CategoryName"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["CreatedBy"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-check-circle link-icon fa-fw"></i> @_CommonLocalizer["Status"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>

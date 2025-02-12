@@ -27,6 +27,11 @@ namespace Maintenance.Application.Services
             return await _unitOfWork.AdminServiceRepository.GetFilteredServiceAsync(filter, specification);
         }
 
+        public async Task<IList<ServiceResponseViewModel>> GetAllServicesAsync()
+        {
+            return await _unitOfWork.AdminServiceRepository.GetAllAsync();
+        }
+
         public async Task<ServiceEditViewModel> GetServiceForEditAsync(Guid id)
         {
             var service = await _unitOfWork.AdminServiceRepository.GetServiceByIdAsync(id) ?? throw new CustomException("Service not found.");

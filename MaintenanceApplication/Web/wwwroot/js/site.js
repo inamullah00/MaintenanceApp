@@ -302,6 +302,27 @@ function previewImage(event) {
         imageElm.src = "/images/others/placeholder.jpg";
     }
 }
+function previewPdf(event) {
+    const file = event.target.files[0];
+    const allowedTypes = ["application/pdf"];
+    const pdfContainerId = event.target.getAttribute('data-pdf-container');
+    const pdfElm = document.getElementById(pdfContainerId);
+
+    if (file && allowedTypes.includes(file.type)) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+            pdfElm.src = e.target.result;
+            pdfElm.style.display = "block"; // Show the iframe when a PDF is uploaded
+        };
+        reader.readAsDataURL(file);
+    } else {
+        alert("Only PDF files are allowed.");
+        event.target.value = "";
+        pdfElm.src = "";
+        pdfElm.style.display = "none"; // Hide the iframe if no valid PDF is selected
+    }
+}
+
 
 //tinymce
 

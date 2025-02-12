@@ -1,7 +1,7 @@
 ﻿@model ServiceEditViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Service"];
-    ViewBag.ModuleIcon = "user";
+    ViewBag.ModuleName = _CommonLocalizer["Category"];
+    ViewBag.ModuleIcon = "layers";
 }
 
 <div class="row card">
@@ -11,9 +11,9 @@
             <div class="row">
                 <div class="mt-3">
                     <div class="row mb-3">
-                        <label class="col-sm-3 col-form-label">@_CommonLocalizer["ServiceName"]</label>
+                        <label class="col-sm-3 col-form-label">@_CommonLocalizer["CategoryName"]</label>
                         <div class="col-sm-9">
-                            <input type="text" class="form-control" asp-for="Name" placeholder="@_CommonLocalizer["ServiceName"]">
+                            <input type="text" class="form-control" asp-for="Name" placeholder="@_CommonLocalizer["CategoryName"]">
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>

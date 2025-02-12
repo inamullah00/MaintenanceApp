@@ -10,6 +10,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
     {
         Task<bool> AddServiceAsync(Service service, CancellationToken cancellationToken = default);
         Task<ApplicationUser?> GetAdminByIdAsync(string adminId, CancellationToken cancellationToken = default);
+        Task<IList<ServiceResponseViewModel>> GetAllAsync();
         Task<PaginatedResponse<ServiceResponseViewModel>> GetFilteredServiceAsync(ServiceFilterViewModel filter, ISpecification<Service>? specification = null);
         Task<Service?> GetServiceByIdAsync(Guid serviceId, CancellationToken cancellationToken = default);
         Task<bool> ServiceExistsAsync(string serviceName);

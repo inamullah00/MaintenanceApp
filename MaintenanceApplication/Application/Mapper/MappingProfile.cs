@@ -26,11 +26,10 @@ namespace Application.Mapper
             CreateMap<ApplicationUser, UserDetailsResponseDto>().ReverseMap();
             CreateMap<UserDetailsResponseDto, ApplicationUser>().ReverseMap();
 
-
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerEditViewModel>().ReverseMap();
-
+            CreateMap<Service, FreelancerService>().ReverseMap();
 
             //Package
             CreateMap<Package, PackageResponseDto>().ReverseMap();
