@@ -1,12 +1,18 @@
 ﻿@model FreelancerDatatableFilterViewModel
 @{
-    ViewBag.Title = "Freelancer List";
+    ViewBag.ModuleName = _CommonLocalizer["Freelancer List"];
+    ViewBag.ModuleIcon = "user";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="row card-title align-middle">
+                    <div class="col-md-12 align-items-center d-flex mt-1">
+                        <a href="@Url.Action("Create", "Freelancer")" class="btn btn-primary btn-xs btn-icon-text">
+                            <i class="btn-icon-prepend" data-feather="plus"></i>@_CommonLocalizer["Create"]
+                        </a>
+                    </div>
                     <div class="col-md-12 mt-1">
                         <form id="filterForm">
                             <div>

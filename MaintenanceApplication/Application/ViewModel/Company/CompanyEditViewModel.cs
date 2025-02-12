@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Maintenance.Application.ViewModel
 {
-    public class FreelancerEditViewModel
+    public class CompanyEditViewModel
     {
         public Guid Id { get; set; }
         [Required(ErrorMessage = "Full Name is required.")]

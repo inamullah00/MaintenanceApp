@@ -75,14 +75,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             )
         {
             OfferedServiceCategory = new OfferedServiceCategory(unitOfWork, mapper);
-            FreelancerService = new FreelancerService(mapper, unitOfWork);
+            FreelancerService = new FreelancerSevService(mapper, unitOfWork);
             RegisterationService = new RegistrationService(userManager, roleManager, signInManager, configuration, httpContextAccessor, memoryCache, dbContext, mapper);
             OfferedServices = new OfferedServices(unitOfWork, mapper);
             OrderService = new OrderService(unitOfWork, mapper);
             ContentService = new ContentService(unitOfWork, mapper);
             DisputeService = new DisputeService(unitOfWork, mapper);
             FeedbackService = new FeedbackService(unitOfWork, mapper);
-            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper, fileUploaderService);
+            AdminFreelancerService = new AdminFreelancerService(unitOfWork, mapper, fileUploaderService, PasswordService);
             PaymentService = new PaymentService(unitOfWork, mapper);
             NotificationService = new NotificationService(unitOfWork, mapper, logger);
             FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService, configuration);
