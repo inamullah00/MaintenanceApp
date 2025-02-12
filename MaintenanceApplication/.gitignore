@@ -8,3 +8,6 @@ obj/
 # Ignore temporary files
 *.log
 *.tmp
+
+
+Web/wwwroot/Uploads

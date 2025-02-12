@@ -29,7 +29,6 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         Task<bool> AddFreelancerAsync(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task<List<FreelancerService>> GetFreelancerServicesAsync(Guid freelancerId, CancellationToken cancellationToken);
         Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken, bool trackChanges = false);
-        Task SaveChangesAsync(CancellationToken cancellationToken = default);
         Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken);
     }

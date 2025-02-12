@@ -93,13 +93,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             await _context.SaveChangesAsync(cancellationToken);
         }
 
-
-
-        public async Task SaveChangesAsync(CancellationToken cancellationToken = default)
-        {
-            await _context.SaveChangesAsync(cancellationToken);
-        }
-
         public async Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default)
         {
             _context.Freelancers.Update(freelancer);
