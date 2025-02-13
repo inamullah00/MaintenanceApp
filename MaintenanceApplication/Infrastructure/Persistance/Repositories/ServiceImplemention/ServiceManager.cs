@@ -93,6 +93,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             CountryService = new CountryService(unitOfWork);
             AdminClientService = new AdminClientService(unitOfWork, mapper);
             AdminSevService = new AdminSevService(unitOfWork, mapper);
+
         }
     }
 }

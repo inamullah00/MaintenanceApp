@@ -55,6 +55,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             CountryRepository = new CountryRepository(dbContext);
             AdminClientRepository = new AdminClientRepository(dbContext);
             AdminServiceRepository = new AdminServiceRepository(dbContext);
+
         }
 
         public void Dispose()

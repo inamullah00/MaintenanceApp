@@ -1,7 +1,7 @@
-﻿@model FreelancerDatatableFilterViewModel
+﻿@model CompanyDatatableFilterViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
-    ViewBag.ModuleIcon = "address-card";
+    ViewBag.ModuleName = _CommonLocalizer["Company"];
+    ViewBag.ModuleIcon = "building";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -9,7 +9,7 @@
             <div class="card-body">
                 <div class="row card-title align-middle">
                     <div class="col-md-12 align-items-center d-flex mt-1">
-                        <a href="@Url.Action("Create", "Freelancer")" class="btn btn-primary btn-xs btn-icon-text">
+                        <a href="@Url.Action("Create", "Company")" class="btn btn-primary btn-xs btn-icon-text">
                             <i class="btn-icon-prepend" data-feather="plus"></i>@_CommonLocalizer["Create"]
                         </a>
                     </div>
@@ -47,13 +47,12 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table id="freelancersTable" class="datatables-products table">
+                    <table id="companiesTable" class="datatables-products table">
                         <thead class="bg-primary">
                             <tr>
                                 <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["FullName"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-envelope link-icon fa-fw"></i> @_CommonLocalizer["Email"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-mobile-alt link-icon fa-fw"></i> @_CommonLocalizer["Mobile"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-calendar-alt link-icon fa-fw"></i> @_CommonLocalizer["DateOfBirth"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["ExperienceLevel"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-check-circle link-icon fa-fw"></i> @_CommonLocalizer["Status"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>
@@ -67,5 +66,5 @@
 </div>
 
 @section Scripts {
-    <script src="/customjs/Freelancers/Freelancers.js" asp-append-version="true"></script>
+    <script src="/customjs/Freelancers/Company.js" asp-append-version="true"></script>
 }
