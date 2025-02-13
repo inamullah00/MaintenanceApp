@@ -1,8 +1,6 @@
 ﻿using Maintenance.Domain.Entity.ClientEntities;
-using Maintenance.Domain.Entity.UserEntities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Maintenance.Infrastructure.Configurations
 {
@@ -19,6 +17,8 @@ namespace Maintenance.Infrastructure.Configurations
             builder.Property(c => c.Email).IsRequired().HasMaxLength(255);
             builder.Property(c => c.PhoneNumber).HasMaxLength(50);
             builder.Property(c => c.Password).IsRequired().HasMaxLength(255);
+            builder.Property(c => c.ProfilePicture).IsRequired(false).HasMaxLength(500);
+            builder.Property(c => c.Address).IsRequired(false).HasMaxLength(500);
 
             // One-to-many relationship with Orders
             builder.HasMany(c => c.ClientOrders) // Client has many Orders
