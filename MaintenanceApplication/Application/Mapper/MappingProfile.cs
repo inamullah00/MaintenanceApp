@@ -31,6 +31,10 @@ namespace Application.Mapper
             CreateMap<CompanyEditViewModel, Freelancer>().ReverseMap();
             #endregion
 
+            #region Admin Client Mapping
+            CreateMap<ClientCreateViewModel, Client>().ReverseMap();
+            #endregion
+
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
 

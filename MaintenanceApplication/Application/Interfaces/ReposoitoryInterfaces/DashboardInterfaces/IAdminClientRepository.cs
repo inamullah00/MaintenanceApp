@@ -7,6 +7,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
 {
     public interface IAdminClientRepository
     {
+        Task<bool> AddClient(Client client, CancellationToken cancellationToken = default);
         Task<Client> GetClientByEmailAsync(string email, CancellationToken cancellationToken);
         Task<Client?> GetClientByIdAsync(Guid id, CancellationToken cancellationToken);
         Task<Client> GetClientByPhoneNumberAsync(string phoneNumber, Guid? countryId, CancellationToken cancellationToken);

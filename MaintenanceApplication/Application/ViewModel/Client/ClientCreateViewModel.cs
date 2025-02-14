@@ -3,9 +3,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Maintenance.Application.ViewModel
 {
-    public class ClientEditViewModel
+    public class ClientCreateViewModel
     {
-        public Guid Id { get; set; }
         [Required(ErrorMessage = "Full Name is required.")]
         [StringLength(100, ErrorMessage = "Full Name cannot exceed 100 characters.")]
         public string FullName { get; set; }
@@ -19,6 +18,13 @@ namespace Maintenance.Application.ViewModel
         public Guid? CountryId { get; set; }
         public string? Address { get; set; }
         public IFormFile? ProfilePictureFile { get; set; }
-        public string? ProfilePicture { get; set; }
+
+        [Required(ErrorMessage = "Password is required.")]
+        public string Password { get; set; }
+
+        [Required(ErrorMessage = "Confirm Password is required.")]
+
+        [Compare("Password", ErrorMessage = "Password and Confirm Password must match.")]
+        public string ConfirmPassword { get; set; }
     }
 }

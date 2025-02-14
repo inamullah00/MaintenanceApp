@@ -38,6 +38,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return true;
         }
 
+        public async Task<bool> AddClient(Client client, CancellationToken cancellationToken = default)
+        {
+            await _context.Clients.AddAsync(client);
+            await _context.SaveChangesAsync(cancellationToken);
+            return true;
+        }
+
+
         public async Task<PaginatedResponse<ClientResponseViewModel>> GetFilteredClientAsync(ClientFilterViewModel filter, ISpecification<Client>? specification = null)
         {
             var query = SpecificationEvaluator.Default.GetQuery(query: _context.Clients.AsNoTracking().AsQueryable(), specification: specification);

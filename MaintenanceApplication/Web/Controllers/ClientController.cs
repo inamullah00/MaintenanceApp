@@ -47,7 +47,37 @@ namespace Maintenance.Web.Controllers
         public async Task<IActionResult> Create()
         {
             await PrepareViewBags();
-            return View(new ClientEditViewModel());
+            return View(new ClientCreateViewModel());
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create(ClientCreateViewModel model, CancellationToken cancellationToken)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    this.NotifyModelStateErrors();
+                    await PrepareViewBags();
+                    return View(model);
+                }
+
+                await _serviceManager.AdminClientService.CreateClientAsync(model, cancellationToken);
+                this.NotifySuccess("Client created successfully.");
+                return RedirectToAction(nameof(Index));
+            }
+            catch (CustomException ex)
+            {
+                this.NotifyInfo(ex.Message);
+                await PrepareViewBags();
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error adding client");
+                this.NotifyError("Something went wrong. Please contact the administrator.");
+                await PrepareViewBags();
+                return View(model);
+            }
         }
 
         [HttpGet]

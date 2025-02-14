@@ -64,11 +64,22 @@
                 </div>
             </li>
 
-            <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Edit">
-                <a href="@Url.Action("Index", "Client")" class="nav-link">
+            <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Create,Edit">
+                <a class="nav-link" data-bs-toggle="collapse" href="#client" role="button" aria-expanded="false">
                     <i class="fa-regular fa-user link-icon"></i>
                     <span class="link-title">@_CommonLocalizer["Client"]</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
+                <div class="collapse" id="client">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Index">@_CommonLocalizer["All"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Create", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
+                        </li>
+                    </ul>
+                </div>
             </li>
 
             <li class="nav-item nav-category">Setups</li>
