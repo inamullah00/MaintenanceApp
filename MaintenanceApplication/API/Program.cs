@@ -1,6 +1,7 @@
 using API.DependancyContainer;
 using Domain.Entity.UserEntities;
 using Maintenance.API.Filters;
+using Maintenance.DefaultDataSeeder;
 using Maintenance.Infrastructure.Extensions;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -91,6 +92,8 @@ builder.Services.AddMemoryCache();
 var app = builder.Build();
 AppHttpContext.Services = app.Services;
 
+
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -103,5 +106,11 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DataSeeder.Initialize(services);
+}
 
 app.Run();

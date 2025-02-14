@@ -4,6 +4,7 @@ using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250214125611_SeedDataFix")]
+    partial class SeedDataFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +30,6 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ActionById")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
@@ -73,8 +73,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionById");
 
                     b.HasIndex("CountryId");
 
@@ -1018,16 +1016,9 @@ namespace Maintenance.Infrastructure.Migrations
 
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.Client", b =>
                 {
-                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "ActionBy")
-                        .WithMany()
-                        .HasForeignKey("ActionById")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
-
-                    b.Navigation("ActionBy");
 
                     b.Navigation("Country");
                 });

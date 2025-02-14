@@ -4,6 +4,7 @@ using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Maintenance.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250214122505_AddedIsActiveInClient")]
+    partial class AddedIsActiveInClient
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,9 +30,6 @@ namespace Maintenance.Infrastructure.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("ActionById")
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Address")
                         .HasMaxLength(500)
@@ -73,8 +73,6 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ActionById");
 
                     b.HasIndex("CountryId");
 
@@ -821,6 +819,26 @@ namespace Maintenance.Infrastructure.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "d8fa64ea-7da6-4546-955c-c68621a0aaff",
+                            Name = "Admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "66a6daaf-38c1-4a72-be1c-52f82f9b0c97",
+                            Name = "Client",
+                            NormalizedName = "CLIENT"
+                        },
+                        new
+                        {
+                            Id = "3bf9e005-57cd-4503-a6c2-1664352aadcf",
+                            Name = "Freelancer",
+                            NormalizedName = "FREELANCER"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -982,6 +1000,13 @@ namespace Maintenance.Infrastructure.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "21bc9b2f-6401-40c1-9440-72e293f41a12",
+                            RoleId = "d8fa64ea-7da6-4546-955c-c68621a0aaff"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -1014,20 +1039,32 @@ namespace Maintenance.Infrastructure.Migrations
                     b.ToTable("AspNetUsers", (string)null);
 
                     b.HasDiscriminator().HasValue("ApplicationUser");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "21bc9b2f-6401-40c1-9440-72e293f41a12",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "c0c5418d-cf10-4099-a14e-bb1f82f96126",
+                            Email = "admin@gmail.com",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "ADMIN@GMAIL.COM",
+                            NormalizedUserName = "ADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEPo62J9xs8HK48eac/qo33ObmXKTfT4yF43jZXynHkXuDL/KndU6o/ak0n6mPdcaSg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "27a9e2e4-964a-4808-8679-55d3c17d43b7",
+                            TwoFactorEnabled = false,
+                            UserName = "admin",
+                            FullName = "System Administrator"
+                        });
                 });
 
             modelBuilder.Entity("Maintenance.Domain.Entity.ClientEntities.Client", b =>
                 {
-                    b.HasOne("Domain.Entity.UserEntities.ApplicationUser", "ActionBy")
-                        .WithMany()
-                        .HasForeignKey("ActionById")
-                        .OnDelete(DeleteBehavior.NoAction);
-
                     b.HasOne("Maintenance.Domain.Entity.FreelancerEntities.Country", "Country")
                         .WithMany()
                         .HasForeignKey("CountryId");
-
-                    b.Navigation("ActionBy");
 
                     b.Navigation("Country");
                 });

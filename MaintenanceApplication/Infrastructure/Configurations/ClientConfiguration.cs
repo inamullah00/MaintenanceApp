@@ -19,6 +19,7 @@ namespace Maintenance.Infrastructure.Configurations
             builder.Property(c => c.Password).IsRequired().HasMaxLength(255);
             builder.Property(c => c.ProfilePicture).IsRequired(false).HasMaxLength(500);
             builder.Property(c => c.Address).IsRequired(false).HasMaxLength(500);
+            builder.Property(a => a.IsActive).IsRequired(false).HasDefaultValue(true);
 
             // One-to-many relationship with Orders
             builder.HasMany(c => c.ClientOrders) // Client has many Orders
@@ -37,6 +38,8 @@ namespace Maintenance.Infrastructure.Configurations
             .WithMany()
                 .HasForeignKey(f => f.CountryId)
                 .IsRequired(false);
+
+            builder.HasOne(f => f.ActionBy).WithMany().HasForeignKey(f => f.ActionById).OnDelete(DeleteBehavior.NoAction);
 
             // One - to - many relationship with ClientOtp
             builder.HasMany(c => c.clientOtps) // Client has many OTPs
