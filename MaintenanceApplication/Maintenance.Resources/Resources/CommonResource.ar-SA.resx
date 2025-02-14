@@ -765,4 +765,40 @@
   <data name="IsCommissionIn%" xml:space="preserve">
     <value>هل العمولة في٪</value>
   </data>
+  <data name="Company" xml:space="preserve">
+    <value>شركة</value>
+  </data>
+  <data name="CountryCode" xml:space="preserve">
+    <value>رمز البلد</value>
+  </data>
+  <data name="Categories" xml:space="preserve">
+    <value>فئات</value>
+  </data>
+  <data name="City" xml:space="preserve">
+    <value>مدينة</value>
+  </data>
+  <data name="ExperienceLevel" xml:space="preserve">
+    <value>مستوى الخبرة</value>
+  </data>
+  <data name="CompanyLicense" xml:space="preserve">
+    <value>ترخيص الشركة</value>
+  </data>
+  <data name="Bio" xml:space="preserve">
+    <value>سيرة</value>
+  </data>
+  <data name="DOB" xml:space="preserve">
+    <value>تاريخ الميلاد</value>
+  </data>
+  <data name="CivilID" xml:space="preserve">
+    <value>البطاقة المدنية</value>
+  </data>
+  <data name="Service" xml:space="preserve">
+    <value>خدمة</value>
+  </data>
+  <data name="CategoryName" xml:space="preserve">
+    <value>اسم الفئة</value>
+  </data>
+  <data name="Client" xml:space="preserve">
+    <value>عميل</value>
+  </data>
 </root>

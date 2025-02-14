@@ -24,11 +24,19 @@
             {
                 data: 'Id',
                 render: function (data, type, row) {
+                    const isActive = row.IsActive;
                     return `
             <div class="text-center">
                 <a href="/Client/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                     <i class="btn-icon-prepend fa fa-edit"></i>
                 </a>
+                  ${isActive
+                            ? ` <a href="#" class="text-danger btn-icon-text btn-xs deactivate" data-id="${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Deactivate">
+                            <i class="btn-icon-prepend fa fa-ban"></i>
+                        </a>`
+                            : ` <a href="#" class="text-success btn-icon-text btn-xs activate" data-id="${data}" data-bs-toggle="tooltip" data-bs-placement="top" title="Activate">
+                            <i class="btn-icon-prepend fa fa-check-circle"></i>
+                        </a>`}
             </div>`;
                 },
                 "autoWidth": true,
@@ -43,6 +51,63 @@
     $("#filter").on("click", function () {
         event.preventDefault();
         table.draw();
+    });
+
+
+    $(document).on("click", ".activate", function () {
+        const title = "Do you really want to activate this client?";
+        const id = $(this).attr("data-id");
+        ShowDialog("Activate", title, "warning").then((result) => {
+            if (result.isConfirmed) {
+                blockwindow();
+                $.ajax({
+                    type: "PATCH",
+                    url: "/Client/Activate?id=" + id,
+                    success: function (response) {
+                        if (response.Status === "Success") {
+                            SuccessToast(response.Message);
+                            table.draw();
+                        } else {
+                            InfoToast(response.Errors.join("\n"));
+                        }
+                        unblockwindow();
+                    },
+                    error: function (response) {
+                        unblockwindow();
+                        handleAjaxError(response);
+                    },
+                });
+            }
+        });
+        return false;
+    });
+
+    $(document).on("click", ".deactivate", function () {
+        const title = "Do you really want to deactivate this client?";
+        const id = $(this).attr("data-id");
+        ShowDialog("Deactivate", title, "warning").then((result) => {
+            if (result.isConfirmed) {
+                blockwindow();
+                $.ajax({
+                    type: "PATCH",
+                    url: "/Client/Deactivate?id=" + id,
+                    success: function (response) {
+                        if (response.Status === "Success") {
+                            SuccessToast(response.Message);
+                            table.draw();
+                        } else {
+                            InfoToast(response.Errors.join("\n"));
+                        }
+                        unblockwindow();
+                    },
+                    error: function (response) {
+                        unblockwindow();
+                        handleAjaxError(response);
+                    },
+                });
+            }
+        });
+        return false;
     });
 
 });

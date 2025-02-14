@@ -43,7 +43,7 @@
                                     <select asp-for="CountryId" class="form-select select-with-flags" style="width: 100%;">
                                         @foreach (var country in countries)
                                         {
-                                            <option value="@country.Id" data-flag="@country.Code.ToLower()" data-dial-code="@country.DialCode" data-country="@country.Name">
+                                            <option value="@country.Id" data-flag="@country.CountryCode.ToLower()" data-dial-code="@country.DialCode" data-country="@country.Name">
                                                 @country.DialCode
                                             </option>
                                         }
@@ -92,7 +92,7 @@
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Company License</label>
+                                <label class="form-label">@_CommonLocalizer["CompanyLicense"]</label>
                                 <input type="file" class="form-control" name="CivilID" accept="image/jpeg, image/png, application/pdf" data-file-container="filePreview" onchange="previewFile(event)">
                                 <span asp-validation-for="CompanyLicense" class="text-danger"></span>
                             </div>

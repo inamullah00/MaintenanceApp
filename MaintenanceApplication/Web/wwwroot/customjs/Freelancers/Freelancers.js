@@ -22,7 +22,7 @@
                     return row.DialCode ? `${row.DialCode} ${row.PhoneNumber}` : row.PhoneNumber;
                 }
             },
-            { data: 'DateOfBirth', name: 'DateOfBirth', "autoWidth": true },
+            { data: 'DateOfBirth', name: 'DateOfBirth', "autoWidth": true, "className": "text-center" },
             {
                 data: 'ExperienceLevel',
                 render: function (data) {
@@ -42,7 +42,8 @@
                     }
                     return `<span class="badge ${levelClass}">${data}</span>`;
                 },
-                "autoWidth": true
+                "autoWidth": true,
+                "className": "text-center"
             },
 
             {
@@ -64,7 +65,8 @@
                     }
                     return `<span class="badge ${statusClass}">${data}</span>`;
                 },
-                "autoWidth": true
+                "autoWidth": true,
+                "className": "text-center"
             },
 
             {

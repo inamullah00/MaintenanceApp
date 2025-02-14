@@ -1,8 +1,10 @@
-﻿using Maintenance.Application.Exceptions;
+﻿using Domain.Enums;
+using Maintenance.Application.Exceptions;
 using Maintenance.Application.Services.ServiceManager;
 using Maintenance.Application.ViewModel;
 using Maintenance.Web.Extensions;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Maintenance.Web.Controllers
 {
@@ -124,6 +126,42 @@ namespace Maintenance.Web.Controllers
                 this.NotifyError($"Error: {ex.Message}");
                 await PrepareViewBags();
                 return View(model);
+            }
+        }
+
+        public async Task<IActionResult> Activate(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _serviceManager.AdminClientService.ActivateClientAsync(id, cancellationToken);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Client successfully activated.");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on client activation");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact the administrator." }, Notify.Error.ToString());
+            }
+        }
+
+        public async Task<IActionResult> Deactivate(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                await _serviceManager.AdminClientService.DeactivateClientAsync(id, cancellationToken);
+                return this.ApiSuccessResponse(HttpStatusCode.OK, "Client successfully deactivated.");
+            }
+            catch (CustomException ex)
+            {
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { ex.Message }, Notify.Info.ToString());
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on client deactivation");
+                return this.ApiErrorResponse(HttpStatusCode.BadRequest, new List<string> { "Something went wrong. Please contact the administrator." }, Notify.Error.ToString());
             }
         }
     }

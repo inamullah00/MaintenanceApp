@@ -23,5 +23,20 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public ICollection<ClientOtp> clientOtps { get; set; }
 
         public ApplicationUser? ActionBy { get; set; }
+
+        public void Activate()
+        {
+            IsActive = true;
+            UpdatedAt = DateTime.UtcNow;
+        }
+        public void SetActionBy(ApplicationUser user)
+        {
+            ActionBy = user;
+        }
+        public void Deactivate()
+        {
+            IsActive = false;
+            UpdatedAt = DateTime.UtcNow;
+        }
     }
 }

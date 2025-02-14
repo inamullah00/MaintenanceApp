@@ -41,7 +41,8 @@
                     }
                     return `<span class="badge ${levelClass}">${data}</span>`;
                 },
-                "autoWidth": true
+                "autoWidth": true,
+                "className": "text-center"
             },
             {
                 data: 'Status',
@@ -59,7 +60,8 @@
                     }
                     return `<span class="badge ${statusClass}">${data}</span>`;
                 },
-                "autoWidth": true
+                "autoWidth": true,
+                "className": "text-center"
             },
 
             {

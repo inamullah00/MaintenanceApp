@@ -28,7 +28,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public async Task<Client?> GetClientByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            return await _context.Clients.AsNoTracking().Include(f => f.Country).FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
+            return await _context.Clients.Include(f => f.Country).FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
         }
 
         public async Task<bool> UpdateClient(Client client, CancellationToken cancellationToken = default)
@@ -58,11 +58,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                  select new ClientResponseViewModel
                                  {
                                      Id = Client.Id.ToString(),
-                                     FullName = Client.FullName,
-                                     Email = Client.Email,
+                                     FullName = Client.FullName ?? string.Empty,
+                                     Email = Client.Email ?? string.Empty,
                                      DialCode = country != null ? country.DialCode : string.Empty,
                                      CountryId = Client.CountryId,
-                                     PhoneNumber = Client.PhoneNumber,
+                                     PhoneNumber = Client.PhoneNumber ?? string.Empty,
+                                     IsActive = Client.IsActive,
                                  });
             var totalCount = await filteredQuery.CountAsync();
 

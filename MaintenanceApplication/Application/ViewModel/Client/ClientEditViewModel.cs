@@ -20,5 +20,6 @@ namespace Maintenance.Application.ViewModel
         public string? Address { get; set; }
         public IFormFile? ProfilePictureFile { get; set; }
         public string? ProfilePicture { get; set; }
+        public bool? IsActive { get; set; }
     }
 }
