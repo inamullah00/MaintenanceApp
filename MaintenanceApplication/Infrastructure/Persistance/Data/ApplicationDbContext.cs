@@ -6,7 +6,6 @@ using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Domain.Entity.UserEntities;
 using Maintenance.Infrastructure.Configurations;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -163,64 +162,64 @@ namespace Maintenance.Infrastructure.Persistance.Data
 
             #region Data Seeding
 
-            // Seeding roles
+            //// Seeding roles
 
-            var AdminRoleId = Guid.NewGuid().ToString();
-            var FreelancerRoleId = Guid.NewGuid().ToString();
-            var ClientRoleId = Guid.NewGuid().ToString();
-
-
-            builder.Entity<IdentityRole>().HasData(
-                new IdentityRole
-                {
-                    Id = AdminRoleId,
-                    Name = "Admin",
-                    NormalizedName = "ADMIN"
-                },
-                new IdentityRole
-                {
-                    Id = ClientRoleId,
-                    Name = "Client",
-                    NormalizedName = "CLIENT"
-                },
-                new IdentityRole
-                {
-                    Id = FreelancerRoleId,
-                    Name = "Freelancer",
-                    NormalizedName = "FREELANCER"
-                }
-            );
+            //var AdminRoleId = Guid.NewGuid().ToString();
+            //var FreelancerRoleId = Guid.NewGuid().ToString();
+            //var ClientRoleId = Guid.NewGuid().ToString();
 
 
-            var adminId = "21bc9b2f-6401-40c1-9440-72e293f41a12"; // FIXED GUID
+            //builder.Entity<IdentityRole>().HasData(
+            //    new IdentityRole
+            //    {
+            //        Id = AdminRoleId,
+            //        Name = "Admin",
+            //        NormalizedName = "ADMIN"
+            //    },
+            //    new IdentityRole
+            //    {
+            //        Id = ClientRoleId,
+            //        Name = "Client",
+            //        NormalizedName = "CLIENT"
+            //    },
+            //    new IdentityRole
+            //    {
+            //        Id = FreelancerRoleId,
+            //        Name = "Freelancer",
+            //        NormalizedName = "FREELANCER"
+            //    }
+            //);
 
 
-            // Seeding For Admin
-            var Admin = new ApplicationUser
-            {
-                Id = adminId,
-                UserName = "admin",
-                NormalizedUserName = "ADMIN",
-                Email = "admin@gmail.com",
-                NormalizedEmail = "ADMIN@GMAIL.COM",
-                EmailConfirmed = true,
-                FullName = "System Administrator",
-                SecurityStamp = Guid.NewGuid().ToString(),
-            };
+            //var adminId = "21bc9b2f-6401-40c1-9440-72e293f41a12"; // FIXED GUID
 
-            var AdminPassword = "Admin@123";
-            var PasswordHasher = new PasswordHasher<ApplicationUser>();
-            Admin.PasswordHash = PasswordHasher.HashPassword(Admin, AdminPassword);
 
-            builder.Entity<ApplicationUser>().HasData(Admin);
+            //// Seeding For Admin
+            //var Admin = new ApplicationUser
+            //{
+            //    Id = adminId,
+            //    UserName = "admin",
+            //    NormalizedUserName = "ADMIN",
+            //    Email = "admin@gmail.com",
+            //    NormalizedEmail = "ADMIN@GMAIL.COM",
+            //    EmailConfirmed = true,
+            //    FullName = "System Administrator",
+            //    SecurityStamp = Guid.NewGuid().ToString(),
+            //};
 
-            // Assign Admin role to the Admin user
-            builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
-            {
-                RoleId = AdminRoleId,
-                UserId = adminId
-            });
-            builder.Entity<IdentityUserRole<string>>().HasKey(iur => new { iur.UserId, iur.RoleId });
+            //var AdminPassword = "Admin@123";
+            //var PasswordHasher = new PasswordHasher<ApplicationUser>();
+            //Admin.PasswordHash = PasswordHasher.HashPassword(Admin, AdminPassword);
+
+            //builder.Entity<ApplicationUser>().HasData(Admin);
+
+            //// Assign Admin role to the Admin user
+            //builder.Entity<IdentityUserRole<string>>().HasData(new IdentityUserRole<string>
+            //{
+            //    RoleId = AdminRoleId,
+            //    UserId = adminId
+            //});
+            //builder.Entity<IdentityUserRole<string>>().HasKey(iur => new { iur.UserId, iur.RoleId });
             #endregion
         }
     }
