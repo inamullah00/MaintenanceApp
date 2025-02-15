@@ -3,6 +3,7 @@ using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ServiceManager;
+using Maintenance.Domain.Entity.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -266,5 +267,73 @@ namespace Maintenance.API.Controllers.ClientController
             }
         }
         #endregion
+
+
+        #region Get All Pending Services for Client (Awaiting Bid Acceptance)
+        [HttpGet("client/pending-services")]
+        public async Task<IActionResult> GetAllPendingServices(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching all pending services for client");
+            try
+            {
+                var result = await _serviceManager.OrderService.GetPendingClientServicesAsync(cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching pending services for client");
+                return StatusCode(500, new { Success = false, Message = "Internal Server Error" });
+            }
+        }
+        #endregion
+
+        #region Filter-Freelancer-Orders
+
+        [HttpGet("Filter-Freelancer-Orders")]
+        public async Task<IActionResult> GetClientOrdersByStatus([FromQuery] OrderStatus orderStatus, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching client orders with status: {Status}", orderStatus);
+
+            var result = await _serviceManager.OrderService.GetClientOrdersByStatusAsync(orderStatus, cancellationToken);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = true,
+                    Message = result.Message,
+                    Data = result.Value
+                });
+            }
+
+            _logger.LogWarning("No client orders found for status: {Status}", orderStatus);
+            return StatusCode(result.StatusCode, new
+            {
+                StatusCode = result.StatusCode,
+                Success = false,
+                Message = result.Message
+            });
+        }
+#endregion
+
+
     }
 }

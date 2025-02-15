@@ -180,6 +180,11 @@ namespace Maintenance.Application.Common.Constants
         public const string OrderAlreadyClosed = "The order has already been closed and cannot be modified.";
         public const string OrderAlreadyInProgress = "The order is already in progress and cannot be assigned.";
         public const string OrderAlreadyResolved = "The order has already been resolved and cannot be modified.";
+
+
+        public const string NoInProcessOrdersFound = "No Any InProcess Orders Found!.";
+        public const string NoInProgressOrdersFound = "No Any InProgress Orders Found!.";
+        public const string NoAnyCompletedOrdersFound = "No Any Completed Orders Found!.";
         #endregion
 
         #region Feedback Error Messages
