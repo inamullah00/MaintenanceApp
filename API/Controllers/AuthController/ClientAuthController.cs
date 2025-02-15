@@ -28,8 +28,6 @@ namespace Maintenance.API.Controllers.AuthController
         #endregion
 
 
-
-
         #region Client Registration
 
         [HttpPost("Signup")]
@@ -75,8 +73,6 @@ namespace Maintenance.API.Controllers.AuthController
         }
 
         #endregion
-
-
 
         #region Client Login
 
@@ -148,8 +144,6 @@ namespace Maintenance.API.Controllers.AuthController
         }
 
         #endregion
-
-
 
         #region Forgot Password
 
@@ -247,7 +241,6 @@ namespace Maintenance.API.Controllers.AuthController
         }
 
         #endregion
-
 
         #region Resend OTP
 
