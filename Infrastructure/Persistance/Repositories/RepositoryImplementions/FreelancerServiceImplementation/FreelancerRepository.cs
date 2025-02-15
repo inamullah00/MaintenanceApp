@@ -1,7 +1,9 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
+using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
@@ -61,42 +63,33 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         #endregion
 
         #region GetAllAsync
-        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null)
+        public async Task<List<FreelancerBidsResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null)
         {
+
             var QueryResult = SpecificationEvaluator.Default.GetQuery(
+                                            query: _applicationDbContext.Bids.AsQueryable(),
+                                            specification: specification);
 
-                query: _applicationDbContext.Bids.AsQueryable(),
-                specification: specification
-                );
-
-            var result = await (from bid in QueryResult
-                                join service in _applicationDbContext.OfferedServices
-                                    on bid.OfferedServiceId equals service.Id
-                                join freelancer in _applicationDbContext.Freelancers
-                                    on bid.FreelancerId equals freelancer.Id
-                                join category in _applicationDbContext.OfferedServiceCategories
-                                    on service.CategoryID equals category.Id
-                                select new BidResponseDto
-                                {
-                                    Id = bid.Id,
-                                    OfferedServiceId = bid.OfferedServiceId,
-                                    FreelancerId = bid.FreelancerId,
-                                    FreelancerName = freelancer.FullName,
-                                    ServiceTitle = service.Title,
-                                    Status = bid.BidStatus.ToString(),
-                                    CreatedAt = bid.CreatedAt,
-                                    CategoryName = category.CategoryName,
-                                    Description = service.Description,
-                                    Location = service.Location,
-                                    PreferredTime = service.PreferredTime,
-                                    Building = service.Building,
-                                    Apartment = service.Apartment,
-                                    Floor = service.Floor,
-                                    Street = service.Street,
-                                })
-                    .ToListAsync(cancellationToken);
-
-            return result;
+            return await (from bid in QueryResult
+                          join service in _applicationDbContext.OfferedServices
+                              on bid.OfferedServiceId equals service.Id
+                          join freelancer in _applicationDbContext.Freelancers
+                              on bid.FreelancerId equals freelancer.Id
+                          join category in _applicationDbContext.OfferedServiceCategories
+                              on service.CategoryID equals category.Id
+                          select new FreelancerBidsResponseDto
+                          {
+                              ProfileImage = freelancer.ProfilePicture ?? string.Empty, // Handle null cases
+                              FreelancerName = freelancer.FullName,
+                              FreelancerService = service.Title ?? "Not Available", // Ensure it doesn't break if null
+                              BidPackages = bid.BidPackages.Select(bp => new BidPackageResponseDto
+                              {
+                                  PackageId = bp.PackageId,
+                                  PackageName = bp.Package.Name,
+                                  PackagePrice = bp.Package.Price,
+                              }).ToList()
+                          })
+                  .ToListAsync(cancellationToken);
 
         }
         #endregion

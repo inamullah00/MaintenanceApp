@@ -10,14 +10,14 @@ namespace Maintenance.Application.Services.Freelance.Specification
 {
     public class BidSearchList : Specification<Bid>
     {
-        public BidSearchList(string? Keyword = "")
+        public BidSearchList(Guid offeredServiceId)
         {
-            if (!string.IsNullOrWhiteSpace(Keyword))
+
+            if (offeredServiceId != Guid.Empty)
             {
-               _ = Query.Where(bid => bid.Freelancer.FullName.Contains(Keyword) ||
-                                bid.Freelancer.Email.Contains(Keyword));
+                Query.Where(x => x.OfferedServiceId == offeredServiceId);
             }
-            _ = Query.OrderBy(x => x.CreatedAt);
+
         }
     }
 }

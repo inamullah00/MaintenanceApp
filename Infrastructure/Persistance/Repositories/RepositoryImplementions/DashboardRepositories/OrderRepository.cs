@@ -1,9 +1,11 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Infrastructure.Persistance.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -163,6 +165,65 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                  .AsNoTracking()
                  .ToListAsync(cancellationToken);
 
+        }
+
+        public async Task<List<PendingServicesResponseDto>> GetPendingClientServicesAsync(ISpecification<Bid> specification, CancellationToken cancellationToken)
+        {
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                        query: _dbContext.Bids.AsQueryable().AsNoTracking(),
+                        specification: specification
+                    );
+
+            return await (
+                from bids in queryResult
+                join offeredService in _dbContext.OfferedServices
+                    on bids.OfferedServiceId equals offeredService.Id
+                join serviceCategory in _dbContext.OfferedServiceCategories
+                    on offeredService.CategoryID equals serviceCategory.Id
+                select new PendingServicesResponseDto
+                {
+                    ServiceCategoryName = serviceCategory.CategoryName,
+                    ServiceTitle = offeredService.Title,
+                    ServiceDescription = offeredService.Description
+                }
+            ).AsNoTracking().ToListAsync(cancellationToken);
+
+        }
+
+       public async Task<List<ClientOrderStatusResponseDto>> GetClientOrdersByStatusAsync(ISpecification<Order> specification , CancellationToken cancellationToken)
+        {
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                               query: _dbContext.Orders.AsQueryable(),
+                               specification: specification);
+
+            return await (from orders in queryResult.AsSplitQuery()
+                          join freelancer in _dbContext.Freelancers.AsNoTracking()
+                          on orders.FreelancerId equals freelancer.Id
+
+                          join service in _dbContext.OfferedServices.AsNoTracking()
+                          on orders.ServiceId equals service.Id
+
+                          join category in _dbContext.OfferedServiceCategories.AsNoTracking()
+                          on service.CategoryID equals category.Id
+
+                          select new ClientOrderStatusResponseDto
+                          {
+                              FreelancerName = freelancer.FullName,
+                              FreelancerEmail = freelancer.Email,
+                              Rating = freelancer.ClientFeedbacks.Any() ? freelancer.ClientFeedbacks.Average(f => f.Rating).ToString("F1") : "0.0", // Handling rating calculation
+                              ServiceTitle = service.Title,
+                              ServiceCategory = category.CategoryName,
+                              ServiceDescription = service.Description,
+                              ServiceAddress = service.Location,
+                              BookingDate = orders.CreatedAt, // Assuming CreatedAt is used for booking
+                              ServiceTime = service.PreferredTime, // Using PreferredTime from service
+                              BidPrice = orders.TotalAmount.ToString("F2"), // Formatting price properly
+                              Image = service.ImageUrls != null && service.ImageUrls.Any() ? service.ImageUrls.FirstOrDefault() : null,
+                              Video = service.VideoUrls != null && service.VideoUrls.Any() ? service.VideoUrls.FirstOrDefault() : null,
+                              Audio = service.AudioUrls != null && service.AudioUrls.Any() ? service.AudioUrls.FirstOrDefault() : null
+                          })
+                          .AsNoTracking()
+                          .ToListAsync(cancellationToken);
         }
     }
 }
