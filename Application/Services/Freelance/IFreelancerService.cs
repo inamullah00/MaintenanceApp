@@ -16,8 +16,8 @@ namespace Maintenance.Application.Services.Freelance
     public interface IFreelancerService
     {
 
-        Task<Result<BidResponseDto>> GetBidsByFreelancerAsync(Guid freelancerId);
-        Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(CancellationToken cancellationToken , string ? Keyword ="");
+        Task<Result<BidResponseDto>> GetBidByFreelancerAsync(Guid FreelancerId);
+        Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId,CancellationToken cancellationToken);
         Task<Result<List<FilteredFreelancerResponseDto>>> FilterFreelancersAsync(FilterFreelancerRequestDto requestDto, CancellationToken cancellationToken);
         Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken);
         Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto);

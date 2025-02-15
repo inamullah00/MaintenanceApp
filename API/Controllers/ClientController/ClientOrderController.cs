@@ -1,4 +1,5 @@
 ﻿using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
@@ -332,8 +333,59 @@ namespace Maintenance.API.Controllers.ClientController
                 Message = result.Message
             });
         }
-#endregion
+        #endregion
 
+
+
+        #region No OF Bids
+
+        #region Get Total No of Bids by Freelancers
+
+        [HttpGet("TotalBidsByFreelancers/{OfferedServiceId}:Guid")]
+        public async Task<IActionResult> GetBidsByFreelancer(Guid OfferedServiceId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("GetBidsByFreelancer called");
+
+            try
+            {
+                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(OfferedServiceId , cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    _logger.LogInformation("Successfully fetched bids ");
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Failed to fetch bids. Message: {Message}", result.Message);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching bids ");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
+        #endregion
 
     }
 }

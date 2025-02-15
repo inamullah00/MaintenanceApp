@@ -32,53 +32,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
 
 
-        #region Get Total No of Bids by Freelancers
-        [HttpGet("TotalBidsByFreelancers")]
-        public async Task<IActionResult> GetBidsByFreelancer(CancellationToken cancellationToken, string? Keyword = "")
-        {
-
-            _logger.LogInformation("GetBidsByFreelancer called with Keyword: {Keyword}", Keyword);
-
-            try
-            {
-               
-                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(cancellationToken,Keyword);
-
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Successfully fetched bids for Keyword: {Keyword}", Keyword);
-                    //return Ok(new
-                    //{
-                    //    StatusCode = result.StatusCode,
-                    //    Success = true,
-                    //    Message = result.Message,
-                    //    Data = result.Value
-                    //});
-                }
-                _logger.LogWarning("Failed to fetch bids for Keyword: {Keyword}. Message: {Message}", Keyword, result.Message);
-
-
-                return Helper.ProcessResult(result); // Using the static method
-                //return StatusCode(result.StatusCode, new
-                //{
-                //    StatusCode = result.StatusCode,
-                //    Success = false,
-                //    Message = result.Message
-                //});
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while fetching bids for Keyword: {Keyword}", Keyword);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-        #endregion
+      
 
         #region Get Bids by Freelancer
         [HttpGet("Bids/{freelancerId:guid}")]
@@ -89,7 +43,7 @@ namespace Maintenance.API.Controllers.FreelancerController
 
             try
             {               
-                 var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(freelancerId);
+                 var result = await _serviceManager.FreelancerService.GetBidByFreelancerAsync(freelancerId);
 
                 if (result.IsSuccess)
                 {
