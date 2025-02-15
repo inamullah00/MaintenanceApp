@@ -1,0 +1,44 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="Common\Caching\" />
+    <Folder Include="Mailing\" />
+    <Folder Include="Services\Admin\ContentSpecification\Filter\" />
+    <Folder Include="Services\Admin\DisputeSpecification\Filter\" />
+    <Folder Include="Services\Admin\FeedbackSpecification\Filter\" />
+    <Folder Include="Services\Admin\OrderSpecification\Filter\" />
+    <Folder Include="Services\Admin\FreelancerSpecification\Filter\" />
+    <Folder Include="Services\Client\Filter\" />
+    <Folder Include="Services\Freelance\Filter\" />
+    <Folder Include="Services\OffereServiceCategory\Filter\" />
+    <Folder Include="Services\OffereServiceCategory\Specification\" />
+    <Folder Include="Settings\" />
+  </ItemGroup>
+
+	<ItemGroup>
+		<FrameworkReference Include="Microsoft.AspNetCore.App" />
+	</ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ardalis.Specification" Version="8.0.0" />
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.3.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.3.0" />
+	
+    <PackageReference Include="Microsoft.IdentityModel.Tokens" Version="8.0.0" />
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Domain\Maintenance.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,33 @@
+﻿@model ServiceCreateViewModel
+@{
+    ViewBag.ModuleName = _CommonLocalizer["Category"];
+    ViewBag.ModuleIcon = "layers";
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="Create" asp-controller="Service" method="post" class="form-service">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label asp-for="Name" class="form-label">@_CommonLocalizer["CategoryName"]</label>
+                                <input type="text" class="form-control" asp-for="Name" placeholder="@_CommonLocalizer["CategoryName"]">
+                                <span asp-validation-for="Name" class="text-danger"></span>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between">
+                            <div>
+                                <a asp-action="Index" class="btn btn-xs btn-secondary me-2"> @_CommonLocalizer["Cancel"]</a>
+                                <button type="submit" class="btn btn-xs btn-primary"> @_CommonLocalizer["Create"]</button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

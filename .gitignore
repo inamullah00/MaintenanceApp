@@ -1,0 +1,13 @@
+# Ignore Visual Studio files
+.vs/
+
+# Ignore build artifacts
+bin/
+obj/
+
+# Ignore temporary files
+*.log
+*.tmp
+
+
+Web/wwwroot/Uploads
