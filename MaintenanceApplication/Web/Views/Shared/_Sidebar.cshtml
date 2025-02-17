@@ -63,6 +63,23 @@
                     </ul>
                 </div>
             </li>
+            <li class="nav-item" active-when-controllers="Package" active-when-actions="Index,Create,Edit">
+                <a class="nav-link" data-bs-toggle="collapse" href="#package" role="button" aria-expanded="false">
+                    <i class="link-icon" data-feather="package"></i>
+                    <span class="link-title">@_CommonLocalizer["Package"]</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="package">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Package")" class="nav-link" active-when-controllers="Package" active-when-actions="Index">@_CommonLocalizer["All"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Create", "Package")" class="nav-link" active-when-controllers="Package" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
 
             <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Create,Edit">
                 <a class="nav-link" data-bs-toggle="collapse" href="#client" role="button" aria-expanded="false">

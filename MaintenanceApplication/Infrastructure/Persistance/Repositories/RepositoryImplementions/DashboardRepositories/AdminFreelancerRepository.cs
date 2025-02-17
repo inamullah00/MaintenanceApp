@@ -1,6 +1,7 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces;
 using Maintenance.Application.ViewModel;
@@ -22,6 +23,17 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         {
             _context = context;
         }
+
+        public async Task<IList<DropdownDto>> GetFreelancersForDropdown()
+        {
+            return await _context.Freelancers.AsNoTracking().OrderBy(f => f.FullName)
+                .Select(f => new DropdownDto
+                {
+                    Id = f.Id,
+                    Name = f.FullName
+                }).ToListAsync();
+        }
+
         public async Task<List<FreelancerService>> GetFreelancerServicesAsync(Guid freelancerId, CancellationToken cancellationToken)
         {
             return await _context.FreelancerServices.Where(fs => fs.FreelancerId == freelancerId).ToListAsync(cancellationToken);

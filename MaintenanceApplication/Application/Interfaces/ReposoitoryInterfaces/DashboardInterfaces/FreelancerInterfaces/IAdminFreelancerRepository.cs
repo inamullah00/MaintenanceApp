@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
@@ -32,5 +33,6 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken);
         Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null);
+        Task<IList<DropdownDto>> GetFreelancersForDropdown();
     }
 }

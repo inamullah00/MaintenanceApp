@@ -2,6 +2,7 @@
 using AutoMapper;
 using Maintenance.Application.Common;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Exceptions;
 using Maintenance.Application.Helper;
@@ -31,6 +32,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             _baseImageUrl = _fileUploaderService.GetImageBaseUrl();
 
         }
+
+        public async Task<IList<DropdownDto>> GetFreelancersForDropdown()
+        {
+            return await _unitOfWork.AdminFreelancerRepository.GetFreelancersForDropdown();
+        }
+
         public async Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter)
         {
             var specification = new FreelancerSearchList(filter);
