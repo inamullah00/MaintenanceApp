@@ -14,7 +14,7 @@
             <li class="nav-item nav-category">Main</li>
             <li class="nav-item" active-when-controllers="Home" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Home")" class="nav-link">
-                    <i class="link-icon" data-feather="box"></i>
+                    <i class="link-icon" data-feather="home"></i>
                     <span class="link-title">@_CommonLocalizer["Home"]</span>
                 </a>
             </li>
@@ -23,14 +23,32 @@
             <li class="nav-item nav-category">Modules</li>
             <li class="nav-item" active-when-controllers="Users" active-when-actions="Index,Create,Edit">
                 <a href="@Url.Action("Index", "Users")" class="nav-link">
-                    <i class="link-icon" data-feather="users"></i>
+                    <i class="fa-regular fa-circle-user link-icon"></i>
                     <span class="link-title">@_CommonLocalizer["User"]</span>
                 </a>
             </li>
 
+            <li class="nav-item" active-when-controllers="Company" active-when-actions="Index,Create,Edit">
+                <a class="nav-link" data-bs-toggle="collapse" href="#company" role="button" aria-expanded="false">
+                    <i class="fa-regular fa-building link-icon"></i>
+                    <span class="link-title">@_CommonLocalizer["Company"]</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="company">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Company")" class="nav-link" active-when-controllers="Company" active-when-actions="Index">@_CommonLocalizer["All"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Create", "Company")" class="nav-link" active-when-controllers="Company" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
             <li class="nav-item" active-when-controllers="Freelancer" active-when-actions="Index,Create,Edit">
                 <a class="nav-link" data-bs-toggle="collapse" href="#freelancer" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="users"></i>
+                    <i class="fa-regular fa-address-card link-icon"></i>
                     <span class="link-title">@_CommonLocalizer["Freelancer"]</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
@@ -46,9 +64,30 @@
                 </div>
             </li>
 
+            <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Create,Edit">
+                <a class="nav-link" data-bs-toggle="collapse" href="#client" role="button" aria-expanded="false">
+                    <i class="fa-regular fa-user link-icon"></i>
+                    <span class="link-title">@_CommonLocalizer["Client"]</span>
+                    <i class="link-arrow" data-feather="chevron-down"></i>
+                </a>
+                <div class="collapse" id="client">
+                    <ul class="nav sub-menu">
+                        <li class="nav-item">
+                            <a href="@Url.Action("Index", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Index">@_CommonLocalizer["All"]</a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="@Url.Action("Create", "Client")" class="nav-link" active-when-controllers="Client" active-when-actions="Create">@_CommonLocalizer["Create"]</a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="nav-item nav-category">Setups</li>
+
+
             <li class="nav-item" active-when-controllers="Service" active-when-actions="Index,Create,Edit">
                 <a class="nav-link" data-bs-toggle="collapse" href="#service" role="button" aria-expanded="false">
-                    <i class="link-icon" data-feather="layers"></i>
+                    <i class="fa fa-th-large link-icon"></i>
                     <span class="link-title">@_CommonLocalizer["Categories"]</span>
                     <i class="link-arrow" data-feather="chevron-down"></i>
                 </a>
@@ -65,15 +104,6 @@
                     </ul>
                 </div>
             </li>
-
-            <li class="nav-item" active-when-controllers="Client" active-when-actions="Index,Edit">
-                <a href="@Url.Action("Index", "Client")" class="nav-link">
-                    <i class="link-icon" data-feather="users"></i>
-                    <span class="link-title">@_CommonLocalizer["Client"]</span>
-                </a>
-            </li>
-
-            <li class="nav-item nav-category">Setups</li>
 
             <li class="nav-item" active-when-controllers="Country" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Country")" class="nav-link">

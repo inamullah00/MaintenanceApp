@@ -26,9 +26,18 @@ namespace Application.Mapper
             CreateMap<ApplicationUser, UserDetailsResponseDto>().ReverseMap();
             CreateMap<UserDetailsResponseDto, ApplicationUser>().ReverseMap();
 
+            #region Admin Freelancer/Company Mapping
+            CreateMap<CompanyCreateViewModel, Freelancer>().ReverseMap();
+            CreateMap<CompanyEditViewModel, Freelancer>().ReverseMap();
+            #endregion
+
+            #region Admin Client Mapping
+            CreateMap<ClientCreateViewModel, Client>().ReverseMap();
+            #endregion
+
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
-            CreateMap<Freelancer, FreelancerEditViewModel>().ReverseMap();
+
             CreateMap<Service, FreelancerService>().ReverseMap();
 
             //Package
@@ -84,6 +93,8 @@ namespace Application.Mapper
             CreateMap<ServiceCreateViewModel, Service>().ReverseMap();
             CreateMap<ServiceEditViewModel, Service>().ReverseMap();
             #endregion
+
+
         }
     }
 }

@@ -1,11 +1,11 @@
 ﻿$(document).ready(function () {
-    var table = $('#freelancersTable').DataTable({
+    var table = $('#companiesTable').DataTable({
         "processing": true,
         "serverSide": true,
         "filter": false,
         "ordering": false,
         "ajax": {
-            "url": "/Freelancer/GetFilteredFreelancers",
+            "url": "/Company/GetFilteredCompanies",
             "type": "POST",
             "datatype": "json",
             "data": function (d) {
@@ -22,7 +22,6 @@
                     return row.DialCode ? `${row.DialCode} ${row.PhoneNumber}` : row.PhoneNumber;
                 }
             },
-            { data: 'DateOfBirth', name: 'DateOfBirth', "autoWidth": true, "className": "text-center" },
             {
                 data: 'ExperienceLevel',
                 render: function (data) {
@@ -45,15 +44,11 @@
                 "autoWidth": true,
                 "className": "text-center"
             },
-
             {
                 data: 'Status',
                 render: function (data) {
                     let statusClass = "";
                     switch (data) {
-                        case "Pending":
-                            statusClass = "bg-warning"; 
-                            break;
                         case "Suspended":
                             statusClass = "bg-danger"; 
                             break;
@@ -74,7 +69,7 @@
                 render: function (data, type, row) {
                     return `
             <div class="text-center">
-                <a href="/Freelancer/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                <a href="/Company/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                     <i class="btn-icon-prepend fa fa-edit"></i>
                 </a>
             </div>`;
@@ -92,62 +87,4 @@
         event.preventDefault();
         table.draw();  
     });
-
-    $(document).on("click", ".deactivate", function () {
-        const title = "Do you really want to deactivate this freelancer?";
-        const id = $(this).attr("data-id");
-        ShowDialog("Deactivate", title, "warning").then((result) => {
-            if (result.isConfirmed) {
-                blockwindow();
-                $.ajax({
-                    type: "PATCH",
-                    url: "/Freelancer/Deactivate?id=" + id,
-                    success: function (response) {
-                        if (response.Status === "Success") {
-                            SuccessToast(response.Message);
-                            table.draw();  
-                        } else {
-                            InfoToast(response.Errors.join("\n"));
-                        }
-                        unblockwindow();
-                    },
-                    error: function (response) {
-                        unblockwindow();
-                        handleAjaxError(response);
-                    },
-                });
-            }
-        });
-        return false;
-    });
-
-    $(document).on("click", ".activate", function () {
-        const title = "Do you really want to activate this freelancer?";
-        const id = $(this).attr("data-id");
-        ShowDialog("Activate", title, "warning").then((result) => {
-            if (result.isConfirmed) {
-                blockwindow();
-                $.ajax({
-                    type: "PATCH",
-                    url: "/Freelancer/Activate?id=" + id,
-                    success: function (response) {
-                        if (response.Status === "Success") {
-                            SuccessToast(response.Message);
-                            table.draw();  
-                        } else {
-                            InfoToast(response.Errors.join("\n"));
-                        }
-                        unblockwindow();
-                    },
-                    error: function (response) {
-                        unblockwindow();
-                        handleAjaxError(response);
-                    },
-                });
-            }
-        });
-        return false;
-    });
-
-   
 });

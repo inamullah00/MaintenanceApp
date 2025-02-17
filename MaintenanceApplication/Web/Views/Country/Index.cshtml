@@ -1,18 +1,13 @@
-﻿@model ClientDatatableFilterViewModel
+﻿@model CountryDatatableFilterViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Client"];
-    ViewBag.ModuleIcon = "user";
+    ViewBag.ModuleName = _CommonLocalizer["Country"];
+    ViewBag.ModuleIcon = "globe";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
                 <div class="row card-title align-middle">
-                    <div class="col-md-12 align-items-center d-flex mt-1">
-                        <a href="@Url.Action("Create", "Client")" class="btn btn-primary btn-xs btn-icon-text">
-                            <i class="btn-icon-prepend" data-feather="plus"></i>@_CommonLocalizer["Create"]
-                        </a>
-                    </div>
                     <div class="col-md-12 mt-1">
                         <form id="filterForm">
                             <div>
@@ -20,7 +15,7 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <label class="form-label">@_CommonLocalizer["Search"]</label>
-                                            <input type="text" id="searchFullName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
+                                            <input type="text" id="searchName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
                                         </div>
                                         <div class="col-md-2 mt-4">
                                             <button type="button" id="filter" class="mt-1 search-button btn btn-primary waves-effect waves-light form-control">
@@ -35,13 +30,13 @@
                 </div>
 
                 <div class="table-responsive">
-                    <table id="clientsTable" class="datatables-products table">
+                    <table id="countriesTable" class="datatables-products table">
                         <thead class="bg-primary">
                             <tr>
-                                <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["FullName"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-envelope link-icon fa-fw"></i> @_CommonLocalizer["Email"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-mobile-alt link-icon fa-fw"></i> @_CommonLocalizer["Mobile"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-map link-icon fa-fw"></i> @_CommonLocalizer["Name"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-globe link-icon fa-fw"></i> @_CommonLocalizer["DialCode"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-flag link-icon fa-fw"></i> @_CommonLocalizer["CountryCode"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-map-marker-alt link-icon fa-fw"></i> @_CommonLocalizer["FlagCode"]</th>
                             </tr>
                         </thead>
                     </table>
@@ -52,5 +47,5 @@
 </div>
 
 @section Scripts {
-    <script src="/customjs/Clients/Client.js" asp-append-version="true"></script>
+    <script src="/customjs/Country.js" asp-append-version="true"></script>
 }

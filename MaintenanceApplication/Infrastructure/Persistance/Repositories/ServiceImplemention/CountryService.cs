@@ -1,7 +1,8 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using Maintenance.Application.Exceptions;
-using Maintenance.Application.Services.Country;
+using Maintenance.Application.Services;
 using Maintenance.Application.ViewModel;
+using Maintenance.Application.Wrapper;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention
 {
@@ -13,6 +14,11 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         {
             _unitOfWork = unitOfWork;
         }
+        public async Task<PaginatedResponse<CountryResponseViewModel>> GetFilteredCountriesAsync(CountryFilterViewModel filter)
+        {
+            var specification = new CountrySearchList(filter);
+            return await _unitOfWork.CountryRepository.GetFilteredCountriesAsync(filter, specification);
+        }
 
         public async Task<IList<CountryResponseViewModel>> GetAllAsync()
         {
@@ -22,7 +28,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             {
                 Id = a.Id,
                 Name = a.Name,
-                Code = a.CountryCode,
+                CountryCode = a.CountryCode,
                 DialCode = a.DialCode,
                 FlagCode = a.FlagCode
             }).ToList();
@@ -36,7 +42,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             {
                 Id = country.Id,
                 Name = country.Name,
-                Code = country.CountryCode,
+                CountryCode = country.CountryCode,
                 DialCode = country.DialCode,
                 FlagCode = country.FlagCode
             };

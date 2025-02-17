@@ -1,10 +1,15 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
+using Maintenance.Application.Common;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Exceptions;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Services.Admin.AdminClientSpecification;
 using Maintenance.Application.Services.Admin.AdminClientSpecification.Specification;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
+using Maintenance.Domain.Entity.ClientEntities;
+using Maintenance.Infrastructure.Extensions;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplemention.DashboardServiceImplemention
 {
@@ -12,12 +17,18 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public AdminClientService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IPasswordService _passwordService;
+        private readonly IFileUploaderService _fileUploaderService;
+        private readonly string _baseImageUrl;
+        public AdminClientService(IUnitOfWork unitOfWork, IMapper mapper, IPasswordService passwordService, IFileUploaderService fileUploaderService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _passwordService = passwordService;
+            _fileUploaderService = fileUploaderService;
+            _baseImageUrl = _fileUploaderService.GetImageBaseUrl();
         }
+
         public async Task<PaginatedResponse<ClientResponseViewModel>> GetFilteredClientsAsync(ClientFilterViewModel filter)
         {
             var specification = new AdminClientSearchList(filter);
@@ -34,21 +45,92 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 Email = client.Email,
                 PhoneNumber = client.PhoneNumber,
                 CountryId = client.CountryId,
+                IsActive = client.IsActive,
+                ProfilePicture = !string.IsNullOrEmpty(client.ProfilePicture) ? _baseImageUrl + client.ProfilePicture : string.Empty,
             };
         }
+
+        public async Task CreateClientAsync(ClientCreateViewModel model, CancellationToken cancellationToken)
+        {
+            var adminId = AppHttpContext.GetAdminCurrentUserId();
+            var user = await _unitOfWork.AdminServiceRepository.GetAdminByIdAsync(adminId) ?? throw new CustomException("User Not Found.");
+
+            var existingEmail = await _unitOfWork.AdminClientRepository.GetClientByEmailAsync(model.Email, cancellationToken);
+            if (existingEmail != null) throw new CustomException($"Duplicate Email {model.Email}");
+
+            var existingPhoneNumber = await _unitOfWork.AdminClientRepository.GetClientByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
+            if (existingPhoneNumber != null) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
+
+            var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId) ?? throw new CustomException("Country Not Found");
+
+            var client = _mapper.Map<Client>(model);
+
+            client.Country = country;
+            client.Activate();
+            client.SetActionBy(user);
+            client.Password = _passwordService.HashPassword(model.Password);
+
+            if (model.ProfilePictureFile != null)
+            {
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Client);
+                client.ProfilePicture = imageFileName;
+            }
+            var createResult = await _unitOfWork.AdminClientRepository.AddClient(client, cancellationToken);
+            if (!createResult) throw new CustomException("Failed to create client.");
+        }
+
+
         public async Task EditClientAsync(ClientEditViewModel model, CancellationToken cancellationToken)
         {
-            var freelancer = await _unitOfWork.AdminClientRepository.GetClientByIdAsync(model.Id, cancellationToken) ?? throw new CustomException("Client not found.");
+            var adminId = AppHttpContext.GetAdminCurrentUserId();
+            var user = await _unitOfWork.AdminServiceRepository.GetAdminByIdAsync(adminId) ?? throw new CustomException("User Not Found.");
+
+            var client = await _unitOfWork.AdminClientRepository.GetClientByIdAsync(model.Id, cancellationToken) ?? throw new CustomException("Client not found.");
+
             var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId);
+
             var existingEmail = await _unitOfWork.AdminClientRepository.GetClientByEmailAsync(model.Email, cancellationToken);
             if (existingEmail != null && existingEmail.Id != model.Id) throw new CustomException($"Duplicate Email {model.Email}");
+
             var existingPhoneNumber = await _unitOfWork.AdminClientRepository.GetClientByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
             if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
-            _mapper.Map(model, freelancer);
-            freelancer.Country = country;
 
-            var updateResult = await _unitOfWork.AdminClientRepository.UpdateClient(freelancer, cancellationToken);
+            client.FullName = model.FullName;
+            client.PhoneNumber = model.PhoneNumber;
+            client.Email = model.Email;
+            client.Address = model.Address;
+            client.Country = country;
+            client.UpdatedAt = DateTime.UtcNow;
+            client.Activate();
+            client.SetActionBy(user);
+
+            if (model.ProfilePictureFile != null)
+            {
+                if (!string.IsNullOrEmpty(client.ProfilePicture))
+                    _fileUploaderService.RemoveFile(client.ProfilePicture);
+
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Client);
+                client.ProfilePicture = imageFileName;
+            }
+
+            var updateResult = await _unitOfWork.AdminClientRepository.UpdateClient(client, cancellationToken);
             if (!updateResult) throw new CustomException("Failed to update freelancer.");
+        }
+
+        public async Task ActivateClientAsync(Guid clientId, CancellationToken cancellationToken)
+        {
+            var client = await _unitOfWork.AdminClientRepository.GetClientByIdAsync(clientId, cancellationToken) ?? throw new CustomException("Client not found");
+            client.Activate();
+            var UpdatedResult = await _unitOfWork.AdminClientRepository.UpdateClient(client, cancellationToken);
+            if (!UpdatedResult) throw new CustomException("Failed to activate service.");
+        }
+
+        public async Task DeactivateClientAsync(Guid clientId, CancellationToken cancellationToken)
+        {
+            var client = await _unitOfWork.AdminClientRepository.GetClientByIdAsync(clientId, cancellationToken) ?? throw new CustomException("Client not found");
+            client.Deactivate();
+            var UpdatedResult = await _unitOfWork.AdminClientRepository.UpdateClient(client, cancellationToken);
+            if (!UpdatedResult) throw new CustomException("Failed to deactivate service.");
         }
     }
 }

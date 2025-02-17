@@ -17,7 +17,6 @@ using Maintenance.Application.Services.Admin.FreelancerSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.ClientPayment;
-using Maintenance.Application.Services.Country;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.OffereServiceCategory;
@@ -91,8 +90,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             EmailService = new EmailService(configuration);
             AdminService = new AdminService(userManager, dbContext);
             CountryService = new CountryService(unitOfWork);
-            AdminClientService = new AdminClientService(unitOfWork, mapper);
+            AdminClientService = new AdminClientService(unitOfWork, mapper, PasswordService, fileUploaderService);
             AdminSevService = new AdminSevService(unitOfWork, mapper);
+
         }
     }
 }

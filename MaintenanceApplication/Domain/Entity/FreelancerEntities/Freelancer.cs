@@ -56,7 +56,11 @@ namespace Maintenance.Domain.Entity.FreelancerEntites
     }
 }
 
-
+public enum FreelancerAccountStatusEnum
+{
+    Suspended = 2,
+    Approved = 3,
+}
 
 public enum AccountStatus
 {

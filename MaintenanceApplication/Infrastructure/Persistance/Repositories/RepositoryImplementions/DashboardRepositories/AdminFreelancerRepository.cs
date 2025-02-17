@@ -55,10 +55,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             return await query.FirstOrDefaultAsync(f => f.Id == id, cancellationToken);
         }
-        public async Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default)
+        public async Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken)
         {
-            // Since the freelancer is already tracked by the context,
-            // we do not need to call Update().
+
+            _context.Update(freelancer);
             await _context.SaveChangesAsync(cancellationToken);
             return true;
         }
@@ -66,32 +66,27 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public async Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken)
         {
             var existingServiceIds = freelancer.FreelancerServices.Select(fs => fs.ServiceId).ToHashSet();
-            var servicesToRemove = freelancer.FreelancerServices.Where(fs => !newServiceIds.Contains(fs.ServiceId)).ToList();
 
-            // Remove services that are no longer needed
+            var servicesToRemove = freelancer.FreelancerServices.Where(fs => !newServiceIds.Contains(fs.ServiceId));
             if (servicesToRemove.Any())
             {
                 _context.FreelancerServices.RemoveRange(servicesToRemove);
             }
 
-            // Add new services
-            var servicesToAdd = newServiceIds.Except(existingServiceIds).ToList();
-            foreach (var serviceId in servicesToAdd)
-            {
-                var service = await _context.Services.FindAsync(serviceId);
-                if (service != null)
+            var servicesToAdd = newServiceIds.Except(existingServiceIds)
+                .Select(serviceId => new FreelancerService
                 {
-                    _context.FreelancerServices.Add(new FreelancerService
-                    {
-                        FreelancerId = freelancer.Id,
-                        ServiceId = service.Id,
-                        CreatedAt = DateTime.UtcNow
-                    });
-                }
-            }
+                    FreelancerId = freelancer.Id,
+                    ServiceId = serviceId,
+                    CreatedAt = DateTime.UtcNow
+                }).ToList();
 
-            await _context.SaveChangesAsync(cancellationToken);
+            if (servicesToAdd.Any())
+            {
+                _context.FreelancerServices.AddRange(servicesToAdd);
+            }
         }
+
 
         public async Task<bool> Approve(Freelancer freelancer, CancellationToken cancellationToken = default)
         {
@@ -114,6 +109,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                  join country in _context.Countries.AsNoTracking()
                                      on freelancer.CountryId equals country.Id into countryGroup
                                  from country in countryGroup.DefaultIfEmpty()
+                                 where freelancer.IsType == UserType.Freelancer
                                  orderby freelancer.FullName
                                  select new FreelancerResponseViewModel
                                  {
@@ -134,6 +130,34 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return new PaginatedResponse<FreelancerResponseViewModel>(freelancers, totalCount, filter.PageNumber, filter.PageSize);
         }
 
+
+        public async Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null)
+        {
+            var query = SpecificationEvaluator.Default.GetQuery(query: _context.Freelancers.AsNoTracking().AsQueryable(), specification: specification);
+
+            var filteredQuery = (from freelancer in query
+                                 join country in _context.Countries.AsNoTracking()
+                                     on freelancer.CountryId equals country.Id into countryGroup
+                                 from country in countryGroup.DefaultIfEmpty()
+                                 where freelancer.IsType == UserType.Company
+                                 orderby freelancer.FullName
+                                 select new CompanyResponseViewModel
+                                 {
+                                     Id = freelancer.Id.ToString(),
+                                     FullName = freelancer.FullName,
+                                     Email = freelancer.Email,
+                                     DialCode = country != null ? country.DialCode : string.Empty,
+                                     CountryId = freelancer.CountryId,
+                                     PhoneNumber = freelancer.PhoneNumber,
+                                     ExperienceLevel = freelancer.ExperienceLevel,
+                                     Status = freelancer.Status,
+                                 });
+            var totalCount = await filteredQuery.CountAsync();
+
+            var companies = await filteredQuery.Skip((filter.PageNumber - 1) * filter.PageSize).Take(filter.PageSize).ToListAsync();
+
+            return new PaginatedResponse<CompanyResponseViewModel>(companies, totalCount, filter.PageNumber, filter.PageSize);
+        }
 
 
 

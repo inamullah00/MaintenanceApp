@@ -1,7 +1,7 @@
 ﻿@model FreelancerDatatableFilterViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Freelancer List"];
-    ViewBag.ModuleIcon = "user";
+    ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
+    ViewBag.ModuleIcon = "address-card";
 }
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
@@ -26,7 +26,7 @@
                                             <label class="form-label">@_CommonLocalizer["Status"]</label>
                                             <select id="statusFilter" class="form-select">
                                                 <option value="">@_CommonLocalizer["All"]</option>
-                                                @foreach (var status in Enum.GetValues(typeof(AccountStatus)))
+                                                @foreach (var status in Enum.GetValues(typeof(FreelancerAccountStatusEnum)))
                                                 {
                                                     <option value="@status">@status</option>
                                                 }
@@ -53,7 +53,7 @@
                                 <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["FullName"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-envelope link-icon fa-fw"></i> @_CommonLocalizer["Email"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-mobile-alt link-icon fa-fw"></i> @_CommonLocalizer["Mobile"]</th>
-                                <th class="text-white fw-bold"><i class="fa fa-calendar-alt link-icon fa-fw"></i> @_CommonLocalizer["DateOfBirth"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-calendar-alt link-icon fa-fw"></i> @_CommonLocalizer["DOB"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-briefcase link-icon fa-fw"></i> @_CommonLocalizer["ExperienceLevel"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-check-circle link-icon fa-fw"></i> @_CommonLocalizer["Status"]</th>
                                 <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>

@@ -31,5 +31,6 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         Task<Freelancer?> GetFreelancerByIdAsync(Guid id, CancellationToken cancellationToken, bool trackChanges = false);
         Task<bool> UpdateFreelancer(Freelancer freelancer, CancellationToken cancellationToken = default);
         Task UpdateFreelancerServicesAsync(Freelancer freelancer, List<Guid> newServiceIds, CancellationToken cancellationToken);
+        Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter, ISpecification<Freelancer>? specification = null);
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
 using Maintenance.Application.Common;
+using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Exceptions;
 using Maintenance.Application.Helper;
@@ -30,6 +31,123 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             _baseImageUrl = _fileUploaderService.GetImageBaseUrl();
 
         }
+        public async Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter)
+        {
+            var specification = new FreelancerSearchList(filter);
+            return await _unitOfWork.AdminFreelancerRepository.GetFilteredCompaniesAsync(filter, specification);
+        }
+
+        public async Task<CompanyEditViewModel> GetCompanyForEditAsync(Guid id, CancellationToken cancellationToken)
+        {
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(id, cancellationToken) ?? throw new CustomException("company not found.");
+            return new CompanyEditViewModel
+            {
+                Id = freelancer.Id,
+                FullName = freelancer.FullName,
+                Email = freelancer.Email,
+                PhoneNumber = freelancer.PhoneNumber,
+                CountryId = freelancer.CountryId,
+                ExperienceLevel = freelancer.ExperienceLevel,
+                Status = freelancer.Status.ToString(),
+                City = freelancer.City,
+                Address = freelancer.Address,
+                Bio = freelancer.Bio,
+                Note = freelancer.Note,
+                CompanyServiceIds = freelancer.FreelancerServices?.Select(fs => fs.ServiceId).ToList() ?? new List<Guid>(),
+                ProfilePicture = !string.IsNullOrEmpty(freelancer.ProfilePicture) ? _baseImageUrl + freelancer.ProfilePicture : string.Empty,
+                CompanyLicenseString = !string.IsNullOrEmpty(freelancer.CompanyLicense) ? _baseImageUrl + freelancer.CompanyLicense : string.Empty,
+            };
+        }
+        public async Task CreateCompanyAsync(CompanyCreateViewModel model, CancellationToken cancellationToken)
+        {
+            var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
+            if (existingEmail != null) throw new CustomException($"Duplicate Email {model.Email}");
+
+            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
+            if (existingPhoneNumber != null) throw new CustomException($"Duplicate Mobile Number {model.PhoneNumber}");
+
+            var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId) ?? throw new CustomException("Country Not Found");
+            var company = _mapper.Map<Freelancer>(model);
+            company.Country = country;
+            company.IsType = UserType.Company;
+            company.MarkAsApproved();
+            company.Password = _passwordService.HashPassword(model.Password);
+            if (model.ProfilePictureFile != null)
+            {
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Freelancer);
+                company.ProfilePicture = imageFileName;
+            }
+            if (model.CompanyLicense != null)
+            {
+                var companylicenseFileName = await _fileUploaderService.SaveFileAsync(model.CompanyLicense, Path.Combine(FileDirectoryConstants.Freelancer, FileDirectoryConstants.CompanyLicense));
+                company.CompanyLicense = companylicenseFileName;
+
+            }
+            foreach (var freelancerServiceId in model.CompanyServiceIds)
+            {
+                var service = await _unitOfWork.AdminServiceRepository.GetServiceByIdAsync(freelancerServiceId) ?? throw new CustomException("Service not found.");
+                var freelancerService = new FreelancerService
+                {
+                    FreelancerId = company.Id,
+                    ServiceId = service.Id
+                };
+                company.FreelancerServices.Add(freelancerService);
+            }
+            var createResult = await _unitOfWork.AdminFreelancerRepository.AddFreelancerAsync(company, cancellationToken);
+            if (!createResult) throw new CustomException("Failed to create freelancer.");
+        }
+
+
+        public async Task EditCompanyAsync(CompanyEditViewModel model, CancellationToken cancellationToken)
+        {
+            var company = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(model.Id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+            var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId) ?? throw new CustomException("Country Not Found");
+
+            var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
+            if (existingEmail != null && existingEmail.Id != model.Id) throw new CustomException($"Duplicate Email {model.Email}");
+
+            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
+            if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
+
+            company.FullName = model.FullName;
+            company.PhoneNumber = model.PhoneNumber;
+            company.Email = model.Email;
+            company.City = model.City;
+            company.Address = model.Address;
+            company.Bio = model.Bio;
+            company.Note = model.Note;
+            company.Country = country;
+            company.ExperienceLevel = model.ExperienceLevel;
+            company.Country = country;
+            company.IsType = UserType.Company;
+
+            if (model.ProfilePictureFile != null)
+            {
+                if (!string.IsNullOrEmpty(company.ProfilePicture))
+                    _fileUploaderService.RemoveFile(company.ProfilePicture);
+
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Freelancer);
+                company.ProfilePicture = imageFileName;
+            }
+
+            if (model.CompanyLicense != null)
+            {
+                if (!string.IsNullOrEmpty(company.CompanyLicense))
+                    _fileUploaderService.RemoveFile(company.CompanyLicense);
+
+                var companylicenseFileName = await _fileUploaderService.SaveFileAsync(model.CompanyLicense, Path.Combine(FileDirectoryConstants.Freelancer, FileDirectoryConstants.CompanyLicense));
+                company.CompanyLicense = companylicenseFileName;
+            }
+
+            if (model.CompanyServiceIds != null)
+            {
+                await _unitOfWork.AdminFreelancerRepository.UpdateFreelancerServicesAsync(company, model.CompanyServiceIds, cancellationToken);
+            }
+
+            var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancer(company, cancellationToken);
+            if (!updateResult) throw new CustomException("Failed to update freelancer.");
+        }
+
         public async Task<PaginatedResponse<FreelancerResponseViewModel>> GetFilteredFreelancersAsync(FreelancerFilterViewModel filter)
         {
             var specification = new FreelancerSearchList(filter);
@@ -57,9 +175,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 ProfilePicture = !string.IsNullOrEmpty(freelancer.ProfilePicture) ? _baseImageUrl + freelancer.ProfilePicture : string.Empty,
                 CivilIdString = !string.IsNullOrEmpty(freelancer.CivilID) ? _baseImageUrl + freelancer.CivilID : string.Empty,
             };
-
         }
-
         public async Task CreateFreelancerAsync(FreelancerCreateViewModel model, CancellationToken cancellationToken)
         {
             var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
@@ -69,7 +185,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             if (existingPhoneNumber != null) throw new CustomException($"Duplicate Mobile Number {model.PhoneNumber}");
 
             var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId) ?? throw new CustomException("Country Not Found");
-
             var freelancer = new Freelancer
             {
                 FullName = model.FullName,
@@ -89,12 +204,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             freelancer.Password = _passwordService.HashPassword(model.Password);
             if (model.ProfilePictureFile != null)
             {
-                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, "Freelancer");
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Freelancer);
                 freelancer.ProfilePicture = imageFileName;
             }
             if (model.CivilID != null)
             {
-                var civilIdFileName = await _fileUploaderService.SaveFileAsync(model.CivilID, "Freelancer/CivilIDs");
+                var civilIdFileName = await _fileUploaderService.SaveFileAsync(model.CivilID, Path.Combine(FileDirectoryConstants.Freelancer, FileDirectoryConstants.CivilIDs));
                 freelancer.CivilID = civilIdFileName;
             }
             foreach (var freelancerServiceId in model.FreelancerServiceIds)
@@ -114,23 +229,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
         public async Task EditFreelancerAsync(FreelancerEditViewModel model, CancellationToken cancellationToken)
         {
-            var freelancer = await _unitOfWork.AdminFreelancerRepository
-                .GetFreelancerByIdAsync(model.Id, cancellationToken)
-                ?? throw new CustomException("Freelancer not found.");
+            var freelancer = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByIdAsync(model.Id, cancellationToken) ?? throw new CustomException("Freelancer not found.");
+            var country = await _unitOfWork.CountryRepository.GetByIdAsync(model.CountryId) ?? throw new CustomException("Country Not Found");
 
-            var country = await _unitOfWork.CountryRepository
-                .GetByIdAsync(model.CountryId)
-                ?? throw new CustomException("Country Not Found");
+            var existingEmail = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByEmailAsync(model.Email, cancellationToken);
+            if (existingEmail != null && existingEmail.Id != model.Id) throw new CustomException($"Duplicate Email {model.Email}");
 
-            var existingEmail = await _unitOfWork.AdminFreelancerRepository
-                .GetFreelancerByEmailAsync(model.Email, cancellationToken);
-            if (existingEmail != null && existingEmail.Id != model.Id)
-                throw new CustomException($"Duplicate Email {model.Email}");
-
-            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository
-                .GetFreelancerByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
-            if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id)
-                throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
+            var existingPhoneNumber = await _unitOfWork.AdminFreelancerRepository.GetFreelancerByPhoneNumberAsync(model.PhoneNumber, model.CountryId, cancellationToken);
+            if (existingPhoneNumber != null && existingPhoneNumber.Id != model.Id) throw new CustomException($"Duplicate MobileNumber {model.PhoneNumber}");
 
             // Update freelancer details
             freelancer.FullName = model.FullName;
@@ -144,36 +250,31 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             freelancer.Country = country;
             freelancer.ExperienceLevel = model.ExperienceLevel;
 
-            // Handle Profile Picture Upload
             if (model.ProfilePictureFile != null)
             {
                 if (!string.IsNullOrEmpty(freelancer.ProfilePicture))
                     _fileUploaderService.RemoveFile(freelancer.ProfilePicture);
 
-                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, "Freelancer");
+                var imageFileName = await _fileUploaderService.SaveFileAsync(model.ProfilePictureFile, FileDirectoryConstants.Freelancer);
                 freelancer.ProfilePicture = imageFileName;
             }
 
-            // Handle Civil ID Upload
             if (model.CivilId != null)
             {
                 if (!string.IsNullOrEmpty(freelancer.CivilID))
                     _fileUploaderService.RemoveFile(freelancer.CivilID);
 
-                var civilIdFileName = await _fileUploaderService.SaveFileAsync(model.CivilId, "Freelancer/CivilIDs");
+                var civilIdFileName = await _fileUploaderService.SaveFileAsync(model.CivilId, Path.Combine(FileDirectoryConstants.Freelancer, FileDirectoryConstants.CivilIDs));
                 freelancer.CivilID = civilIdFileName;
             }
 
-            // Ensure FreelancerServices is updated via repository
             if (model.FreelancerServiceIds != null)
             {
                 await _unitOfWork.AdminFreelancerRepository.UpdateFreelancerServicesAsync(freelancer, model.FreelancerServiceIds, cancellationToken);
             }
 
-            // Save the changes
             var updateResult = await _unitOfWork.AdminFreelancerRepository.UpdateFreelancer(freelancer, cancellationToken);
-            if (!updateResult)
-                throw new CustomException("Failed to update freelancer.");
+            if (!updateResult) throw new CustomException("Failed to update freelancer.");
         }
 
 

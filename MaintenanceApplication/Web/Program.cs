@@ -50,13 +50,15 @@ var logger = new LoggerConfiguration()
   .CreateLogger();
 
 builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+builder.Logging.AddDebug();
 builder.Logging.AddSerilog(logger);
 
 // Db Setup 
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => options.EnableRetryOnFailure());
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"), options => options.EnableRetryOnFailure()).EnableSensitiveDataLogging();
 });
 
 //Infrastructure Services 

@@ -1,17 +1,16 @@
-﻿@model FreelancerEditViewModel
+﻿@model CompanyEditViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Freelancer"];
-    ViewBag.ModuleIcon = "address-card";
+    ViewBag.ModuleName = _CommonLocalizer["Company"];
+    ViewBag.ModuleIcon = "building";
     var countries = ViewBag.Countries as List<CountryResponseViewModel> ?? new List<CountryResponseViewModel>();
     var freelancerServices = ViewBag.FreelancerServices as List<ServiceResponseViewModel> ?? new List<ServiceResponseViewModel>();
-    var dob = Model.DateOfBirth.ToString("yyyy-MM-dd");
 }
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Edit" asp-controller="Freelancer" method="post" class="form-freelancer" enctype="multipart/form-data">
+                <form asp-action="Edit" asp-controller="Company" method="post" class="form-company" enctype="multipart/form-data">
                     <input type="hidden" asp-for="Id" />
                     <div class="row">
                         <div class="col-md-6">
@@ -71,8 +70,8 @@
                         <div class="col-md-6">
                             <div class="mb-4">
                                 <label class="form-label">@_CommonLocalizer["Categories"]</label>
-                                @Html.DropDownListFor(a => a.FreelancerServiceIds, new SelectList(freelancerServices, "Id", "Name"), _CommonLocalizer["Select"], new { @class = "form-control select2Input", multiple = "multiple" })
-                                <span asp-validation-for="FreelancerServiceIds" class="text-danger"></span>
+                                @Html.DropDownListFor(a => a.CompanyServiceIds, new SelectList(freelancerServices, "Id", "Name"), _CommonLocalizer["Select"], new { @class = "form-control select2Input", multiple = "multiple" })
+                                <span asp-validation-for="CompanyServiceIds" class="text-danger"></span>
                             </div>
                             <div class="mb-4">
                                 <label asp-for="City" class="form-label">@_CommonLocalizer["City"]</label>
@@ -84,13 +83,6 @@
                                 <label asp-for="Address" class="form-label">@_CommonLocalizer["Address"]</label>
                                 <input type="text" class="form-control" asp-for="Address" placeholder="@_CommonLocalizer["Address"]">
                                 <span asp-validation-for="Address" class="text-danger"></span>
-                            </div>
-                            <div class="mb-4">
-                                <label asp-for="DateOfBirth" class="form-label">@_CommonLocalizer["DOB"]</label>
-                                <div class="input-group">
-                                    <input type="text" asp-for="DateOfBirth" class="form-control datetime-picker" placeholder="@_CommonLocalizer["Select"]" data-input value="@dob" data-type="date" data-show="past" />
-                                    <span class="input-group-text input-group-addon" data-toggle><i data-feather="calendar"></i></span>
-                                </div>
                             </div>
                             <div class="mb-4">
                                 <label asp-for="ExperienceLevel" class="form-label">@_CommonLocalizer["ExperienceLevel"]</label>
@@ -105,25 +97,25 @@
                             </div>
 
                             <div class="mb-4">
-                                <label asp-for="Status" class="form-label">@_CommonLocalizer["AccountStatus"]</label>
+                                <label asp-for="Status" class="form-label">@_CommonLocalizer["Status"]</label>
                                 <input type="text" class="form-control disablePointerEvents" asp-for="Status" placeholder="@_CommonLocalizer["AccountStatus"]">
                                 <span asp-validation-for="Status" class="text-danger"></span>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Civil ID</label>
-                                <input type="file" class="form-control" name="CivilID"accept="image/jpeg, image/png, application/pdf" data-file-container="filePreview" onchange="previewFile(event)">
+                                <label class="form-label">@_CommonLocalizer["CompanyLicense"]</label>
+                                <input type="file" class="form-control" name="CompanyLicense" accept="image/jpeg, image/png, application/pdf" data-file-container="filePreview" onchange="previewFile(event)">
 
                                 <div id="filePreview">
-                                    @if (!string.IsNullOrEmpty(Model.CivilIdString))
+                                    @if (!string.IsNullOrEmpty(Model.CompanyLicenseString))
                                     {
-                                        if (Model.CivilIdString.EndsWith(".jpg") || Model.CivilIdString.EndsWith(".png"))
+                                        if (Model.CompanyLicenseString.EndsWith(".jpg") || Model.CompanyLicenseString.EndsWith(".png"))
                                         {
-                                            <img src="@Model.CivilIdString" alt="Civil ID" style="width: 150px; height: 150px; margin-top: 10px;">
+                                            <img src="@Model.CompanyLicenseString" alt="Company License" style="width: 150px; height: 150px; margin-top: 10px;">
                                         }
-                                        else if (Model.CivilIdString.EndsWith(".pdf"))
+                                        else if (Model.CompanyLicenseString.EndsWith(".pdf"))
                                         {
-                                            <iframe src="@Model.CivilIdString" style="width: 150px; height: 150px; border: 1px solid #ccc; margin-top: 10px;"></iframe>
+                                            <iframe src="@Model.CompanyLicenseString" style="width: 150px; height: 150px; border: 1px solid #ccc; margin-top: 10px;"></iframe>
                                         }
                                     }
                                     else
@@ -147,13 +139,13 @@
                             <div>
                                 @if (Model.Status == "Approved")
                                 {
-                                    <button type="button" id="suspend-freelancer" data-id="@Model.Id" class="btn btn-danger">
+                                    <button type="button" id="suspend-company" data-id="@Model.Id" class="btn btn-danger">
                                         <i data-feather="slash"></i>@_CommonLocalizer["Suspend"]
                                     </button>
                                 }
                                 else
                                 {
-                                    <button type="button" id="approve-freelancer" data-id="@Model.Id" class="btn btn-success">
+                                    <button type="button" id="approve-company" data-id="@Model.Id" class="btn btn-success">
                                         <i data-feather="check"></i>@_CommonLocalizer["Approve"]
                                     </button>
                                 }
@@ -172,16 +164,16 @@
     <script>
         $(document).ready(function () {
             // Serialize the CelebrityTypeIds from Razor to JavaScript
-            var selectedValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.FreelancerServiceIds));
+            var selectedValues = @Html.Raw(System.Text.Json.JsonSerializer.Serialize(Model.CompanyServiceIds));
 
             // Set the values for the Select2 dropdown and trigger the change event
-            $('#FreelancerServiceIds').val(selectedValues).trigger('change');
+            $('#CompanyServiceIds').val(selectedValues).trigger('change');
 
-        $(document).on("click", "#approve-freelancer", function () {
+            $(document).on("click", "#approve-company", function () {
             const title = "Do you really want to approve?";
             const freelancerId = $(this).attr("data-id");
 
-            ShowDialog("Approve Freelancer", title, "warning").then((result) => {
+                ShowDialog("Approve Company", title, "warning").then((result) => {
                 if (result.isConfirmed) {
                     blockwindow();
                     $.ajax({
@@ -190,13 +182,13 @@
                         success: function (response) {
                             if (response.Status === "Success") {
                                 SuccessToast(response.Message);
-                                $("#approve-freelancer").hide();
-                                $("#suspend-freelancer").show();
+                                $("#approve-company").hide();
+                                $("#suspend-company").show();
                             } else {
                                 InfoToast(response.Errors.join("\n"));
                             }
                             unblockwindow();
-                            window.location.href = "/Freelancer";
+                            window.location.href = "/Company";
                         },
                         error: function (response) {
                             unblockwindow();
@@ -208,11 +200,11 @@
             return false;
         });
 
-        $(document).on("click", "#suspend-freelancer", function () {
+            $(document).on("click", "#suspend-company", function () {
             const title = "Do you really want to suspend?";
             const freelancerId = $(this).attr("data-id");
 
-            ShowDialog("Suspend Freelancer", title, "warning").then((result) => {
+                ShowDialog("Suspend Company", title, "warning").then((result) => {
                 if (result.isConfirmed) {
                     blockwindow();
                     $.ajax({
@@ -221,13 +213,13 @@
                         success: function (response) {
                             if (response.Status === "Success") {
                                 SuccessToast(response.Message);
-                                $("#suspend-freelancer").hide();
-                                $("#approve-freelancer").show();
+                                $("#suspend-company").hide();
+                                $("#approve-company").show();
                             } else {
                                 InfoToast(response.Errors.join("\n"));
                             }
                             unblockwindow();
-                            window.location.href = "/Freelancer";
+                            window.location.href = "/Company";
                         },
                         error: function (response) {
                             unblockwindow();

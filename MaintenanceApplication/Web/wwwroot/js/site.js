@@ -282,11 +282,9 @@ function initializePicker(selector, options = {}) {
 initializePicker('.datetime-picker');
 
 
-//previewImage for single image selector
-
 function previewImage(event) {
     const file = event.target.files[0];
-    const allowedTypes = ["image/jpeg", "image/png"];
+    const allowedTypes = ["image/jpeg", "image/png", "application/pdf"];
     const imageContainer = event.target.getAttribute('data-image-container');
     const imageElm = document.getElementById(imageContainer)
     if (file && allowedTypes.includes(file.type)) {
@@ -297,31 +295,40 @@ function previewImage(event) {
         reader.readAsDataURL(file);
     } else {
 
-        alert("Only JPG and PNG images are allowed.");
+        alert("Only JPG, PNG and PDF are allowed.");
         event.target.value = "";
         imageElm.src = "/images/others/placeholder.jpg";
     }
 }
-function previewPdf(event) {
-    const file = event.target.files[0];
-    const allowedTypes = ["application/pdf"];
-    const pdfContainerId = event.target.getAttribute('data-pdf-container');
-    const pdfElm = document.getElementById(pdfContainerId);
 
-    if (file && allowedTypes.includes(file.type)) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            pdfElm.src = e.target.result;
-            pdfElm.style.display = "block"; // Show the iframe when a PDF is uploaded
-        };
-        reader.readAsDataURL(file);
-    } else {
-        alert("Only PDF files are allowed.");
-        event.target.value = "";
-        pdfElm.src = "";
-        pdfElm.style.display = "none"; // Hide the iframe if no valid PDF is selected
+function previewFile(event) {
+    const file = event.target.files[0];
+    const allowedImageTypes = ["image/jpeg", "image/png"];
+    const allowedPdfType = "application/pdf";
+    const fileContainer = event.target.getAttribute('data-file-container');
+    const fileElm = document.getElementById(fileContainer);
+
+    if (file) {
+        if (allowedImageTypes.includes(file.type)) {
+            // Handle image preview
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                fileElm.innerHTML = `<img src="${e.target.result}" alt="Preview" style="width="150px" height="150px">`;
+            };
+            reader.readAsDataURL(file);
+        } else if (file.type === allowedPdfType) {
+            // Handle PDF preview
+            const pdfUrl = URL.createObjectURL(file);
+            fileElm.innerHTML = `<iframe src="${pdfUrl}" type="application/pdf" width="150px" height="150px" style="border: 1px solid #ccc;"></iframe>`;
+        } else {
+            // Invalid file type
+            alert("Only JPG, PNG images, and PDF files are allowed.");
+            event.target.value = "";
+            fileElm.innerHTML = `<img src="/images/others/placeholder.jpg" alt="Placeholder" style="width="150px" height="150px">`;
+        }
     }
 }
+
 
 
 //tinymce
