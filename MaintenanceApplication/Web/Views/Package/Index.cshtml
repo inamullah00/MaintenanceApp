@@ -1,0 +1,62 @@
+﻿@model PackageDatatableFilterViewModel
+@{
+    ViewBag.ModuleName = _CommonLocalizer["Package"] +' '+ _CommonLocalizer["List"];
+    ViewBag.ModuleIcon = "cube";
+    var freelancers = ViewBag.Freelancers as List<DropdownDto> ?? new List<DropdownDto>();
+
+}
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <div class="row card-title align-middle">
+                    <div class="col-md-12 align-items-center d-flex mt-1">
+                        <a href="@Url.Action("Create", "Package")" class="btn btn-primary btn-xs btn-icon-text">
+                            <i class="btn-icon-prepend" data-feather="plus"></i>@_CommonLocalizer["Create"]
+                        </a>
+                    </div>
+                    <div class="col-md-12 mt-1">
+                        <form id="filterForm">
+                            <div>
+                                <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <label class="form-label">@_CommonLocalizer["Search"]</label>
+                                            <input type="text" id="searchFullName" placeholder="@_CommonLocalizer["Search"]" class="form-control">
+                                        </div>
+                                        <div class="col-md-2">
+                                        <label class="form-label">@_CommonLocalizer["User"]</label>
+                                        @Html.DropDownListFor(a => a.FreelancerId, new SelectList(freelancers, "Id", "Name"), "Select", new { @class = "form-control select2Input" })
+                                    </div>
+                                        <div class="col-md-2 mt-4">
+                                            <button type="button" id="filter" class="mt-1 search-button btn btn-primary waves-effect waves-light form-control">
+                                                @_CommonLocalizer["Filter"]
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="table-responsive">
+                    <table id="clientsTable" class="datatables-products table">
+                        <thead class="bg-primary">
+                            <tr>
+                                <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["PackageName"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-money-bill-wave link-icon fa-fw"></i> @_CommonLocalizer["Price"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-user link-icon fa-fw"></i> @_CommonLocalizer["FreelancerName"]</th>
+                                <th class="text-white fw-bold"><i class="fa fa-cogs link-icon fa-fw"></i> @_CommonLocalizer["Action"]</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="/customjs/Packages/Index.js" asp-append-version="true"></script>
+}

@@ -26,12 +26,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
         public async Task<List<DropdownDto>> GetUsersForDropdown()
         {
-            var customers = await _dbContext.Users.Select(a => new DropdownDto
+            var users = await _dbContext.Users.Select(a => new DropdownDto
             {
-                Id = a.Id,
+                Id = Guid.Parse(a.Id),
                 Name = a.FullName ?? string.Empty,
             }).ToListAsync().ConfigureAwait(false);
-            return customers;
+            return users;
         }
         public async Task<PaginatedResponse<UserResponseViewModel>> GetFilteredUsers(UserFilterViewModel model)
         {

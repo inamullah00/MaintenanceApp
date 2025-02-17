@@ -39,6 +39,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public ICountryRepository CountryRepository { get; }
         public IAdminClientRepository AdminClientRepository { get; }
         public IAdminServiceRepository AdminServiceRepository { get; }
+        public IAdminPackageRepository AdminPackageRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -55,6 +56,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             CountryRepository = new CountryRepository(dbContext);
             AdminClientRepository = new AdminClientRepository(dbContext);
             AdminServiceRepository = new AdminServiceRepository(dbContext);
+            AdminPackageRepository = new AdminPackageRepository(dbContext);
 
         }
 

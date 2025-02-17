@@ -23,6 +23,7 @@ namespace Application.Interfaces.IUnitOFWork
         public ICountryRepository CountryRepository { get; }
         public IAdminClientRepository AdminClientRepository { get; }
         public IAdminServiceRepository AdminServiceRepository { get; }
+        public IAdminPackageRepository AdminPackageRepository { get; }
 
         Task<int> SaveChangesAsync();
     }

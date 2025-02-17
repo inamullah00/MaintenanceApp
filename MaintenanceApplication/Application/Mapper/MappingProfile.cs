@@ -35,6 +35,11 @@ namespace Application.Mapper
             CreateMap<ClientCreateViewModel, Client>().ReverseMap();
             #endregion
 
+            #region Admin Package Mapping
+            CreateMap<PackageCreateViewModel, Package>().ReverseMap();
+            CreateMap<PackageEditViewModel, Package>().ReverseMap();
+            #endregion
+
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
 

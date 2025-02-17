@@ -18,6 +18,17 @@ namespace Maintenance.Domain.Entity.FreelancerEntities
         // Many-to-Many Relationship: A package can be used in multiple bids
         public ICollection<BidPackage> BidPackages { get; set; }
         public ApplicationUser? ActionBy { get; set; }
+
+        public void SetActionBy(ApplicationUser user)
+        {
+            ActionBy = user;
+        }
+
+        public void MarkAsDeleted(ApplicationUser user)
+        {
+            ActionBy = user;
+            DeletedAt = DateTime.UtcNow;
+        }
     }
 
 }

@@ -1,4 +1,5 @@
-﻿using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
+﻿using Maintenance.Application.Dto_s.Common;
+using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.ViewModel;
 using Maintenance.Application.Wrapper;
 
@@ -28,5 +29,6 @@ namespace Maintenance.Application.Services.Admin.FreelancerSpecification
         Task EditCompanyAsync(CompanyEditViewModel model, CancellationToken cancellationToken);
         Task<PaginatedResponse<CompanyResponseViewModel>> GetFilteredCompaniesAsync(FreelancerFilterViewModel filter);
         Task<CompanyEditViewModel> GetCompanyForEditAsync(Guid id, CancellationToken cancellationToken);
+        Task<IList<DropdownDto>> GetFreelancersForDropdown();
     }
 }
