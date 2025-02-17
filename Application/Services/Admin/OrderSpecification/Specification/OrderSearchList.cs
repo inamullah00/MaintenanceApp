@@ -15,8 +15,7 @@ namespace Maintenance.Application.Services.Admin.OrderSpecification.Specificatio
         {
             if (!string.IsNullOrWhiteSpace(Keyword))
             {
-                _ = Query.Where(x => x.Description.Contains(Keyword) ||
-                                 x.Client.FullName.Contains(Keyword) ||
+                _ = Query.Where(x => x.Client.FullName.Contains(Keyword) ||
                                  x.Service.Title.Contains(Keyword) ||
                                  x.Service.Description.Contains(Keyword));
             }

@@ -132,7 +132,7 @@ namespace Maintenance.Application.Common.Constants
         public const string FreelancerBidDeletionFailed = "Failed to delete the bid. It may not exist or another server error occurred.";
         public const string FreelancerBidAlreadyAccepted = "The bid has already been accepted.";
         public const string FreelancerBidExpired = "The bid has expired and can no longer be modified.";
-        public const string InvalidFreelancerId = "The provided freelancer ID Aagainst Bid is invalid or empty.";
+        public const string InvalidFreelancerId = "The provided freelancer ID is invalid or empty.";
         public const string InvalidFreelancerBidId = "The provided Bid ID is Invalid or empty.";
         public const string InvalidFreelancerBidData = "The provided bid data is invalid.";
         public const string FreelancerBidAlreadyAssigned = "The bid has already been assigned to another freelancer.";
@@ -180,6 +180,11 @@ namespace Maintenance.Application.Common.Constants
         public const string OrderAlreadyClosed = "The order has already been closed and cannot be modified.";
         public const string OrderAlreadyInProgress = "The order is already in progress and cannot be assigned.";
         public const string OrderAlreadyResolved = "The order has already been resolved and cannot be modified.";
+
+
+        public const string NoInProcessOrdersFound = "No Any InProcess Orders Found!.";
+        public const string NoInProgressOrdersFound = "No Any InProgress Orders Found!.";
+        public const string NoAnyCompletedOrdersFound = "No Any Completed Orders Found!.";
         #endregion
 
         #region Feedback Error Messages

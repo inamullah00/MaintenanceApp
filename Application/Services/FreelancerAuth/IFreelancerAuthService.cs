@@ -32,15 +32,13 @@ namespace Maintenance.Application.Services.FreelancerAuth
 
         // Get freelancer profile by ID
         public Task<Result<FreelancerProfileDto>> GetFreelancerProfileAsync(Guid freelancerId,CancellationToken cancellationToken);
-        public Task<Result<List<FreelancerProfileDto>>> GetFreelancersAsync(string Keyword);
 
         // Forgot password (send reset email)
         public Task<Result<string>> ForgotPasswordAsync(string email , CancellationToken cancellationToken);
 
         // Reset password using a reset token
         public Task<Result<bool>> ValidateOtpAsync (int OTP, CancellationToken cancellationToken);
-        public Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword , CancellationToken cancellationToken);        public Task<Result<bool>> BlockFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto updateDto, CancellationToken cancellationToken = default);
-        public Task<Result<bool>> UnBlockFreelancerAsync(Guid freelancerId, FreelancerStatusUpdateDto updateDto , CancellationToken cancellationToken); // Unblock a freelancer
-        public Task<Result<Freelancer>> ApproveFreelancerAsync(Guid freelancerId,FreelancerStatusUpdateDto statusUpdateDto, CancellationToken cancellationToken);
-    }
+        public Task<Result<bool>> ResendOtpAsync(string email, CancellationToken cancellationToken);
+        public Task<Result<bool>> ResetPasswordAsync(string resetToken, string newPassword , CancellationToken cancellationToken);    
+     }
 }

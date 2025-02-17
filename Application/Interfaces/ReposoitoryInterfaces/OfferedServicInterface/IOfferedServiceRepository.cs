@@ -22,7 +22,8 @@ namespace Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface
 
         Task<bool> RemoveAsync(OfferedService offeredService, CancellationToken cancellationToken = default);
 
-        Task<OfferedServiceResponseDto> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<OfferedService> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<OfferedServiceResponseDto> GetOfferedServiceByIdAsync(Guid id, CancellationToken cancellationToken = default);
 
         Task<List<OfferedServiceResponseDto>> GetAllAsync(CancellationToken cancellationToken = default);
         Task<List<RequestedServiceResponseDto>> GetRequestedServicesAsync(ISpecification<OfferedService> specification, CancellationToken cancellationToken = default);

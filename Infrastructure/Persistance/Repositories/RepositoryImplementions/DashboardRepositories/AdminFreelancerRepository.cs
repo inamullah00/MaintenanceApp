@@ -197,16 +197,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                 var performanceReport = await (from FreelancerOrders in _context.Orders
                                                join Freelancer in _context.Freelancers
                                                on FreelancerOrders.FreelancerId equals Freelancer.Id
-                                               where FreelancerOrders.CreatedAt >= startDate && FreelancerOrders.CompletedDate <= endDate && FreelancerOrders.CompletedDate != null
+                                               where FreelancerOrders.CreatedAt >= startDate 
                                                group FreelancerOrders by Freelancer.Id into g
                                                select new FreelancerPerformanceReportResponseDto
                                                {
                                                    FreelancerId = g.Key,
                                                    FreelancerName = g.Select(f => f.Freelancers.FullName).FirstOrDefault(),
                                                    TotalOrders = g.Count(),
-                                                   TotalEarnings = g.Sum(o => o.FreelancerAmount), // Assuming `FreelancerAmount` is the payment to the freelancer
-                                                   //AverageRating = g.Average(o => o.Rat), // Assuming `Rating` is available in the `Orders`
-                                                   CompletedOrders = g.Count(o => o.Status == OrderStatus.Completed), // Adjust depending on your `Status` field
+                                                  
                                                    StartDate = startDate,
                                                    EndDate = endDate
                                                }).ToListAsync(cancellationToken);

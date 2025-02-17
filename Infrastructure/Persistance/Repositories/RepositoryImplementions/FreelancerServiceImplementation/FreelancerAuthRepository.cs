@@ -1,6 +1,7 @@
 ﻿using Domain.Entity.UserEntities;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
+using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.UserEntities;
 using Maintenance.Infrastructure.Persistance.Data;
@@ -23,21 +24,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return freelancer;
         }
 
-        public Task<bool> ApproveFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> BlockFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> DeleteFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
-
+       
         public Task<bool> FreelancerExistsAsync(Guid freelancerId)
         {
             throw new NotImplementedException();
@@ -49,56 +36,11 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             var freelancer = await _dbContext.Freelancers
                  .AsNoTracking()
                  .Where(f => f.Id == freelancerId)
-                 //.Select(f => new FreelancerProfileDto
-                 //{
-                 //    Id = f.Id,
-                 //    FullName = f.FullName,
-                 //    Email = f.Email,
-                 //    ProfilePicture = f.ProfilePicture,
-                 //    AreaOfExpertise = f.AreaOfExpertise.ToString(),
-                 //    Status = f.Status.ToString()
-                 //})
                  .FirstOrDefaultAsync(cancellationToken);
 
             return freelancer;
         }
 
-        public async Task<List<FreelancerProfileDto>> GetFreelancersAsync(string keyword = null)
-        {
-            var freelancers = await _dbContext.Freelancers
-                  .AsNoTracking()
-                  .Select(f => new FreelancerProfileDto
-                  {
-                      Id = f.Id,
-                      FullName = f.FullName,
-                      Email = f.Email,
-                      ProfilePicture = f.ProfilePicture,
-                      Status = f.Status.ToString()
-                  })
-                  .ToListAsync();
-
-            return freelancers;
-        }
-
-        public Task<(List<Freelancer>, int)> GetFreelancersPaginatedAsync(int pageNumber, int pageSize)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> ReactivateFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> SuspendFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<bool> UnblockFreelancerAsync(Guid freelancerId)
-        {
-            throw new NotImplementedException();
-        }
 
         public async Task<Freelancer> UpdateFreelancerAsync(Freelancer freelancer)
         {
@@ -140,5 +82,50 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         {
             return await _dbContext.FreelancerOtps.Where(f => f.Email == Email).FirstOrDefaultAsync();
         }
+
+        //Get Valid OTP 
+        public async Task<FreelancerOtp?> GetValidFreelancerOTPByEmail(string email, CancellationToken cancellationToken)
+        {
+            return await _dbContext.FreelancerOtps
+                      .Where(otp => otp.Email == email && !otp.IsUsed && otp.ExpiresAt > DateTime.UtcNow)
+                      .OrderByDescending(otp => otp.ExpiresAt) // Get the latest valid OTP
+                      .FirstOrDefaultAsync(cancellationToken);
+        }
+        //Get Recently Expired OTP
+        public async Task<FreelancerOtp?> GetRecentlyExpiredOTP(string email, CancellationToken cancellationToken)
+        {
+            return await _dbContext.FreelancerOtps
+               .Where(otp => otp.Email == email && otp.ExpiresAt < DateTime.UtcNow) // Only expired OTPs
+               .OrderByDescending(otp => otp.ExpiresAt) // Get the most recently expired OTP
+               .FirstOrDefaultAsync(cancellationToken);
+        }
+
+          // Add a freelancer OTP to the database
+        public async Task<FreelancerOtp> AddFreelancerOTP(FreelancerOtp otp, CancellationToken cancellationToken)
+        {
+            await _dbContext.FreelancerOtps.AddAsync(otp, cancellationToken);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return otp;
+        }
+
+        // Update freelancer OTP
+        public async Task<FreelancerOtp> UpdateFreelancerOTP(FreelancerOtp otp, CancellationToken cancellationToken)
+        {
+             _dbContext.FreelancerOtps.Update(otp);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return otp;
+        }
+
+        // Delete freelancer OTP
+        public async Task<FreelancerOtp?> DeleteFreelancerOTP(Guid id, CancellationToken cancellationToken)
+        {
+            var otp = await _dbContext.FreelancerOtps.FindAsync(new object[] { id }, cancellationToken);
+            if (otp == null) return null;
+
+            _dbContext.FreelancerOtps.Remove(otp);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return otp;
+        }
+
     }
-}
+}   

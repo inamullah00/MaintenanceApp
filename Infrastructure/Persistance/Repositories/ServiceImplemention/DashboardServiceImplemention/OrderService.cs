@@ -4,6 +4,7 @@ using AutoMapper;
 using MailKit.Search;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
@@ -11,6 +12,7 @@ using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -86,13 +88,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             order.FreelancerId = assignOrderDto.FreelancerId;
             order.Status = OrderStatus.InProgress;
-            order.UpdatedAt = DateTime.UtcNow;
 
             var orderEntity = _mapper.Map<Order>(order);
 
             var isUpdated = await _unitOfWork.OrderRepository.UpdateFieldsAsync(
                 orderEntity,
-                new[] { nameof(order.FreelancerId), nameof(order.Status), nameof(order.UpdatedAt) },
+                new[] { nameof(order.FreelancerId), nameof(order.Status) },
                 cancellationToken
             );
 
@@ -145,7 +146,16 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<OrderResponseDto>.Failure(ErrorMessages.InvalidOrderData, StatusCodes.Status400BadRequest);
             }
 
-            var order = _mapper.Map<Order>(createOrderRequestDto);
+            var order = new Order
+            {
+                ClientId = createOrderRequestDto.ClientId,
+                FreelancerId = createOrderRequestDto.FreelancerId,
+                ServiceId = createOrderRequestDto.ServiceId,
+                Status = OrderStatus.InProgress,
+                Budget = createOrderRequestDto.Budget,
+
+            };
+
 
             var orderRes = await _unitOfWork.OrderRepository.CreateAsync(order, cancellationToken);
 
@@ -178,7 +188,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
                 // Mark the order as completed
                 order.Status = OrderStatus.Completed;  // Assuming `Completed` is a status in your Order entity
-                order.CompletedDate = WorkDTORequest.CompletionDate;  // You can add a completion date here
 
 
                 // Update the order in the database
@@ -285,6 +294,42 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                     StatusCodes.Status500InternalServerError
                 );
             }
+        }
+
+        public async Task<Result<List<PendingServicesResponseDto>>> GetPendingClientServicesAsync(CancellationToken cancellationToken)
+        {
+
+            var specification = new PendingClientServiceSpecification(BidStatus.Pending);
+            var pendingServices = await _unitOfWork.OrderRepository.GetPendingClientServicesAsync(specification, cancellationToken);
+
+            if (pendingServices == null || !pendingServices.Any())
+            {
+
+                return Result<List<PendingServicesResponseDto>>.Failure(ErrorMessages.NoInProcessOrdersFound, StatusCodes.Status404NotFound);
+            }
+
+            return Result<List<PendingServicesResponseDto>>.Success(pendingServices, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
+
+
+        }
+
+        public async Task<Result<List<ClientOrderStatusResponseDto>>> GetClientOrdersByStatusAsync(OrderStatus status ,CancellationToken cancellationToken)
+        {
+
+            var specification = new ClientOrderStatusSpecification(status);
+            var clientOrders = await _unitOfWork.OrderRepository.GetClientOrdersByStatusAsync(specification, cancellationToken);
+
+            if (clientOrders == null || !clientOrders.Any())
+            {
+                var errorMessage = status == OrderStatus.InProgress
+                    ? ErrorMessages.NoInProcessOrdersFound
+                    : ErrorMessages.NoAnyCompletedOrdersFound;
+
+                return Result<List<ClientOrderStatusResponseDto>>.Failure(errorMessage, StatusCodes.Status404NotFound);
+            }
+
+            return Result<List<ClientOrderStatusResponseDto>>.Success(clientOrders, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
+
         }
 
         #endregion

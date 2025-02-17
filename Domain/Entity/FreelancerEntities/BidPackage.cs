@@ -1,4 +1,5 @@
-﻿using Maintenance.Domain.Entity.FreelancerEntites;
+﻿using Domain.Common;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 namespace Maintenance.Domain.Entity.FreelancerEntities
 {
 
-    public class BidPackage
+    public class BidPackage:BaseEntity
     {
+
         public Guid BidId { get; set; }
         public Guid PackageId { get; set; }
 
