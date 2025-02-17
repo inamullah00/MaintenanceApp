@@ -1,11 +1,7 @@
 ﻿using Domain.Common;
+using Domain.Entity.UserEntities;
 using Maintenance.Domain.Entity.FreelancerEntites;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Maintenance.Domain.Entity.FreelancerEntities
 {
@@ -21,6 +17,7 @@ namespace Maintenance.Domain.Entity.FreelancerEntities
 
         // Many-to-Many Relationship: A package can be used in multiple bids
         public ICollection<BidPackage> BidPackages { get; set; }
+        public ApplicationUser? ActionBy { get; set; }
     }
 
 }

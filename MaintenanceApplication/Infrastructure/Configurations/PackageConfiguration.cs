@@ -1,11 +1,6 @@
 ﻿using Maintenance.Domain.Entity.FreelancerEntities;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Maintenance.Infrastructure.Configurations
 {
@@ -37,11 +32,14 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasOne(p => p.Freelancer)
                 .WithMany(f => f.Packages) // Ensure Freelancer has a collection of Packages
                 .HasForeignKey(p => p.FreelancerId);
-            
+
             // Many-to-Many Relationship: Package <-> Bid (via BidPackage)
             builder.HasMany(p => p.BidPackages)
                 .WithOne(bp => bp.Package)
                 .HasForeignKey(bp => bp.PackageId);
+
+            builder.HasOne(a => a.ActionBy).WithMany().HasForeignKey(a => a.ActionById).OnDelete(DeleteBehavior.NoAction);
+
         }
     }
 }
