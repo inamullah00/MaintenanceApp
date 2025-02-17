@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Ardalis.Specification;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Wrapper;
@@ -17,10 +18,10 @@ namespace Maintenance.Application.Services.Freelance
     {
 
         Task<Result<BidResponseDto>> GetBidByFreelancerAsync(Guid FreelancerId);
-        Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId,CancellationToken cancellationToken);
+        Task<Result<List<FreelancerBidsResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId,CancellationToken cancellationToken);
         Task<Result<List<FilteredFreelancerResponseDto>>> FilterFreelancersAsync(FilterFreelancerRequestDto requestDto, CancellationToken cancellationToken);
         Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken);
-        Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto);
+        Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto ,CancellationToken cancellationToken);
         Task<Result<string>> UpdateBidAsync(BidUpdateDto bidUpdateDto, Guid freelancerId);
         Task<Result<string>> DeleteBidAsync(Guid bidId);
         Task<Result<string>> ApproveBidAsync(Guid Id, ApproveBidRequestDto ApproveBidRequestDto);
@@ -35,6 +36,10 @@ namespace Maintenance.Application.Services.Freelance
         Task<Result<Package>> UpdatePackageAsync(Guid packageId, Package package, CancellationToken cancellationToken);
         Task<Result<bool>> DeletePackageAsync(Guid packageId, CancellationToken cancellationToken);
 
+
+        // Freelancer & Company Details
+      Task<Result<List<FreelancerCompanyDetailsResponseDto>>> GetFreelancerDetailsAsync(Guid FreelancerId, CancellationToken cancellationToken);
+      Task<Result<List<FreelancerCompanyDetailsResponseDto>>> GetCompanyDetailsAsync(Guid ComponyId, CancellationToken cancellationToken);
 
     }
 }

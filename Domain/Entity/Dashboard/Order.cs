@@ -13,16 +13,11 @@ namespace Maintenance.Domain.Entity.Dashboard
         public Guid? ServiceId { get; set; } // Foreign key for Service (like plumbing, electrical)
 
         // Order details
-        public string Description { get; set; } // Description of the issue or service request
         public decimal Budget { get; set; } // Client's proposed budget for the service
 
         // Order status and timestamps
         public OrderStatus Status { get; set; } = OrderStatus.Pending; // Current status of the order (Pending, In Progress, Completed, etc.)
-        public DateTime? CompletedDate { get; set; } // Date when the order was completed
-        // Payment details
-        public decimal TotalAmount { get; set; } // Total amount for the order, including freelancer's earnings and platform commission
-        public decimal FreelancerAmount { get; set; } // Freelancer's earnings from the order after platform commission
-
+        
         public bool IsApproveByAdmin { get; set; } = false;
 
         // Navigation Properties

@@ -12,6 +12,7 @@ using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification.Specification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
@@ -87,13 +88,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             order.FreelancerId = assignOrderDto.FreelancerId;
             order.Status = OrderStatus.InProgress;
-            order.UpdatedAt = DateTime.UtcNow;
 
             var orderEntity = _mapper.Map<Order>(order);
 
             var isUpdated = await _unitOfWork.OrderRepository.UpdateFieldsAsync(
                 orderEntity,
-                new[] { nameof(order.FreelancerId), nameof(order.Status), nameof(order.UpdatedAt) },
+                new[] { nameof(order.FreelancerId), nameof(order.Status) },
                 cancellationToken
             );
 
@@ -146,7 +146,16 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return Result<OrderResponseDto>.Failure(ErrorMessages.InvalidOrderData, StatusCodes.Status400BadRequest);
             }
 
-            var order = _mapper.Map<Order>(createOrderRequestDto);
+            var order = new Order
+            {
+                ClientId = createOrderRequestDto.ClientId,
+                FreelancerId = createOrderRequestDto.FreelancerId,
+                ServiceId = createOrderRequestDto.ServiceId,
+                Status = OrderStatus.InProgress,
+                Budget = createOrderRequestDto.Budget,
+
+            };
+
 
             var orderRes = await _unitOfWork.OrderRepository.CreateAsync(order, cancellationToken);
 
@@ -179,7 +188,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
                 // Mark the order as completed
                 order.Status = OrderStatus.Completed;  // Assuming `Completed` is a status in your Order entity
-                order.CompletedDate = WorkDTORequest.CompletionDate;  // You can add a completion date here
 
 
                 // Update the order in the database

@@ -83,12 +83,12 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Submit Bid
         [HttpPost("Bids")]
-        public async Task<IActionResult> SubmitBid([FromBody] BidRequestDto bidRequestDto)
+        public async Task<IActionResult> SubmitBid([FromBody] BidRequestDto bidRequestDto , CancellationToken cancellationToken)
         {
             _logger.LogInformation("SubmitBid called with BidDto: {BidDto}", bidRequestDto);
             try
             {
-                var result = await _serviceManager.FreelancerService.SubmitBidAsync(bidRequestDto);
+                var result = await _serviceManager.FreelancerService.SubmitBidAsync(bidRequestDto , cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -120,7 +120,7 @@ namespace Maintenance.API.Controllers.FreelancerController
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.InnerException}"
                 });
             }
         }
@@ -671,6 +671,7 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Create Package
         [HttpPost]
+        [Route("Package")]
         public async Task<IActionResult> CreatePackage([FromBody] CreatePackageRequestDto packageRequest , CancellationToken cancellationToken)
         {
             _logger.LogInformation("CreatePackage called with Package: {PackageName}", packageRequest.Name);
@@ -717,7 +718,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Get Package by Id
-        [HttpGet("{id:guid}")]
+        [HttpGet("Package/{id:guid}")]
         public async Task<IActionResult> GetPackageById(Guid id,CancellationToken cancellationToken)
         {
             _logger.LogInformation("GetPackageById called for PackageId: {PackageId}", id);
@@ -763,7 +764,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Update Package
-        [HttpPut("{id:guid}")]
+        [HttpPut("Package/{id:guid}")]
         public async Task<IActionResult> UpdatePackage(Guid id, [FromBody] Package package , CancellationToken cancellationToken)
         {
             _logger.LogInformation("UpdatePackage called for PackageId: {PackageId}", id);
@@ -809,7 +810,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Delete Package
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("Package/{id:guid}")]
         public async Task<IActionResult> DeletePackage(Guid id , CancellationToken cancellationToken)
         {
             _logger.LogInformation("DeletePackage called for PackageId: {PackageId}", id);

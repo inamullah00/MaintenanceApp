@@ -2,6 +2,8 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
 using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
+using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
+using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
@@ -49,9 +51,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         #endregion
 
         #region ExistsAsync
-        public async Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default)
+        public async Task<bool> ExistsAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : class
         {
-            return await _applicationDbContext.Bids.AnyAsync(predicate, cancellationToken);
+            return await _applicationDbContext.Set<T>().AnyAsync(predicate, cancellationToken);
         }
         #endregion
 
@@ -119,14 +121,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               FreelancerId = Bid.FreelancerId,
                               Status = Bid.BidStatus.ToString(),
                               CreatedAt = Bid.CreatedAt,
-                              CategoryName = Category.CategoryName,
-                              Description = OfferedService.Description,
-                              Location = OfferedService.Location,
-                              PreferredTime = OfferedService.PreferredTime,
-                              Building = OfferedService.Building,
-                              Apartment = OfferedService.Apartment,
-                              Floor = OfferedService.Floor,
-                              Street = OfferedService.Street,
 
                           }).FirstOrDefaultAsync(cancellationToken);
         }
@@ -202,9 +196,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         }
 
-        public async Task<Package> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Package?> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+          return await _applicationDbContext.Packages.FirstOrDefaultAsync(x => x.Id == id);
         }
 
         public async Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken)
@@ -214,7 +208,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public async Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            await _applicationDbContext.Packages.AddAsync(package, cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            return package;
         }
 
         public async Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken)
@@ -225,6 +221,175 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public async Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Guid>> CreateRangeAsync(List<BidPackage> entities, CancellationToken cancellationToken)
+        {
+            await _applicationDbContext.BidPackages.AddRangeAsync(entities, cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+           return entities.Select(x => x.Id).ToList();  
+        }
+
+       public async Task<List<FreelancerCompanyDetailsResponseDto>> GetFreelancerDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken)
+        {
+
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                      query: _applicationDbContext.Freelancers
+                          .AsNoTracking()
+                          .Include(f => f.Bids)
+                          .Include(f => f.Packages)
+                          .Include(f => f.FreelancerOrders)
+                          .Include(f => f.ClientFeedbacks),
+                      specification: specification);
+
+            var freelancers = await queryResult
+                .Select(freelancer => new FreelancerCompanyDetailsResponseDto
+                {
+                    Id = freelancer.Id,
+                    FullName = freelancer.FullName,
+                    Email = freelancer.Email,
+                    PhoneNumber = freelancer.PhoneNumber,
+                    ProfilePicture = freelancer.ProfilePicture,
+                    Bio = freelancer.Bio,
+                    ExperienceLevel = freelancer.ExperienceLevel,
+                    IsType = freelancer.IsType,
+                    DateOfBirth = freelancer.DateOfBirth,
+                    City = freelancer.City,
+                    Address = freelancer.Address,
+                    CivilID = freelancer.CivilID,
+                    CompanyLicense = freelancer.CompanyLicense,
+                    PreviousWork = freelancer.PreviousWork,
+                    Note = freelancer.Note,
+                    Status = freelancer.Status,
+                    CountryId = freelancer.CountryId,
+
+                    Bids = freelancer.Bids.Select(bid => new BidResponseDto
+                    {
+                        Id = bid.Id,
+                        OfferedServiceId = bid.OfferedServiceId,
+                        ServiceTitle = bid.OfferedService.Title,
+                        FreelancerId = bid.FreelancerId,
+                        FreelancerName = freelancer.FullName,
+                        Status = bid.BidStatus.ToString(),
+                        CreatedAt = bid.CreatedAt
+                    }).ToList(),
+
+                    Packages = freelancer.Packages.Select(pkg => new PackageResponseDto
+                    {
+                        Name = pkg.Name,
+                        Price = pkg.Price,
+                        OfferDetails = pkg.OfferDetails,
+                        FreelancerId = pkg.FreelancerId
+                    }).ToList(),
+
+                    FreelancerOrders = freelancer.FreelancerOrders.Select(order => new OrderResponseDto
+                    {
+                        Id = order.Id,
+                        ClientId = order.ClientId,
+                        FreelancerId = order.FreelancerId,
+                        ClientName = order.Client.FullName,
+                        ServiceTitle = order.Service.Title,
+                        ServiceDescription = order.Service.Description,
+                        Budget = order.Budget,
+                        Status = order.Status,
+                        CreatedAt = order.CreatedAt
+                        
+                    }).ToList(),
+
+                    ClientFeedbacks = freelancer.ClientFeedbacks.Select(feedback => new FeedbackResponseDto
+                    {
+                        Id = feedback.Id,
+                        ClientName = feedback.Client.FullName,
+                        OrderId = feedback.OrderId,
+                        Rating = feedback.Rating,
+                        Comment = feedback.Comment,
+                        FeedbackDate = feedback.CreatedAt
+                    }).ToList()
+                })
+                .ToListAsync(cancellationToken);
+
+            return freelancers;
+        }
+
+        public async Task<List<FreelancerCompanyDetailsResponseDto>> GetCompanyDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken)
+        {
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                                query: _applicationDbContext.Freelancers
+                                    .AsNoTracking()
+                                      .Where(f => f.IsType == UserType.Company)  // Filtering for Companies
+                                    .Include(f => f.Bids)
+                                    .Include(f => f.Packages)
+                                    .Include(f => f.FreelancerOrders)
+                                    .Include(f => f.ClientFeedbacks),
+                                specification: specification);
+
+            var freelancers = await queryResult
+                .Select(freelancer => new FreelancerCompanyDetailsResponseDto
+                {
+                    Id = freelancer.Id,
+                    FullName = freelancer.FullName,
+                    Email = freelancer.Email,
+                    PhoneNumber = freelancer.PhoneNumber,
+                    ProfilePicture = freelancer.ProfilePicture,
+                    Bio = freelancer.Bio,
+                    ExperienceLevel = freelancer.ExperienceLevel,
+                    IsType = freelancer.IsType,
+                    DateOfBirth = freelancer.DateOfBirth,
+                    City = freelancer.City,
+                    Address = freelancer.Address,
+                    CivilID = freelancer.CivilID,
+                    CompanyLicense = freelancer.CompanyLicense,
+                    PreviousWork = freelancer.PreviousWork,
+                    Note = freelancer.Note,
+                    Status = freelancer.Status,
+                    CountryId = freelancer.CountryId,
+
+                    Bids = freelancer.Bids.Select(bid => new BidResponseDto
+                    {
+                        Id = bid.Id,
+                        OfferedServiceId = bid.OfferedServiceId,
+                        ServiceTitle = bid.OfferedService.Title,
+                        FreelancerId = bid.FreelancerId,
+                        FreelancerName = freelancer.FullName,
+                        Status = bid.BidStatus.ToString(),
+                        CreatedAt = bid.CreatedAt
+                    }).ToList(),
+
+                    Packages = freelancer.Packages.Select(pkg => new PackageResponseDto
+                    {
+                        Name = pkg.Name,
+                        Price = pkg.Price,
+                        OfferDetails = pkg.OfferDetails,
+                        FreelancerId = pkg.FreelancerId
+                    }).ToList(),
+
+                    FreelancerOrders = freelancer.FreelancerOrders.Select(order => new OrderResponseDto
+                    {
+                        Id = order.Id,
+                        ClientId = order.ClientId,
+                        FreelancerId = order.FreelancerId,
+                        ClientName = order.Client.FullName,
+                        ServiceTitle = order.Service.Title,
+                        ServiceDescription = order.Service.Description,
+                        Budget = order.Budget,
+                        Status = order.Status,
+                        CreatedAt = order.CreatedAt
+
+                    }).ToList(),
+
+                    ClientFeedbacks = freelancer.ClientFeedbacks.Select(feedback => new FeedbackResponseDto
+                    {
+                        Id = feedback.Id,
+                        ClientName = feedback.Client.FullName,
+                        OrderId = feedback.OrderId,
+                        Rating = feedback.Rating,
+                        Comment = feedback.Comment,
+                        FeedbackDate = feedback.CreatedAt
+                    }).ToList()
+                })
+                .ToListAsync(cancellationToken);
+
+            return freelancers;
         }
         #endregion
     }

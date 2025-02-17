@@ -13,6 +13,5 @@ namespace Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage
         public decimal Price { get; set; }
         public string OfferDetails { get; set; }
         public Guid FreelancerId { get; set; }
-        public ICollection<BidPackage> BidPackages { get; set; } = new List<BidPackage>();
     }
 }

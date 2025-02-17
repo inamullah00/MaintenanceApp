@@ -4,6 +4,7 @@ using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +18,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
     {
 
         Task<Bid> CreateAsync(Bid entity, CancellationToken cancellationToken = default);
+        Task<List<Guid>> CreateRangeAsync(List<BidPackage> entities, CancellationToken cancellationToken = default);
 
         Task<List<Guid>> CreateRangeAsync(List<Bid> entities, CancellationToken cancellationToken = default);
 
@@ -29,7 +31,11 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<List<FreelancerBidsResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
         Task<List<FilteredFreelancerResponseDto>> GetByFilterAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
         Task<Bid> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
-        Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
+        Task<bool> ExistsAsync<T>(Expression<Func<T, bool>> predicate, CancellationToken cancellationToken = default) where T : class;
+
+
+
+     
 
 
         // Package Methods
@@ -39,5 +45,10 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken);
         Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken);
 
+
+        // Freelancer & Company Details
+
+        Task<List<FreelancerCompanyDetailsResponseDto>> GetFreelancerDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken = default);
+        Task<List<FreelancerCompanyDetailsResponseDto>> GetCompanyDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken = default);
     }
 }

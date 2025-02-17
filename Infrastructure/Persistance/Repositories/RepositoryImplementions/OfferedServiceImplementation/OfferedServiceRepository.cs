@@ -95,7 +95,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return offeredServices;
         }
 
-        public async Task<OfferedServiceResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<OfferedServiceResponseDto?> GetOfferedServiceByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
 
             var offeredServices = await (from service in _dbContext.OfferedServices
@@ -193,7 +193,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                                Title = service.Title,
                                                Description = service.Description,
                                                Address = service.Location,
-                                               ServiceTime = service.PreferredTime.Value,
+                                               ServiceTime = service.PreferredTime,
                                                Images = service.ImageUrls,
                                                Videos = service.VideoUrls,
                                                Audios = service.AudioUrls,
@@ -202,5 +202,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             return requestedServices;
         }
+
+        public async Task<OfferedService?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
+        {
+            return await _dbContext.OfferedServices.FirstOrDefaultAsync(x => x.Id == id);
+        }
+
+     
     }
 }

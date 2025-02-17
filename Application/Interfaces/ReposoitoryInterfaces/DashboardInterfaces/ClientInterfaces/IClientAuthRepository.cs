@@ -11,20 +11,15 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
     public interface IClientAuthRepository
     {
 
-        // Add a new client to the database
-        Task<Client> AddClientAsync(Client client , CancellationToken cancellationToken);
+        // ===================== CLIENT METHODS =====================
 
-        // Add a client OTP to the database
-        Task<ClientOtp> AddClientOTP(ClientOtp otp ,CancellationToken cancellationToken);
-        Task<ClientOtp> UpdateClientOTP(ClientOtp otp ,CancellationToken cancellationToken);
-        Task<ClientOtp?> DeleteClientOTP(Guid Id, CancellationToken cancellationToken);
-        Task<ClientOtp?> GetValidClientOTPByEmail(string email, CancellationToken cancellationToken);
-        Task<ClientOtp?> GetRecentlyExpiredOTP(string email, CancellationToken cancellationToken);
+        // Add a new client to the database
+        Task<Client> AddClientAsync(Client client, CancellationToken cancellationToken);
 
         // Get client by ID
         Task<Client> GetClientByIdAsync(Guid clientId, CancellationToken cancellationToken);
 
-        // Get Client By Email 
+        // Get client by email
         Task<Client?> GetClientByEmailAsync(string email, CancellationToken cancellationToken);
 
         // Update client details
@@ -36,8 +31,26 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         // Check if a client exists by ID
         Task<bool> ClientExistsAsync(Guid clientId, CancellationToken cancellationToken);
 
+
+        // ===================== OTP METHODS =====================
+
+        // Add a client OTP to the database
+        Task<ClientOtp> AddClientOTP(ClientOtp otp, CancellationToken cancellationToken);
+
+        // Update client OTP
+        Task<ClientOtp> UpdateClientOTP(ClientOtp otp, CancellationToken cancellationToken);
+
+        // Delete client OTP
+        Task<ClientOtp?> DeleteClientOTP(Guid id, CancellationToken cancellationToken);
+
+        // Get valid OTP by email
+        Task<ClientOtp?> GetValidClientOTPByEmail(string email, CancellationToken cancellationToken);
+
         // Get valid OTP for client authentication
         Task<ClientOtp?> GetValidOtpAsync(int otp, CancellationToken cancellationToken);
+
+        // Get recently expired OTP
+        Task<ClientOtp?> GetRecentlyExpiredOTP(string email, CancellationToken cancellationToken);
 
     }
 }

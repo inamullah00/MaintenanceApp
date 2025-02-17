@@ -1,6 +1,7 @@
 ﻿using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Common.Utility;
 using Maintenance.Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ServiceManager;
@@ -105,8 +106,8 @@ namespace Maintenance.API.Controllers.ClientController
 
         #region Create Order
         [HttpPost]
-        [Route("Order")]
-        public async Task<IActionResult> PlaceOrder([FromBody] CreateOrderRequestDto createOrderDto, CancellationToken cancellationToken)
+        [Route("Order/AssignOrder-To-Freelancer")]
+        public async Task<IActionResult> AssignOrder([FromBody] CreateOrderRequestDto createOrderDto, CancellationToken cancellationToken)
         {
             try
             {
@@ -139,14 +140,14 @@ namespace Maintenance.API.Controllers.ClientController
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.InnerException}"
                 });
             }
         }
         #endregion
 
         #region Update Order Status
-        [HttpPut("{id:guid}/update-status")]
+        [HttpPut("Order/update-Order-status/{id:guid}")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusDto updateOrderStatusDto, CancellationToken cancellationToken)
         {
             try
@@ -187,7 +188,7 @@ namespace Maintenance.API.Controllers.ClientController
         #endregion
 
         #region  Client Reviews and Approves the Work
-        [HttpPut("Orders/{orderId:guid}/Approve")]
+        [HttpPut("Orders/Approve-Client-Work/{orderId:guid}")]
         public async Task<IActionResult> ApproveOrder(Guid orderId, CancellationToken cancellationToken)
         {
             try
@@ -335,8 +336,6 @@ namespace Maintenance.API.Controllers.ClientController
         }
         #endregion
 
-
-
         #region No OF Bids
 
         #region Get Total No of Bids by Freelancers
@@ -387,5 +386,260 @@ namespace Maintenance.API.Controllers.ClientController
 
         #endregion
 
+        #region Feedback Management
+
+        #region Get All Feedback
+        [HttpGet("Feedback")]
+        public async Task<IActionResult> GetAllFeedback(CancellationToken cancellationToken, string keyword = "")
+        {
+            try
+            {
+                var result = await _serviceManager.FeedbackService.GetAllFeedbackAsync(cancellationToken, keyword);
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Get Feedback by ID
+        [HttpGet("Feedback/{id:Guid}")]
+        public async Task<IActionResult> GetFeedbackById(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _serviceManager.FeedbackService.GetFeedbackRatingForFreelancerAsync(id, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Create Feedback
+        [HttpPost("Feedback")]
+        public async Task<IActionResult> CreateFeedback([FromBody] CreateFeedbackRequestDto createFeedbackDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _serviceManager.FeedbackService.CreateFeedbackAsync(createFeedbackDto, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Update Feedback
+        [HttpPut("Feedback/{id:Guid}")]
+        public async Task<IActionResult> UpdateFeedback(Guid id, [FromBody] UpdateFeedbackRequestDto updateFeedbackDto, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _serviceManager.FeedbackService.UpdateFeedbackAsync(id, updateFeedbackDto, cancellationToken);
+
+                return result.IsSuccess
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Delete Feedback
+        [HttpDelete("Feedback/{id:Guid}")]
+        public async Task<IActionResult> DeleteFeedback(Guid id, CancellationToken cancellationToken)
+        {
+            try
+            {
+                var result = await _serviceManager.FeedbackService.DeleteFeedbackAsync(id, cancellationToken);
+
+                return result.IsSuccess
+                    ? Ok(new { StatusCode = StatusCodes.Status200OK, Success = true, Message = result.Message })
+                    : BadRequest(new { StatusCode = HttpResponseCodes.BadRequest, Success = false, Message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #endregion
+
+        #region Check Freelancer or Company Details Screen
+
+        #region Get Freelancer Details
+        [HttpGet("Check-Freelancer-Details/{freelancerId}")]
+        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching freelancer details for ID: {FreelancerId}", freelancerId);
+
+                var result = await _serviceManager.FreelancerService.GetFreelancerDetailsAsync(freelancerId, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Freelancer not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching freelancer details.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+
+
+        #region Get Company Details
+        [HttpGet("Check-Company-Details/{companyId}")]
+        public async Task<IActionResult> GetCompanyDetails(Guid companyId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching company details for ID: {CompanyId}", companyId);
+
+                var result = await _serviceManager.FreelancerService.GetCompanyDetailsAsync(companyId, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Company not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching company details.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+
+        #endregion
     }
 }

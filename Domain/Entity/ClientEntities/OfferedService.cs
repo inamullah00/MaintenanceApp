@@ -30,7 +30,7 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public List<string>? ImageUrls { get; set; } = new();
         public List<string>? AudioUrls { get; set; }
 
-        public DateTime? PreferredTime { get; set; }
+        public DateTime PreferredTime { get; set; }
 
         // Additional Info in Figma
         public string Building { get; set; }

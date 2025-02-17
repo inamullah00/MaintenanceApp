@@ -49,22 +49,12 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasIndex(o => o.FreelancerId); // Optional: Index on FreelancerId
             builder.HasIndex(o => o.ServiceId); // Optional: Index on ServiceId
 
-            // Configure fields like Description, Budget, and other properties
-            builder.Property(o => o.Description)
-                   .IsRequired() // Make sure the description is required
-                   .HasMaxLength(500); // Optional: Set max length for description
+
 
             builder.Property(o => o.Budget)
                    .HasColumnType("decimal(18,2)") // Set column type for budget
                    .IsRequired();
 
-            builder.Property(o => o.TotalAmount)
-                   .HasColumnType("decimal(18,2)") // Set column type for total amount
-                   .IsRequired();
-
-            builder.Property(o => o.FreelancerAmount)
-                   .HasColumnType("decimal(18,2)") // Set column type for freelancer amount
-                   .IsRequired();
 
             builder.Property(o => o.Status)
                    .IsRequired(); // Set Status as required

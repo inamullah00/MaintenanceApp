@@ -50,22 +50,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                           {
                               Id = orders.Id,
                               ClientId = orders.ClientId,
-
-                              ServiceId = service.Id,
                               ServiceTitle = service.Title,
                               ServiceDescription = service.Description,
-                              ServiceLocation = service.Location,
-                              ServicePreferredTime = service.PreferredTime,
-
-                              Description = orders.Description,
                               Budget = orders.Budget,
-
                               Status = orders.Status,
                               CreatedAt = orders.CreatedAt,
-                              UpdatedAt = orders.UpdatedAt.Value,
 
-                              TotalAmount = orders.TotalAmount,
-                              FreelancerAmount = orders.FreelancerAmount
                           })
                .AsNoTracking()
                .ToListAsync(cancellationToken);
@@ -84,22 +74,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               Id = orders.Id,
                               ClientId = orders.ClientId,
                               FreelancerId = orders.FreelancerId,
-                              ClientFirstName = orders.Client.FullName,
-                              ServiceId = orders.ServiceId,
+                              ClientName = orders.Client.FullName,
                               ServiceTitle = orders.Service.Title,
                               ServiceDescription = orders.Service.Description,
-                              ServiceLocation = orders.Service.Location,
-                              ServicePreferredTime = orders.Service.PreferredTime,
-
-                              Description = orders.Description,
                               Budget = orders.Budget,
-
                               Status = orders.Status,
                               CreatedAt = orders.CreatedAt,
-                              UpdatedAt = orders.UpdatedAt.Value,
 
-                              TotalAmount = orders.TotalAmount,
-                              FreelancerAmount = orders.FreelancerAmount
+
                           }).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
         }
 
@@ -192,38 +174,46 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
        public async Task<List<ClientOrderStatusResponseDto>> GetClientOrdersByStatusAsync(ISpecification<Order> specification , CancellationToken cancellationToken)
         {
+
             var queryResult = SpecificationEvaluator.Default.GetQuery(
-                               query: _dbContext.Orders.AsQueryable(),
-                               specification: specification);
+        query: _dbContext.Orders.AsQueryable(),
+        specification: specification);
+
 
             return await (from orders in queryResult.AsSplitQuery()
                           join freelancer in _dbContext.Freelancers.AsNoTracking()
-                          on orders.FreelancerId equals freelancer.Id
+                          on orders.FreelancerId equals freelancer.Id into freelancerGroup
+                          from freelancer in freelancerGroup.DefaultIfEmpty() // Left Join
 
                           join service in _dbContext.OfferedServices.AsNoTracking()
-                          on orders.ServiceId equals service.Id
+                          on orders.ServiceId equals service.Id into serviceGroup
+                          from service in serviceGroup.DefaultIfEmpty() // Left Join
 
                           join category in _dbContext.OfferedServiceCategories.AsNoTracking()
-                          on service.CategoryID equals category.Id
+                          on service.CategoryID equals category.Id into categoryGroup
+                          from category in categoryGroup.DefaultIfEmpty() // Left Join
 
                           select new ClientOrderStatusResponseDto
                           {
-                              FreelancerName = freelancer.FullName,
-                              FreelancerEmail = freelancer.Email,
-                              Rating = freelancer.ClientFeedbacks.Any() ? freelancer.ClientFeedbacks.Average(f => f.Rating).ToString("F1") : "0.0", // Handling rating calculation
-                              ServiceTitle = service.Title,
-                              ServiceCategory = category.CategoryName,
-                              ServiceDescription = service.Description,
-                              ServiceAddress = service.Location,
-                              BookingDate = orders.CreatedAt, // Assuming CreatedAt is used for booking
-                              ServiceTime = service.PreferredTime, // Using PreferredTime from service
-                              BidPrice = orders.TotalAmount.ToString("F2"), // Formatting price properly
-                              Image = service.ImageUrls != null && service.ImageUrls.Any() ? service.ImageUrls.FirstOrDefault() : null,
-                              Video = service.VideoUrls != null && service.VideoUrls.Any() ? service.VideoUrls.FirstOrDefault() : null,
-                              Audio = service.AudioUrls != null && service.AudioUrls.Any() ? service.AudioUrls.FirstOrDefault() : null
+                              FreelancerName = freelancer != null ? freelancer.FullName : "N/A",
+                              FreelancerEmail = freelancer != null ? freelancer.Email : "N/A",
+                              Rating = freelancer.ClientFeedbacks.Any()? (int?)freelancer.ClientFeedbacks.Average(r => r.Rating) :0,
+                              ServiceTitle = service != null ? service.Title : "N/A",
+                              ServiceCategory = category != null ? category.CategoryName : "N/A",
+                              ServiceDescription = service != null ? service.Description : "N/A",
+                              ServiceAddress = service != null ? service.Location : "N/A",
+                              BookingDate = orders.CreatedAt,  // Nullable DateTime
+                              ServiceTime = service != null ? service.PreferredTime : null, // Nullable DateTime
+                              Image = service.ImageUrls,
+                              Audio = service.AudioUrls,
+                              Video = service.VideoUrls
                           })
                           .AsNoTracking()
                           .ToListAsync(cancellationToken);
+
+
+
+
         }
     }
 }
