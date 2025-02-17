@@ -13,7 +13,7 @@ namespace Maintenance.Application.ViewModel
         public decimal Price { get; set; }
 
         [StringLength(500, ErrorMessage = "Package name contains max 500 characters")]
-        public string? Offering { get; set; }
+        public string? OfferDetails { get; set; }
 
         public Guid? FreelancerId { get; set; }
     }
