@@ -4,6 +4,7 @@ using AutoMapper;
 using MailKit.Search;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
@@ -285,6 +286,43 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                     StatusCodes.Status500InternalServerError
                 );
             }
+        }
+
+
+        public async Task<Result<List<PendingServicesResponseDto>>> GetPendingClientServicesAsync(CancellationToken cancellationToken)
+        {
+
+            var specification = new PendingClientServiceSpecification(BidStatus.Pending);
+            var pendingServices = await _unitOfWork.OrderRepository.GetPendingClientServicesAsync(specification, cancellationToken);
+
+            if (pendingServices == null || !pendingServices.Any())
+            {
+
+                return Result<List<PendingServicesResponseDto>>.Failure(ErrorMessages.NoInProcessOrdersFound, StatusCodes.Status404NotFound);
+            }
+
+            return Result<List<PendingServicesResponseDto>>.Success(pendingServices, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
+
+
+        }
+
+        public async Task<Result<List<ClientOrderStatusResponseDto>>> GetClientOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken)
+        {
+
+            var specification = new ClientOrderStatusSpecification(status);
+            var clientOrders = await _unitOfWork.OrderRepository.GetClientOrdersByStatusAsync(specification, cancellationToken);
+
+            if (clientOrders == null || !clientOrders.Any())
+            {
+                var errorMessage = status == OrderStatus.InProgress
+                    ? ErrorMessages.NoInProcessOrdersFound
+                    : ErrorMessages.NoAnyCompletedOrdersFound;
+
+                return Result<List<ClientOrderStatusResponseDto>>.Failure(errorMessage, StatusCodes.Status404NotFound);
+            }
+
+            return Result<List<ClientOrderStatusResponseDto>>.Success(clientOrders, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
+
         }
 
         #endregion

@@ -9,6 +9,6 @@ namespace Maintenance.Application.Security
 {
     public interface ITokenService
     {
-       public string GenerateToken(Freelancer freelancer);
+        public string GenerateToken<TUser>(TUser user) where TUser : class;
     }
 }

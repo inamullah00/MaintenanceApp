@@ -4,10 +4,12 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.Offere
 using Maintenance.Application.Interfaces.RepositoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.ClientInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.DisputeInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Infrastructure.Persistance.Data;
+using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.ClientAuthRepositoryImplementation;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.CountryRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
@@ -41,6 +43,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public IAdminServiceRepository AdminServiceRepository { get; }
         public IAdminPackageRepository AdminPackageRepository { get; }
 
+        public IClientAuthRepository ClientAuthRepository { get; }
         public UnitOfWork(ApplicationDbContext dbContext)
         {
             _dbContext = dbContext;
@@ -57,6 +60,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminClientRepository = new AdminClientRepository(dbContext);
             AdminServiceRepository = new AdminServiceRepository(dbContext);
             AdminPackageRepository = new AdminPackageRepository(dbContext);
+            ClientAuthRepository = new ClientAuthRepository(dbContext);
 
         }
 
