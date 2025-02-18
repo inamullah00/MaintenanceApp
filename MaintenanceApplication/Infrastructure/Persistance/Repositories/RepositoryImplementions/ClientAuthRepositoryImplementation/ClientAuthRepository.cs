@@ -21,42 +21,42 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             _dbContext = dbContext;
         }
 
-        public async Task<Client> AddClientAsync(Client client)
+        public async Task<Client> AddClientAsync(Client client,CancellationToken cancellationToken)
         {
             await _dbContext.Clients.AddAsync(client);
             await _dbContext.SaveChangesAsync();
             return client;
         }
 
-        public async Task<ClientOtp> AddClientOTP(ClientOtp otp)
+        public async Task<ClientOtp> AddClientOTP(ClientOtp otp,CancellationToken cancellationToken)
         {
             await _dbContext.ClientOtps.AddAsync(otp);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return otp;
         }
 
-        public async Task<bool> ClientExistsAsync(Guid clientId)
+        public async Task<bool> ClientExistsAsync(Guid clientId,CancellationToken cancellationToken)
         {
             return await _dbContext.Clients.AnyAsync(c => c.Id == clientId);
         }
 
-        public async Task<bool> DeleteClientAsync(Guid clientId)
+        public async Task<bool> DeleteClientAsync(Guid clientId,CancellationToken cancellationToken)
         {
             var client = await _dbContext.Clients.FindAsync(clientId);
             if (client == null) return false;
 
             _dbContext.Clients.Remove(client);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return true;
         }
 
-        public async Task<ClientOtp?> DeleteClientOTP(Guid Id)
+        public async Task<ClientOtp?> DeleteClientOTP(Guid Id,CancellationToken cancellationToken)
         {
             var entity = await _dbContext.ClientOtps.FirstOrDefaultAsync(o => o.Id == Id);
             if (entity != null)
             {
                 _dbContext.ClientOtps.Remove(entity);
-                await _dbContext.SaveChangesAsync();
+                await _dbContext.SaveChangesAsync(cancellationToken);
             }
             return entity;
         }
@@ -71,9 +71,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             return await _dbContext.Clients.FirstOrDefaultAsync(c => c.Id == clientId, cancellationToken);
         }
 
-        public async Task<ClientOtp?> GetClientOTPByEmail(string Email)
+        public async Task<ClientOtp?> GetClientOTPByEmail(string Email,CancellationToken cancellationToken)
         {
-            return await _dbContext.ClientOtps.FirstOrDefaultAsync(o => o.Email == Email);
+            return await _dbContext.ClientOtps.FirstOrDefaultAsync(o => o.Email == Email, cancellationToken);
 
         }
 
@@ -83,36 +83,11 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                             .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Client> UpdateClientAsync(Client client)
+        public async Task<Client> UpdateClientAsync(Client client,CancellationToken cancellationToken)
         {
             _dbContext.Clients.Update(client);
-            await _dbContext.SaveChangesAsync();
+            await _dbContext.SaveChangesAsync(cancellationToken);
             return client;
-        }
-
-        Task<Client> IClientAuthRepository.AddClientAsync(Client client, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ClientOtp> IClientAuthRepository.AddClientOTP(ClientOtp otp, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IClientAuthRepository.ClientExistsAsync(Guid clientId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<bool> IClientAuthRepository.DeleteClientAsync(Guid clientId, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        Task<ClientOtp?> IClientAuthRepository.DeleteClientOTP(Guid Id, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
         }
 
         //Get Valid OTP 
@@ -134,12 +109,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                 .FirstOrDefaultAsync(cancellationToken);
         }
 
-        public async Task<Client> UpdateClientAsync(Client client, CancellationToken cancellationToken)
-        {
-            _dbContext.Clients.Update(client);
-            await _dbContext.SaveChangesAsync(cancellationToken);
-            return client;
-        }
+      
 
         public async Task<ClientOtp> UpdateClientOTP(ClientOtp otp, CancellationToken cancellationToken)
         {

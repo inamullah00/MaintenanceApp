@@ -169,7 +169,7 @@ namespace Maintenance.API.Controllers.AuthController
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error occurred during Client Forgot Password process for email: {Email}", requestDto.Email);
-                return StatusCode(500, new { Message = $"Internal server error: {ex.Message}" });
+                return StatusCode(500, new { Message = $"Internal server error: {ex.InnerException.Message}" });
             }
         }
 
