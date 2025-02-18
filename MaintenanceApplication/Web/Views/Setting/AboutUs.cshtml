@@ -1,0 +1,43 @@
+﻿@model AboutUsViewModel
+
+@{
+    ViewBag.ModuleName = _CommonLocalizer["AboutUs"];
+    ViewBag.ModuleIcon = "fa-circle-info";
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="AboutUs" asp-controller="Setting" method="post" class="forms-sample">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="row">
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="link-icon feather-16" data-feather="edit"></i> @_CommonLocalizer["AboutUsEnglish"]
+                                    </label>
+                                    <textarea type="text" asp-for="AboutUs" class="form-control tinymce" autocomplete="off" placeholder=" @_CommonLocalizer["AboutUsEnglish"]"> </textarea>
+                                    <span asp-validation-for="AboutUs" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="link-icon feather-16" data-feather="edit"></i> @_CommonLocalizer["AboutUsArabic"]
+                                    </label>
+                                    <textarea type="text" asp-for="AboutUsArabic" class="form-control tinymcertl" autocomplete="off" placeholder=" @_CommonLocalizer["AboutUsArabic"]"> </textarea>
+                                    <span asp-validation-for="AboutUsArabic" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">@_CommonLocalizer["SaveBtn"]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -2,6 +2,7 @@
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
 using Maintenance.Application.Interfaces.RepositoryInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.DisputeInterfaces;
@@ -40,6 +41,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public IAdminClientRepository AdminClientRepository { get; }
         public IAdminServiceRepository AdminServiceRepository { get; }
         public IAdminPackageRepository AdminPackageRepository { get; }
+        public ISettingRepository SettingRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -57,6 +59,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminClientRepository = new AdminClientRepository(dbContext);
             AdminServiceRepository = new AdminServiceRepository(dbContext);
             AdminPackageRepository = new AdminPackageRepository(dbContext);
+            SettingRepository = new SettingRepository(dbContext);
 
         }
 
