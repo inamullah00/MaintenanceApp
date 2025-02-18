@@ -268,7 +268,6 @@ namespace Maintenance.API.Controllers.ClientController
         }
         #endregion
 
-
         #region Get All Pending Services for Client (Awaiting Bid Acceptance)
         [HttpGet("client/pending-services")]
         public async Task<IActionResult> GetAllPendingServices(CancellationToken cancellationToken)
@@ -333,8 +332,6 @@ namespace Maintenance.API.Controllers.ClientController
             });
         }
         #endregion
-
-
 
         #region No OF Bids
 

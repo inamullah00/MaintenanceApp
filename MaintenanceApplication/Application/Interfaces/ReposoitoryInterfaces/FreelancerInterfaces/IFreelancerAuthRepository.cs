@@ -39,25 +39,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         // Check if a freelancer exists by ID
         Task<bool> FreelancerExistsAsync(Guid freelancerId);
 
-        // Block a freelancer
-        Task<bool> BlockFreelancerAsync(Guid freelancerId);
-
-        // Unblock a freelancer
-        Task<bool> UnblockFreelancerAsync(Guid freelancerId);
-
-        // Approve a freelancer
-        Task<bool> ApproveFreelancerAsync(Guid freelancerId);
-
-        // Suspend a freelancer
-        Task<bool> SuspendFreelancerAsync(Guid freelancerId);
-
-        // Reactivate a suspended freelancer
-        Task<bool> ReactivateFreelancerAsync(Guid freelancerId);
-
         Task<FreelancerOtp?> GetValidOtpAsync(int otp, CancellationToken cancellationToken);
-
-        // Paginated list of freelancers
-        Task<(List<Freelancer>, int)> GetFreelancersPaginatedAsync(int pageNumber, int pageSize);
 
     }
 }
