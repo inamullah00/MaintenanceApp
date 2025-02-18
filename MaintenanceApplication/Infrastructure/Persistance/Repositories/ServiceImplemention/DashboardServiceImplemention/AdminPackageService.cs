@@ -42,6 +42,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 Price = package.Price,
                 OfferDetails = package.OfferDetails,
                 FreelancerId = package.FreelancerId,
+
             };
 
         }

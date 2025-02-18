@@ -16,16 +16,19 @@
         columns: [
             { data: 'Name', name: 'PackageName', "autoWidth": true },
             {
+                data: 'FreelancerName', name: 'FreelancerName', "autoWidth": true
+            },
+            {
                 data: 'Price',
                 name: 'Price',
                 render: function (data) {
                     return 'KWD ' + data;
                 },
                 "autoWidth": true,
-                className: 'text-center'
+                
             },
             {
-                data: 'FreelancerName', name: 'FreelancerName', "autoWidth": true
+                data: 'Offering', name: 'Offering', "autoWidth": true
             },
 
             {
