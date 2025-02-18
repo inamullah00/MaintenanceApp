@@ -56,7 +56,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         #endregion
 
         #region GetBidsByFreelancerAsync
-        public async Task<Result<BidResponseDto>> GetBidsByFreelancerAsync(Guid freelancerId)
+        public async Task<Result<BidResponseDto>> GetBidByFreelancerAsync(Guid freelancerId,CancellationToken cancellationToken)
         {
             if (freelancerId == Guid.Empty)
             {
@@ -133,10 +133,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
         #endregion
 
-        #region GetBidsByFreelancerAsync
-        public async Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(CancellationToken cancellationToken, string? Keyword = "")
+        #region GetBidsByFreelancers on Specified Client Service
+        public async Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId, CancellationToken cancellationToken)
         {
-            BidSearchList Specification = new BidSearchList(Keyword);
+            BidSearchList Specification = new BidSearchList(offeredServiceId);
             var bids = await _unitOfWork.FreelancerRepository.GetAllAsync(cancellationToken, Specification);
 
             var bidList = _mapper.Map<List<BidResponseDto>>(bids);

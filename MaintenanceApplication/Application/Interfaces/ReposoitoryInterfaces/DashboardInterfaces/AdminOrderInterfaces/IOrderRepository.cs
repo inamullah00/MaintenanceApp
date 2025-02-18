@@ -1,7 +1,9 @@
 ﻿using Ardalis.Specification;
+using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Domain.Entity.Dashboard;
+using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,6 +22,13 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInte
         public Task<bool> UpdateAsync(Order order, CancellationToken cancellationToken);
         public Task<bool> UpdateFieldsAsync(Order order, string[] fieldsToUpdate, CancellationToken cancellationToken = default);
 
-        public Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken);  
+        public Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken);
+
+        // InProgress ,Completed Order 
+        public Task<List<PendingServicesResponseDto>> GetPendingClientServicesAsync(ISpecification<Bid> specification, CancellationToken cancellationToken);
+        public Task<List<ClientOrderStatusResponseDto>> GetClientOrdersByStatusAsync(ISpecification<Order> specification, CancellationToken cancellationToken);
+
+
     }
+
 }
