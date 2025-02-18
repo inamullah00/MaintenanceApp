@@ -19,6 +19,7 @@ using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ApplicationSetting;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.ClientPayment;
+using Maintenance.Application.Services.ContactUs;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.OffereServiceCategory;
@@ -57,6 +58,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public IAdminSevService AdminSevService { get; private set; }
         public IAdminPackageService AdminPackageService { get; private set; }
         public IApplicationSettingService ApplicationSettingService { get; private set; }
+        public IContactUsService ContactUsService { get; private set; }
 
         public ServiceManager(IUnitOfWork unitOfWork,
                               UserManager<ApplicationUser> userManager,
@@ -95,6 +97,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             AdminSevService = new AdminSevService(unitOfWork, mapper);
             AdminPackageService = new AdminPackageService(unitOfWork, mapper);
             ApplicationSettingService = new ApplicationSettingService(unitOfWork);
+            ContactUsService = new ContactUsService(unitOfWork, mapper);
 
         }
     }

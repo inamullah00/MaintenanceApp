@@ -9,6 +9,7 @@ using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfac
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Infrastructure.Persistance.Data;
+using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.ConactUsRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.CountryRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
@@ -42,6 +43,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public IAdminServiceRepository AdminServiceRepository { get; }
         public IAdminPackageRepository AdminPackageRepository { get; }
         public ISettingRepository SettingRepository { get; }
+        public IContactUsRepository ContactUsRepository { get; }
 
         public UnitOfWork(ApplicationDbContext dbContext)
         {
@@ -60,6 +62,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminServiceRepository = new AdminServiceRepository(dbContext);
             AdminPackageRepository = new AdminPackageRepository(dbContext);
             SettingRepository = new SettingRepository(dbContext);
+            ContactUsRepository = new ContactUsRepository(dbContext);
 
         }
 

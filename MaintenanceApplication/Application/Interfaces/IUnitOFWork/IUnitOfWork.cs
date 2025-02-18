@@ -26,6 +26,8 @@ namespace Application.Interfaces.IUnitOFWork
         public IAdminServiceRepository AdminServiceRepository { get; }
         public IAdminPackageRepository AdminPackageRepository { get; }
         public ISettingRepository SettingRepository { get; }
+        public IContactUsRepository ContactUsRepository { get; }
+
 
         Task<int> SaveChangesAsync();
     }
