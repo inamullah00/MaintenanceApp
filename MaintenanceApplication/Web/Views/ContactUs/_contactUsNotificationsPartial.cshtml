@@ -1,0 +1,69 @@
+﻿@model PaginatedResponse<ContactUsResponseViewModel>
+
+@if (Model.Data.Any())
+{
+    foreach (var notification in Model.Data)
+    {
+        var readUnreadIndentifierClass = notification.IsRead ? "notification-list--read" : "notification-list--unread";
+
+        <div class="notification-list @readUnreadIndentifierClass">
+            <div class="notification-list_content">
+                <div class="notification-list_img">
+                    @if (!string.IsNullOrWhiteSpace(notification.ProfileImageLink))
+                    {
+                        var imageLink = $"{notification.ImageBaseUrl}{notification.ProfileImageLink}";
+                        <img src="@imageLink" alt="user">
+                    }
+                    else
+                    {
+                        <img src="/images/others/placeholder.jpg" alt="user">
+                    }
+                </div>
+                <div class="notification-list_detail">
+                    <p>
+                        <b>@notification.FullName</b>
+                        @if (notification.IsRead)
+                        {
+                            <span class="badge bg-success info-badge">read</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-danger info-badge">unread</span>
+                        }
+                    </p>
+                    <p class="text-muted"><small><i class="fa fa-phone text-primary"></i> : @notification.PhoneNumber</small></p>
+                    <p class="text-muted"><small><i class="fa fa-envelope text-warning"></i> : @notification.Email</small></p>
+
+                    @{
+                        var words = notification.Message.Split(' ');
+                        var truncatedMessage = string.Join(' ', words.Take(18));
+                        var remainingMessage = string.Join(' ', words.Skip(18));
+                    }
+                    <span class="mb-0" style="word-break:break-word">@truncatedMessage</span>
+                    @if (words.Length > 18)
+                    {
+                        <span style="display:none;word-break:break-word">@remainingMessage</span>
+                        <a href="javascript:void(0)" class="show-more-text text-primary">Show more</a>
+                    }
+
+                    <p class="text-info"><small>Created On : @notification.CreatedDate.ToString("yyyy-MM-dd hh:mm tt")</small></p>
+                </div>
+            </div>
+            <div>
+                @if (!notification.IsRead)
+                {
+                    <a class="text-success mark-contact-as-read" data-itemid="@notification.Id" data-bs-toggle="tooltip" data-bs-placement="top" title="Mark As Read">
+                        <i class="fa fa-check-circle fa-lg"></i>
+                    </a>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <div class="card text-center" style="display: flex; justify-content: center; align-items: center; height: 20vh; margin: 0;">
+        <span class="glyphicon glyphicon-info-sign text-info" style="font-size: 50px;"></span>
+        <h5 class="text-muted" style="margin-top: 10px;">No notifications found.</h5>
+    </div>
+}

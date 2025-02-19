@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Interfaces.RepositoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
@@ -45,7 +46,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public ISettingRepository SettingRepository { get; }
         public IContactUsRepository ContactUsRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, IFileUploaderService fileUploaderService)
         {
             _dbContext = dbContext;
             OfferedServiceCategoryRepository = new OfferedServiceCategoryRepository(dbContext);
@@ -62,7 +63,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminServiceRepository = new AdminServiceRepository(dbContext);
             AdminPackageRepository = new AdminPackageRepository(dbContext);
             SettingRepository = new SettingRepository(dbContext);
-            ContactUsRepository = new ContactUsRepository(dbContext);
+            ContactUsRepository = new ContactUsRepository(dbContext, fileUploaderService);
 
         }
 

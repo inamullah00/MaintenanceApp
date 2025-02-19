@@ -122,6 +122,14 @@
                 </div>
             </li>
 
+            <li class="nav-item nav-category">Contact Us</li>
+            <li class="nav-item" active-when-controllers="ContactUs" active-when-actions="Index,UpdateIsRead">
+                <a href="@Url.Action("Index","ContactUs")" class="nav-link">
+                    <i class="link-icon" data-feather="phone"></i>
+                    <span class="link-title">@_CommonLocalizer["Contact Us"]</span>
+                </a>
+            </li>
+
             <li class="nav-item" active-when-controllers="Country" active-when-actions="Index">
                 <a href="@Url.Action("Index", "Country")" class="nav-link">
                     <i class="link-icon" data-feather="globe"></i>
@@ -131,19 +139,19 @@
 
 
             @*<li class="nav-item" active-when-controllers="Setting" active-when-actions="GlobalSetting">
-                <a href="@Url.Action("GlobalSetting", "Setting")" class="nav-link">
-                    <i class="link-icon" data-feather="settings"></i>
-                    <span class="link-title">@_CommonLocalizer["GlobalSetting"]</span>
-                </a>
-            </li>
+            <a href="@Url.Action("GlobalSetting", "Setting")" class="nav-link">
+                <i class="link-icon" data-feather="settings"></i>
+                <span class="link-title">@_CommonLocalizer["GlobalSetting"]</span>
+            </a>
+        </li>
 
 
-            <li class="nav-item" active-when-controllers="FAQ" active-when-actions="Index">
-                <a href="@Url.Action("Index", "FAQ")" class="nav-link">
-                    <i class="link-icon" data-feather="help-circle"></i>
-                    <span class="link-title">@_CommonLocalizer["FAQManagement"]</span>
-                </a>
-            </li>*@
+        <li class="nav-item" active-when-controllers="FAQ" active-when-actions="Index">
+            <a href="@Url.Action("Index", "FAQ")" class="nav-link">
+                <i class="link-icon" data-feather="help-circle"></i>
+                <span class="link-title">@_CommonLocalizer["FAQManagement"]</span>
+            </a>
+        </li>*@
         </ul>
     </div>
 </nav>

@@ -1,0 +1,92 @@
+﻿@model ContactUsIndexAndFilterViewModel
+@{
+    ViewBag.ModuleName = _CommonLocalizer["Notifications"];
+    ViewBag.ModuleIcon = "bell";
+}
+
+<div>
+    <div class="container">
+        <div class="card-header">
+            <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
+                <form method="get">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <label class="form-label">@_CommonLocalizer["FromDate"]</label>
+                            <div class="input-group">
+                                <input type="text" asp-for="Filter.FromDate" class="form-control datetime-picker"
+                                       placeholder="@_CommonLocalizer["From Date"]" data-input data-type="date">
+                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">@_CommonLocalizer["ToDate"]</label>
+                            <div class="input-group">
+                                <input type="text" asp-for="Filter.ToDate" class="form-control datetime-picker"
+                                       placeholder="@_CommonLocalizer["ToDate"]" data-input data-type="date">
+                                <span class="input-group-text input-group-addon"><i data-feather="calendar"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label class="form-label">@_CommonLocalizer["Status"]</label>
+                            @Html.DropDownListFor(a => a.Filter.Status,
+                                new SelectList(Enum.GetValues(typeof(ContactUsStatusEnum))),
+                                "Select Status",
+                                new { @class = "form-control select2Input" })
+                        </div>
+
+                        <div class="col-md-2 mt-4">
+                            <button class="search-button btn btn-primary waves-effect waves-light form-control">
+                                Filter
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        @await Html.PartialAsync("~/Views/ContactUs/_contactUsNotificationsPartial.cshtml", Model.Result)
+
+        @if (Model.Result.Data.Any() && Model.Result.TotalPages > 1)
+        {
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center mt-4">
+                    @if (Model.Result.HasPreviousPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { pageNumber = Model.Result.CurrentPage - 1, pageSize = Model.Result.PageSize, FromDate = Model.Filter.FromDate, ToDate = Model.Filter.ToDate, Status = Model.Filter.Status })">
+                                Previous
+                            </a>
+                        </li>
+                    }
+
+                    @for (var i = 1; i <= Model.Result.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == Model.Result.CurrentPage ? "active" : "")">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { pageNumber = i, pageSize = Model.Result.PageSize, FromDate = Model.Filter.FromDate, ToDate = Model.Filter.ToDate, Status = Model.Filter.Status })">
+                                @i
+                            </a>
+                        </li>
+                    }
+
+                    @if (Model.Result.HasNextPage)
+                    {
+                        <li class="page-item">
+                            <a class="page-link"
+                               href="@Url.Action("Index", new { pageNumber = Model.Result.CurrentPage + 1, pageSize = Model.Result.PageSize, FromDate = Model.Filter.FromDate, ToDate = Model.Filter.ToDate, Status = Model.Filter.Status })">
+                                Next
+                            </a>
+                        </li>
+                    }
+                </ul>
+            </nav>
+        }
+    </div>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="/css/notification.css" asp-append-version="true" />
+}
