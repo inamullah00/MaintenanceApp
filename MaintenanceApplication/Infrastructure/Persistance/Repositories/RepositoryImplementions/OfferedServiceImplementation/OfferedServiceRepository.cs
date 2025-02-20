@@ -84,12 +84,12 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                              },
 
                                              // Map Client
-                                             Client = new ApplicationUsersResponseDto
-                                             {
-                                                 Id = user.Id,
-                                                 FirstName = user.FullName,
+                                             //Client = new ApplicationUsersResponseDto
+                                             //{
+                                             //    Id = user.Id,
+                                             //    FirstName = user.FullName,
  
-                                             }
+                                             //}
                                          }).ToListAsync(cancellationToken);
 
             return offeredServices;
@@ -98,43 +98,42 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public async Task<OfferedServiceResponseDto?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
 
-            var offeredServices = await (from service in _dbContext.OfferedServices
-                                         join user in _dbContext.Users
-                                         on service.ClientId.ToString() equals user.Id
-                                         join category in _dbContext.OfferedServiceCategories
-                                         on service.CategoryID equals category.Id
-                                         where service.Id == id
-                                         select new OfferedServiceResponseDto
-                                         {
-                                             Id = service.Id,
-                                             ClientId = service.ClientId,
-                                             Title = service.Title,
-                                             Description = service.Description,
-                                             Location = service.Location,
-                                             PreferredTime = service.PreferredTime,
-                                             Building = service.Building,
-                                             Apartment = service.Apartment,
-                                             Floor = service.Floor,
-                                             Street = service.Street,
-                                             SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
-                                             CreatedAt = service.CreatedAt,
-                                             UpdatedAt = service.UpdatedAt,
-
-                                             // Map Category
-                                             Category = new OfferedServiceCategoryResponseDto
-                                             {
-                                                 Id = category.Id,
-                                                 CategoryName = category.CategoryName,
-                                                 IsActive = category.IsActive
-                                             },
-
-                                             // Map Client
-                                             Client = new ApplicationUsersResponseDto
-                                             {
-                                                 Id = user.Id,
-                                                 FirstName = user.FullName,
-                                             }
-                                         }).FirstOrDefaultAsync(cancellationToken);
+            var offeredServices = await (
+                   from service in _dbContext.OfferedServices
+                   join client in _dbContext.Clients
+                       on service.ClientId equals client.Id
+                   join category in _dbContext.OfferedServiceCategories
+                       on service.CategoryID equals category.Id
+                   where service.Id == id
+               select new OfferedServiceResponseDto
+               {
+                   Id = service.Id,
+                   ClientId = service.ClientId,
+                   Title = service.Title,
+                   Description = service.Description,
+                   Location = service.Location,
+                   PreferredTime = service.PreferredTime,
+                   Building = service.Building,
+                   Apartment = service.Apartment,
+                   Floor = service.Floor,
+                   Street = service.Street,
+                   SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
+                   CreatedAt = service.CreatedAt,
+                   UpdatedAt = service.UpdatedAt,
+                   // Map Category
+                   Category = new OfferedServiceCategoryResponseDto
+                   {
+                       Id = category.Id,
+                       CategoryName = category.CategoryName,
+                       IsActive = category.IsActive
+                   },
+                   // Map Client
+                   //Client = new ClientResponseDto
+                   //{
+                   //    Id = client.Id,
+                   //    FirstName = client.FullName,
+                   //}
+               }).FirstOrDefaultAsync(cancellationToken);
 
             return offeredServices;
         }

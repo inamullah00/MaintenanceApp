@@ -36,7 +36,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken);
         Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken);
         Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken);
-        Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken);
+        Task<Package> DeletePackageAsync(Package package, CancellationToken cancellationToken);
 
     }
 }

@@ -4,6 +4,7 @@ using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
+using Maintenance.Domain.Entity.SettingEntities;
 using Maintenance.Domain.Entity.UserEntities;
 using Maintenance.Infrastructure.Configurations;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
@@ -39,6 +40,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
         public DbSet<Dispute> Disputes { get; set; }
         public DbSet<Content> Contents { get; set; }
         public DbSet<Country> Countries { get; set; }
+        public DbSet<Setting> Settings { get; set; }
         //public DbSet<Payment> Payments { get; set; }
 
 
@@ -63,6 +65,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new FreelancerOtpConfiguration());
             builder.ApplyConfiguration(new BidPackageConfiguration());
             builder.ApplyConfiguration(new PackageConfiguration());
+            builder.ApplyConfiguration(new SettingConfiguration());
 
             #region Fluent Model
 

@@ -48,7 +48,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         public async Task<bool> PackageExistsAsync(string packageName)
         {
-            return await _context.Packages.AnyAsync(s => s.Name.ToLower() == packageName.ToLower());
+            return await _context.Packages.AnyAsync(s => !s.DeletedAt.HasValue && s.Name.ToLower() == packageName.ToLower());
         }
 
         public async Task<Package?> GetPackageByIdAsync(Guid packageId, CancellationToken cancellationToken)

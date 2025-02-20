@@ -40,8 +40,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 Id = package.Id,
                 Name = package.Name,
                 Price = package.Price,
-                Offering = package.OfferDetails,
+                OfferDetails = package.OfferDetails,
                 FreelancerId = package.FreelancerId,
+
             };
 
         }
@@ -68,7 +69,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             bool packageExists = await _unitOfWork.AdminPackageRepository.PackageExistsAsync(model.Name);
             if (packageExists && package.Id != model.Id) throw new CustomException("A package with this name already exists.");
 
-            _mapper.Map(package, model);
+            _mapper.Map(model, package);
             package.SetActionBy(user);
 
             var UpdatedResult = await _unitOfWork.AdminPackageRepository.UpdatePackageAsync(package, cancellationToken);
