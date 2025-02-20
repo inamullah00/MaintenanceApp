@@ -20,10 +20,10 @@ namespace Maintenance.Application.Services.Freelance
         Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId, CancellationToken cancellationToken);
         Task<Result<List<FilteredFreelancerResponseDto>>> FilterFreelancersAsync(FilterFreelancerRequestDto requestDto, CancellationToken cancellationToken);
         Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken);
-        Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto);
-        Task<Result<string>> UpdateBidAsync(BidUpdateDto bidUpdateDto, Guid freelancerId);
-        Task<Result<string>> DeleteBidAsync(Guid bidId);
-        Task<Result<string>> ApproveBidAsync(Guid Id, ApproveBidRequestDto ApproveBidRequestDto);
+        Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto ,CancellationToken cancellationToken);
+        Task<Result<string>> UpdateBidAsync(BidUpdateDto bidUpdateDto, Guid freelancerId ,CancellationToken cancellationToken);
+        Task<Result<string>> DeleteBidAsync(Guid bidId, CancellationToken cancellationToken);
+        Task<Result<string>> ApproveBidAsync(Guid Id, ApproveBidRequestDto ApproveBidRequestDto,CancellationToken cancellationToken);
         Task<Result<List<RequestedServiceResponseDto>>> GetRequestedServicesAsync(CancellationToken cancellationToken, string? keyword);
 
 

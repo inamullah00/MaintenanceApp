@@ -129,12 +129,12 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Submit Bid
         [HttpPost("Bids")]
-        public async Task<IActionResult> SubmitBid([FromBody] BidRequestDto bidRequestDto)
+        public async Task<IActionResult> SubmitBid([FromBody] BidRequestDto bidRequestDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation("SubmitBid called with BidDto: {BidDto}", bidRequestDto);
             try
             {
-                var result = await _serviceManager.FreelancerService.SubmitBidAsync(bidRequestDto);
+                var result = await _serviceManager.FreelancerService.SubmitBidAsync(bidRequestDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -174,13 +174,13 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Update Bid
         [HttpPut("Bids/{freelancerId:guid}")]
-        public async Task<IActionResult> UpdateBid(Guid freelancerId,BidUpdateDto bidUpdateDto)
+        public async Task<IActionResult> UpdateBid(Guid freelancerId,BidUpdateDto bidUpdateDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation("UpdateBid called for BidId: {BidId} with BidDto: {BidDto}", freelancerId, bidUpdateDto);
 
             try
             {
-                var result = await _serviceManager.FreelancerService.UpdateBidAsync(bidUpdateDto ,freelancerId);
+                var result = await _serviceManager.FreelancerService.UpdateBidAsync(bidUpdateDto ,freelancerId,cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -219,13 +219,13 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Delete Bid
         [HttpDelete("Bids/{bidId:guid}")]
-        public async Task<IActionResult> DeleteBid(Guid bidId)
+        public async Task<IActionResult> DeleteBid(Guid bidId, CancellationToken cancellationToken)
         {
             _logger.LogInformation("DeleteBid called for BidId: {BidId}", bidId);
 
             try
             {
-                var result = await _serviceManager.FreelancerService.DeleteBidAsync(bidId);
+                var result = await _serviceManager.FreelancerService.DeleteBidAsync(bidId, cancellationToken);
                 if (result.IsSuccess)
                 {
                     _logger.LogInformation("Bid deleted successfully. BidId: {BidId}", bidId);
@@ -263,13 +263,13 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #region Approve Bid Request by Client
         [HttpPatch("Bids/{id:guid}")]
-        public async Task<IActionResult> ApproveBid(Guid id, [FromBody] ApproveBidRequestDto bidRequestDto)
+        public async Task<IActionResult> ApproveBid(Guid id, [FromBody] ApproveBidRequestDto bidRequestDto, CancellationToken cancellationToken)
         {
             _logger.LogInformation("Received request to approve bid with ID: {BidId}", id);
 
             try
             {
-                var result = await _serviceManager.FreelancerService.ApproveBidAsync(id, bidRequestDto);
+                var result = await _serviceManager.FreelancerService.ApproveBidAsync(id, bidRequestDto, cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -756,7 +756,7 @@ namespace Maintenance.API.Controllers.FreelancerController
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.InnerException.Message}"
                 });
             }
         }
@@ -894,7 +894,7 @@ namespace Maintenance.API.Controllers.FreelancerController
                 {
                     StatusCode = StatusCodes.Status500InternalServerError,
                     Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.InnerException.Message}"
                 });
             }
         }

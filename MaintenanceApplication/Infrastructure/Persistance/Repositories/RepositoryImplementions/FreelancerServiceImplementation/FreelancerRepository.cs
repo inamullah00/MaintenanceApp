@@ -3,6 +3,7 @@ using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
+using Maintenance.Domain.Entity.Dashboard;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Infrastructure.Persistance.Data;
@@ -209,29 +210,41 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
         }
 
-        public async Task<Package> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Package?> GetPackageByIdAsync(Guid id, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _applicationDbContext.Packages.FirstOrDefaultAsync(x=>x.Id == id, cancellationToken);
+
         }
 
         public async Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return await _applicationDbContext.Packages.ToListAsync(cancellationToken);
         }
 
         public async Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (package == null) throw new ArgumentNullException(nameof(package));
+
+            await _applicationDbContext.Packages.AddAsync(package, cancellationToken);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            return package;
         }
 
         public async Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            if (package == null) throw new ArgumentNullException(nameof(package));
+
+            _applicationDbContext.Packages.Update(package);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            return package;
         }
 
-        public async Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken)
+        public async Task<Package> DeletePackageAsync(Package package, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+         
+            _applicationDbContext.Packages.Remove(package);
+            await _applicationDbContext.SaveChangesAsync(cancellationToken);
+            return package;
         }
         #endregion
     }
