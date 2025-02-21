@@ -32,6 +32,16 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             return termAndCondition;
         }
 
+        //todo: fetch user language settings
+        //public async Task<TermsAndConditonsResponseViewModel> GetTermsAndConditionByLanguage()
+        //{
+        //    var language = await GetLanguage();
+        //    return new TermsAndConditonsResponseViewModel
+        //    {
+        //        TermsAndCondition = language == LanguageTypeEnum.en.ToString() ? await _settingService.Get(SettingKeyConstants.KeyTermsAndConditions) : await _settingService.Get(SettingKeyConstants.KeyTermsAndConditionsArabic)
+        //    };
+        //}
+
         public async Task SetTermsAndConditions(TermsAndConditonsViewModel model, CancellationToken cancellationToken)
         {
             var settingModels = new List<SettingViewModel>();

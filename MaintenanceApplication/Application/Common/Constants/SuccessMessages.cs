@@ -129,8 +129,14 @@ namespace Maintenance.Application.Common.Constants
         public const string FreelancersFiltered = "Filterd Freelancer has been Fetched";
         public const string FreelancersFetchedSuccessfully = "Freelancer has been Fetched Successfully";
 
-        
+
         #endregion
+
+        #region Setting Messages
+        // Category Success Messages
+        public const string ContactUsCreated = "Contact us created successfully.";
+        #endregion
+
     }
 
 }
