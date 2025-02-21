@@ -9,5 +9,10 @@ namespace Maintenance.Domain.Entity.SettingEntities
         public string Value { get; set; }
 
         public ApplicationUser? ActionBy { get; set; }
+
+        public void SetActionBy(ApplicationUser? actionBy)
+        {
+            ActionBy = actionBy;
+        }
     }
 }

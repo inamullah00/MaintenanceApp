@@ -42,6 +42,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
         public DbSet<Country> Countries { get; set; }
         public DbSet<Setting> Settings { get; set; }
         //public DbSet<Payment> Payments { get; set; }
+        public DbSet<ContactUs> ContactUs { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -66,6 +67,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new BidPackageConfiguration());
             builder.ApplyConfiguration(new PackageConfiguration());
             builder.ApplyConfiguration(new SettingConfiguration());
+            builder.ApplyConfiguration(new ContactUsConfiguration());
 
             #region Fluent Model
 

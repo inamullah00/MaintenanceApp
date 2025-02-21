@@ -1,0 +1,42 @@
+﻿@model TermsAndConditonsViewModel
+
+@{
+    ViewBag.ModuleName = _CommonLocalizer["TermAndCondition"];
+    ViewBag.ModuleIcon = "fa-asterik";
+}
+
+<div class="row">
+    <div class="col-md-12 grid-margin stretch-card">
+        <div class="card">
+            <div class="card-body">
+                <form asp-action="TermsAndCondition" asp-controller="Setting" method="post" class="forms-sample">
+                    <div class="row">
+
+                        <div class="col-md-12">
+                            <div class="row">
+                               
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="link-icon feather-16" data-feather="edit"></i> @_CommonLocalizer["TermAndConditionEng"]
+                                    </label>
+                                    <textarea type="text" asp-for="TermsAndCondition" class="form-control tinymce" autocomplete="off" placeholder=" @_CommonLocalizer["TermAndConditionEng"]"> </textarea>
+                                    <span asp-validation-for="TermsAndCondition" class="text-danger"></span>
+                                </div>
+                                  <div class="col-md-6 mb-3">
+                                    <label class="form-label">
+                                        <i class="link-icon feather-16" data-feather="edit"></i> @_CommonLocalizer["TermAndConditionArabic"]
+                                    </label>
+                                    <textarea type="text" asp-for="TermsAndConditionArabic" class="form-control tinymcertl" autocomplete="off" placeholder=" @_CommonLocalizer["TermAndConditionArabic"]"> </textarea>
+                                    <span asp-validation-for="TermsAndConditionArabic" class="text-danger"></span>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <button type="submit" class="btn btn-primary me-2">@_CommonLocalizer["SaveBtn"]</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
