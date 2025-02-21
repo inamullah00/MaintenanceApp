@@ -48,9 +48,9 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public ISettingRepository SettingRepository { get; }
         public IContactUsRepository ContactUsRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext, IFileUploaderService fileUploaderService)
+     
         public IClientAuthRepository ClientAuthRepository { get; }
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, IFileUploaderService fileUploaderService)
         {
             _dbContext = dbContext;
             OfferedServiceCategoryRepository = new OfferedServiceCategoryRepository(dbContext);
