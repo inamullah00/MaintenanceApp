@@ -1,13 +1,16 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface.OfferedServiceCategoryInterfaces;
+using Maintenance.Application.Helper;
 using Maintenance.Application.Interfaces.RepositoryInterfaces;
+using Maintenance.Application.Interfaces.ReposoitoryInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.DisputeInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.FreelancerInterfaces;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Infrastructure.Persistance.Data;
+using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.ConactUsRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.CountryRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.DashboardRepositories;
 using Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.FreelancerServiceImplementation;
@@ -40,8 +43,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         public IAdminClientRepository AdminClientRepository { get; }
         public IAdminServiceRepository AdminServiceRepository { get; }
         public IAdminPackageRepository AdminPackageRepository { get; }
+        public ISettingRepository SettingRepository { get; }
+        public IContactUsRepository ContactUsRepository { get; }
 
-        public UnitOfWork(ApplicationDbContext dbContext)
+        public UnitOfWork(ApplicationDbContext dbContext, IFileUploaderService fileUploaderService)
         {
             _dbContext = dbContext;
             OfferedServiceCategoryRepository = new OfferedServiceCategoryRepository(dbContext);
@@ -57,6 +62,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             AdminClientRepository = new AdminClientRepository(dbContext);
             AdminServiceRepository = new AdminServiceRepository(dbContext);
             AdminPackageRepository = new AdminPackageRepository(dbContext);
+            SettingRepository = new SettingRepository(dbContext);
+            ContactUsRepository = new ContactUsRepository(dbContext, fileUploaderService);
 
         }
 
