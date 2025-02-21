@@ -766,7 +766,7 @@
     <value>Is Commission In %</value>
   </data>
   <data name="Company" xml:space="preserve">
-    <value>company</value>
+    <value>Company</value>
   </data>
   <data name="CountryCode" xml:space="preserve">
     <value>Country Code</value>

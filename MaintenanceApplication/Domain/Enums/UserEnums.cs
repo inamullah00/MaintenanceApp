@@ -1,6 +1,10 @@
 ﻿namespace Domain.Enums
 {
-
+    public enum ContactUsStatusEnum
+    {
+        Read,
+        Unread
+    }
     public enum Role
     {
         Client = 1,        // 1 for Client

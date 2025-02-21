@@ -16,6 +16,12 @@
         columns: [
             { data: 'Name', name: 'PackageName', "autoWidth": true },
             {
+                data: 'FreelancerName', name: 'FreelancerName', "autoWidth": true
+            },
+            {
+                data: 'Offering', name: 'Offering', "autoWidth": true
+            },
+            {
                 data: 'Price',
                 name: 'Price',
                 render: function (data) {
@@ -25,13 +31,8 @@
                 className: 'text-center'
             },
             {
-                data: 'FreelancerName', name: 'FreelancerName', "autoWidth": true
-            },
-
-            {
                 data: 'Id',
                 render: function (data, type, row) {
-                    const isActive = row.IsActive;
                     return `
                     <div class="text-center">
                         <a href="/Service/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">

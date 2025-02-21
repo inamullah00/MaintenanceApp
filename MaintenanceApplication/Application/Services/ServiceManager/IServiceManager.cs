@@ -11,9 +11,11 @@ using Maintenance.Application.Services.Admin.DisputeSpecification;
 using Maintenance.Application.Services.Admin.FeedbackSpecification;
 using Maintenance.Application.Services.Admin.FreelancerSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification;
+using Maintenance.Application.Services.ApplicationSetting;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Services.ClientAuth;
 using Maintenance.Application.Services.ClientPayment;
+using Maintenance.Application.Services.ContactUs;
 using Maintenance.Application.Services.Freelance;
 using Maintenance.Application.Services.FreelancerAuth;
 using Maintenance.Application.Services.OffereServiceCategory;
@@ -42,6 +44,10 @@ namespace Maintenance.Application.Services.ServiceManager
         public IAdminClientService AdminClientService { get; }
         public IAdminSevService AdminSevService { get; }
         public IAdminPackageService AdminPackageService { get; }
+        public IApplicationSettingService ApplicationSettingService { get; }
+        public IContactUsService ContactUsService { get; }
+
+
         public IClientAuthService ClientAuthService { get; }
         //public IFreelancerAuthService FreelancerAuthService { get; }
 
