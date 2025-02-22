@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Maintenance.API.Controllers.AdminController
 {
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     public class DashboardController : ControllerBase
     {
@@ -28,6 +29,7 @@ namespace Maintenance.API.Controllers.AdminController
         #region Order Management
 
         #region Get All Orders
+
         [HttpGet("Order")]
         public async Task<IActionResult> GetAllOrders(CancellationToken cancellationToken, string Keyword = "")
         {

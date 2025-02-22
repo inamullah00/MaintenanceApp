@@ -344,27 +344,28 @@ namespace Maintenance.API.Controllers.ClientController
 
             try
             {
-                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(OfferedServiceId, cancellationToken);
+                //var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(OfferedServiceId, cancellationToken);
 
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Successfully fetched bids ");
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value
-                    });
-                }
+                //if (result.IsSuccess)
+                //{
+                //    _logger.LogInformation("Successfully fetched bids ");
+                //    return Ok(new
+                //    {
+                //        StatusCode = result.StatusCode,
+                //        Success = true,
+                //        Message = result.Message,
+                //        Data = result.Value
+                //    });
+                //}
 
-                _logger.LogWarning("Failed to fetch bids. Message: {Message}", result.Message);
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
+                //_logger.LogWarning("Failed to fetch bids. Message: {Message}", result.Message);
+                //return StatusCode(result.StatusCode, new
+                //{
+                //    StatusCode = result.StatusCode,
+                //    Success = false,
+                //    Message = result.Message
+                //});
+                return null;
             }
             catch (Exception ex)
             {

@@ -1,6 +1,7 @@
 ﻿using Application.Interfaces.IUnitOFWork;
 using AutoMapper;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Services.Freelance;
@@ -139,38 +140,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             await _unitOfWork.SaveChangesAsync();
 
             return Result<string>.Success(SuccessMessages.FreelancerBidCreated, StatusCodes.Status200OK);
-
-
-
-
-
-
-
-
-
-
-
-
-            //if (bidRequestDto == null)
-            //{
-            //    return Result<string>.Failure(ErrorMessages.InvalidFreelancerBidData, StatusCodes.Status400BadRequest);
-            //}
-
-            //var bidEntity = _mapper.Map<Bid>(bidRequestDto);
-
-            //var result = await _unitOfWork.FreelancerRepository.CreateAsync(bidEntity);
-
-            //if (result == null)
-            //{
-            //    return Result<string>.Failure(ErrorMessages.FreelancerBidCreationFailed, StatusCodes.Status500InternalServerError);
-            //}
-
-            //await _unitOfWork.SaveChangesAsync();
-            //return Result<string>.Success(SuccessMessages.FreelancerBidCreated, StatusCodes.Status200OK);
-
-
-
-
         }
         #endregion
 
@@ -207,13 +176,24 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         #endregion
 
         #region GetBidsByFreelancers on Specified Client Service
-        public async Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId, CancellationToken cancellationToken)
+        public async Task<Result<PaginatedResult<ServiceBidsDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId,int pageNumber, int pageSize, CancellationToken cancellationToken =default)
         {
-            BidSearchList Specification = new BidSearchList(offeredServiceId);
-            var bids = await _unitOfWork.FreelancerRepository.GetAllAsync(cancellationToken, Specification);
 
-            var bidList = _mapper.Map<List<BidResponseDto>>(bids);
-            return Result<List<BidResponseDto>>.Success(bidList, $"{bids.Count} {SuccessMessages.FreelancerBidFetched}", StatusCodes.Status200OK);
+            if (offeredServiceId == Guid.Empty)
+            {
+                return Result<PaginatedResult<ServiceBidsDto>>.Failure("Invalid service ID", StatusCodes.Status400BadRequest);
+            }
+
+            BidSearchList Specification = new BidSearchList(offeredServiceId);
+            
+            var bids = await _unitOfWork.FreelancerRepository.GetServiceBids(pageNumber,pageSize, Specification,cancellationToken);
+
+            if(bids.TotalCount == 0 || bids == null)
+            {
+                return Result<PaginatedResult<ServiceBidsDto>>.Failure("No bids found for the specified service", StatusCodes.Status404NotFound);
+            }
+
+            return Result<PaginatedResult<ServiceBidsDto>>.Success(bids, $"{bids.TotalCount} {SuccessMessages.FreelancerBidFetched}", StatusCodes.Status200OK);
         }
         #endregion
 
@@ -401,6 +381,44 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             await _unitOfWork.FreelancerRepository.DeletePackageAsync(package, cancellationToken);
             await _unitOfWork.SaveChangesAsync();
             return Result<bool>.Success(true, "Package deleted successfully.");
+        }
+
+       public async Task<Result<FreelancerDetailsDto>> GetFreelancerDetailsAsync(Guid freelancerId, CancellationToken cancellationToken)
+        {
+            if (freelancerId == Guid.Empty)
+            {
+                return Result<FreelancerDetailsDto>.Failure("Invalid ID or missing", StatusCodes.Status400BadRequest);
+            }
+
+            var specification = new FreelancerDetailsSpecification(freelancerId);
+
+            var freelancerDetails = await _unitOfWork.FreelancerRepository.GetFreelancerDetailsAsync(specification, cancellationToken);
+
+            if (freelancerDetails == null)
+            {
+                return Result<FreelancerDetailsDto>.Failure("No freelancer details found", StatusCodes.Status404NotFound);
+            }
+
+            return Result<FreelancerDetailsDto>.Success(freelancerDetails, "Freelancer details fetched successfully.",StatusCodes.Status200OK);
+        }
+
+        public async Task<Result<CompanyDetailsDto>> GetCompanyDetailsAsync(Guid CompanyId, CancellationToken cancellationToken)
+        {
+            if (CompanyId == Guid.Empty)
+            {
+                return Result<CompanyDetailsDto>.Failure("Invalid ID or missing", StatusCodes.Status400BadRequest);
+            }
+
+            var specification = new FreelancerDetailsSpecification(CompanyId);
+
+            var CompanyDetail = await _unitOfWork.FreelancerRepository.GetCompanyDetailsAsync(specification, cancellationToken);
+
+            if (CompanyDetail == null)
+            {
+                return Result<CompanyDetailsDto>.Failure("No Company details found", StatusCodes.Status404NotFound);
+            }
+
+            return Result<CompanyDetailsDto>.Success(CompanyDetail, "Freelancer details fetched successfully.", StatusCodes.Status200OK);
         }
     }
 }

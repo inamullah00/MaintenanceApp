@@ -1,6 +1,7 @@
 ﻿using Ardalis.Specification;
 using Ardalis.Specification.EntityFrameworkCore;
 using AutoMapper;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
@@ -61,43 +62,44 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
         }
         #endregion
 
-        #region GetAllAsync
-        public async Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null)
+        #region Get All Service Bids 
+        public async Task<PaginatedResult<ServiceBidsDto>> GetServiceBids(int pageNumber , int pageSize, ISpecification<Bid>? specification = null, CancellationToken cancellationToken = default)
         {
-            var QueryResult = SpecificationEvaluator.Default.GetQuery(
+            var query = SpecificationEvaluator.Default.GetQuery(
+            _applicationDbContext.Bids.AsNoTracking(),
+            specification
+        );
 
-                query: _applicationDbContext.Bids.AsQueryable(),
-                specification: specification
-                );
+               // Get total count before applying pagination
+             int totalCount = await query.CountAsync(cancellationToken);
 
-            var result = await (from bid in QueryResult
-                                join service in _applicationDbContext.OfferedServices
-                                    on bid.OfferedServiceId equals service.Id
-                                join freelancer in _applicationDbContext.Freelancers
-                                    on bid.FreelancerId equals freelancer.Id
-                                join category in _applicationDbContext.OfferedServiceCategories
-                                    on service.CategoryID equals category.Id
-                                select new BidResponseDto
-                                {
-                                    Id = bid.Id,
-                                    OfferedServiceId = bid.OfferedServiceId,
-                                    FreelancerId = bid.FreelancerId,
-                                    FreelancerName = freelancer.FullName,
-                                    ServiceTitle = service.Title,
-                                    Status = bid.BidStatus.ToString(),
-                                    CreatedAt = bid.CreatedAt,
-                                    CategoryName = category.CategoryName,
-                                    Description = service.Description,
-                                    Location = service.Location,
-                                    PreferredTime = service.PreferredTime,
-                                    Building = service.Building,
-                                    Apartment = service.Apartment,
-                                    Floor = service.Floor,
-                                    Street = service.Street,
-                                })
-                    .ToListAsync(cancellationToken);
+            var bids =  await (from bid in query
+                          join service in _applicationDbContext.OfferedServices on bid.OfferedServiceId equals service.Id
+                          join freelancer in _applicationDbContext.Freelancers on bid.FreelancerId equals freelancer.Id
+                          
+                          select new ServiceBidsDto
+                          {
+                              FullName = freelancer.FullName,
+                              FreelancerPackages = bid.BidPackages.Select(bp => new ServiceBidPackageDTO
+                              {
+                                  Name = bp.Package.Name,
+                                  Price = bp.Package.Price,
+                                  OfferDetails = bp.Package.OfferDetails
 
-            return result;
+                              }).ToList()
+                          })
+                         .Skip((pageNumber - 1) * pageSize) // Skip records for previous pages
+                      .Take(pageSize) // Take only the required number of records
+                      .ToListAsync(cancellationToken);
+
+            // Return paginated result
+            return new PaginatedResult<ServiceBidsDto>
+            {
+                Items = bids,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
 
         }
         #endregion
@@ -246,6 +248,74 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             await _applicationDbContext.SaveChangesAsync(cancellationToken);
             return package;
         }
+
+
         #endregion
+
+        public async Task<FreelancerDetailsDto> GetFreelancerDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken)
+        {
+            // Apply specification to filter the query
+            var query = SpecificationEvaluator.Default.GetQuery(
+                query: _applicationDbContext.Freelancers.AsNoTracking(),
+                specification: specification
+            );
+
+            var freelancerDetails = await query
+                .Select(freelancer => new FreelancerDetailsDto
+                {
+                    Id = freelancer.Id,
+                    FullName = freelancer.FullName,
+                    Experience = freelancer.ExperienceLevel.ToString(),
+                    About = freelancer.Bio,
+                
+                    Rating = _applicationDbContext.Feedbacks
+                        .Where(fb => fb.FeedbackOnFreelancerId == freelancer.Id)
+                        .Select(fb => (double?)fb.Rating)
+                        .Average(),
+
+                    Feedbacks = _applicationDbContext.Feedbacks
+                        .Where(fb => fb.FeedbackOnFreelancerId == freelancer.Id)
+                        .OrderByDescending(fb => fb.CreatedAt)
+                        .Take(5) // Fetch latest 5 feedbacks
+                        .ToList()
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return freelancerDetails;
+        }
+
+       public async Task<CompanyDetailsDto> GetCompanyDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken)
+        {
+            // Apply specification to filter the query
+            var query = SpecificationEvaluator.Default.GetQuery(
+                query: _applicationDbContext.Freelancers.AsNoTracking(),
+                specification: specification
+            );
+
+            var CompanyDetails = await query
+                .Where(f => f.IsType == UserType.Company)
+                .Select(freelancer => new CompanyDetailsDto
+                {
+                    Id = freelancer.Id,
+                    CompanyName = freelancer.FullName,
+                    Experience = freelancer.ExperienceLevel.ToString(),
+                    About = freelancer.Bio,
+
+                    Rating = _applicationDbContext.Feedbacks
+                        .Where(fb => fb.FeedbackOnFreelancerId == freelancer.Id)
+                        .Select(fb => (double?)fb.Rating)
+                        .Average(),
+
+                    Feedbacks = _applicationDbContext.Feedbacks
+                        .Where(fb => fb.FeedbackOnFreelancerId == freelancer.Id)
+                        .OrderByDescending(fb => fb.CreatedAt)
+                        .Take(5) // Fetch latest 5 feedbacks
+                        .ToList()
+                })
+                .FirstOrDefaultAsync(cancellationToken);
+
+            return CompanyDetails;
+        }
+
     }
 }

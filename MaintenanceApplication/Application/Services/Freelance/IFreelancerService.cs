@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Ardalis.Specification;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Wrapper;
@@ -17,7 +18,7 @@ namespace Maintenance.Application.Services.Freelance
     {
 
         Task<Result<BidResponseDto>> GetBidByFreelancerAsync(Guid freelancerId,CancellationToken cancellationToken);
-        Task<Result<List<BidResponseDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId, CancellationToken cancellationToken);
+        Task<Result<PaginatedResult<ServiceBidsDto>>> GetBidsByFreelancerAsync(Guid offeredServiceId,int pageNumber, int pageSize, CancellationToken cancellationToken);
         Task<Result<List<FilteredFreelancerResponseDto>>> FilterFreelancersAsync(FilterFreelancerRequestDto requestDto, CancellationToken cancellationToken);
         Task<Result<List<OrderStatusResponseDto>>> GetOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken);
         Task<Result<string>> SubmitBidAsync(BidRequestDto bidRequestDto ,CancellationToken cancellationToken);
@@ -35,6 +36,10 @@ namespace Maintenance.Application.Services.Freelance
         Task<Result<Package>> UpdatePackageAsync(Guid packageId, Package package, CancellationToken cancellationToken);
         Task<Result<bool>> DeletePackageAsync(Guid packageId, CancellationToken cancellationToken);
 
+        // Freelancer or Company Details 
+
+        Task<Result<FreelancerDetailsDto>> GetFreelancerDetailsAsync(Guid FreelancerId, CancellationToken cancellationToken);
+        Task<Result<CompanyDetailsDto>> GetCompanyDetailsAsync(Guid CompanyId, CancellationToken cancellationToken);
 
     }
 }
