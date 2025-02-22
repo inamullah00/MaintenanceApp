@@ -15,7 +15,10 @@ namespace Maintenance.Application.Services.Freelance.Specification
         {
             if (offeredServiceId != Guid.Empty)
             {
-                Query.Where(x => x.OfferedServiceId == offeredServiceId);
+                Query.Where(bid => bid.OfferedServiceId == offeredServiceId)
+                        .Include(b => b.Freelancer)
+                        .Include(b => b.BidPackages)
+                        .ThenInclude(bp => bp.Package);
             }
         }
     }

@@ -32,20 +32,18 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
 
 
-        #region Get Bids by Freelancer
-        [HttpGet("Bids/{freelancerId:guid}")]
-        public async Task<IActionResult> GetBidsByFreelancer(Guid freelancerId,CancellationToken cancellationToken)
+        [HttpGet("Bids/{serviceId:Guid}")]
+        public async Task<IActionResult> GetBidsByService(Guid serviceId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
         {
-
-            _logger.LogInformation("GetBidsByFreelancer called for FreelancerId: {FreelancerId}", freelancerId);
+            _logger.LogInformation("GetBidsByService called for ServiceId: {ServiceId}", serviceId);
 
             try
             {
-                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(freelancerId,cancellationToken);
+                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(serviceId, pageNumber, pageSize, cancellationToken);
 
                 if (result.IsSuccess)
                 {
-                    _logger.LogInformation("Successfully fetched bids for FreelancerId: {FreelancerId}", freelancerId);
+                    _logger.LogInformation("Successfully fetched {Count} bids for ServiceId: {ServiceId}", result.Value.TotalCount, serviceId);
 
                     return Ok(new
                     {
@@ -56,9 +54,9 @@ namespace Maintenance.API.Controllers.FreelancerController
                     });
                 }
 
-                _logger.LogWarning("Failed to fetch bids for FreelancerId: {FreelancerId}. Message: {Message}", freelancerId, result.Message);
+                _logger.LogWarning("No bids found for ServiceId: {ServiceId}. Message: {Message}", serviceId, result.Message);
 
-                return StatusCode(result.StatusCode, new
+                return NotFound(new
                 {
                     StatusCode = result.StatusCode,
                     Success = false,
@@ -67,7 +65,7 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error occurred while fetching bids for FreelancerId: {FreelancerId}", freelancerId);
+                _logger.LogError(ex, "Error occurred while fetching bids for ServiceId: {ServiceId}", serviceId);
 
                 return StatusCode(StatusCodes.Status500InternalServerError, new
                 {
@@ -77,11 +75,10 @@ namespace Maintenance.API.Controllers.FreelancerController
                 });
             }
         }
-        #endregion
 
 
-        #region Get Bids by Freelancer
-        [HttpGet("Bids/{freelancerId:guid}")]
+        #region Get Bid by Freelancer
+        [HttpGet("Bid/{freelancerId:guid}")]
         public async Task<IActionResult> GetBidByFreelancer(Guid freelancerId,CancellationToken cancellationToken)
         {
 
@@ -899,10 +896,96 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
         }
         #endregion
+
+
+        #endregion
+
+
+        #region Get Freelancer Details
+        [HttpGet("Freelancer/{freelancerId}")]
+        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching freelancer details for ID: {FreelancerId}", freelancerId);
+
+                var result = await _serviceManager.FreelancerService.GetFreelancerDetailsAsync(freelancerId, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Freelancer not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching freelancer details.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+
+        #region Get Company Details
+        [HttpGet("Company/{companyId}")]
+        public async Task<IActionResult> GetCompanyDetails(Guid companyId, CancellationToken cancellationToken)
+        {
+            try
+            {
+                _logger.LogInformation("Fetching company details for ID: {CompanyId}", companyId);
+
+                var result = await _serviceManager.FreelancerService.GetCompanyDetailsAsync(companyId, cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                _logger.LogWarning("Company not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching company details.");
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
     }
-
-
-    #endregion
-
 }
 
