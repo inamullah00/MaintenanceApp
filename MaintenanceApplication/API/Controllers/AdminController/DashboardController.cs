@@ -1006,7 +1006,7 @@ namespace Maintenance.API.Controllers.AdminController
                 });
             }
 
-            _logger.LogInformation("Successfully retrieved About Us content.");
+            _logger.LogInformation("Successfully retrieved About Us.");
             return Ok(new
             {
                 StatusCode = StatusCodes.Status200OK,
