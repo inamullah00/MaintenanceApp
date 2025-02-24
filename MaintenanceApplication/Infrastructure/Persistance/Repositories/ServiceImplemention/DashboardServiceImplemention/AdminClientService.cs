@@ -46,6 +46,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 PhoneNumber = client.PhoneNumber,
                 CountryId = client.CountryId,
                 IsActive = client.IsActive,
+                Address = client.Address,
                 ProfilePicture = !string.IsNullOrEmpty(client.ProfilePicture) ? _baseImageUrl + client.ProfilePicture : string.Empty,
             };
         }
