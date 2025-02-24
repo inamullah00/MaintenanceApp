@@ -13,6 +13,7 @@ using Maintenance.Application.Services.Admin.FreelancerSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ApplicationSetting;
 using Maintenance.Application.Services.Client;
+using Maintenance.Application.Services.ClientAuth;
 using Maintenance.Application.Services.ClientPayment;
 using Maintenance.Application.Services.ContactUs;
 using Maintenance.Application.Services.Freelance;
@@ -47,6 +48,8 @@ namespace Maintenance.Application.Services.ServiceManager
         public IContactUsService ContactUsService { get; }
 
 
+        public IClientAuthService ClientAuthService { get; }
+        //public IFreelancerAuthService FreelancerAuthService { get; }
 
     }
 }

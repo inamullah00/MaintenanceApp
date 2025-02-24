@@ -28,14 +28,14 @@
                     return 'KWD ' + data;
                 },
                 "autoWidth": true,
-                
+                className: 'text-center'
             },
             {
                 data: 'Id',
                 render: function (data, type, row) {
                     return `
                     <div class="text-center">
-                        <a href="/Package/Edit/${data}" class="text-primary btn-icon-text btn-xs p-1" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
+                        <a href="/Service/Edit/${data}" class="text-primary btn-icon-text btn-xs" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit">
                             <i class="btn-icon-prepend fa fa-pen-to-square"></i>
                         </a>
                         

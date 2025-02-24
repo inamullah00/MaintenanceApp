@@ -1,6 +1,6 @@
 ﻿@model PackageEditViewModel
 @{
-    ViewBag.ModuleName = _CommonLocalizer["Edit"] + ' ' + _CommonLocalizer["Package"];
+    ViewBag.ModuleName = _CommonLocalizer["Create"] + _CommonLocalizer["Package"];
     ViewBag.ModuleIcon = "cube";
     var freelancers = ViewBag.Freelancers as List<DropdownDto> ?? new List<DropdownDto>();
 
@@ -10,7 +10,7 @@
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Edit" asp-controller="Package" method="post" class="form-package">
+                <form asp-action="Create" asp-controller="Package" method="post" class="form-package">
                     <input type="hidden" asp-for="Id" />
                     <div class="row">
                         <div class="col-md-8">

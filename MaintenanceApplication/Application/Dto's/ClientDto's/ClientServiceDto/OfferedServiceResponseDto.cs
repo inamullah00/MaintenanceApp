@@ -30,6 +30,6 @@ namespace Application.Dto_s.ClientDto_s
 
 
         public OfferedServiceCategoryResponseDto Category { get; set; }
-        public ApplicationUsersResponseDto Client { get; set; }
+        //public ApplicationUsersResponseDto Client { get; set; }
     }
 }

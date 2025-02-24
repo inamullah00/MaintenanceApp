@@ -18,6 +18,7 @@ using Maintenance.Application.Services.Admin.FreelancerSpecification;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ApplicationSetting;
 using Maintenance.Application.Services.Client;
+using Maintenance.Application.Services.ClientAuth;
 using Maintenance.Application.Services.ClientPayment;
 using Maintenance.Application.Services.ContactUs;
 using Maintenance.Application.Services.Freelance;
@@ -57,6 +58,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         public IAdminClientService AdminClientService { get; private set; }
         public IAdminSevService AdminSevService { get; private set; }
         public IAdminPackageService AdminPackageService { get; private set; }
+        public IClientAuthService ClientAuthService { get; private set; }
+        //public IFreelancerAuthService FreelancerAuthService { get; private set; }
         public IApplicationSettingService ApplicationSettingService { get; private set; }
         public IContactUsService ContactUsService { get; private set; }
 
@@ -96,6 +99,8 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             AdminClientService = new AdminClientService(unitOfWork, mapper, PasswordService, fileUploaderService);
             AdminSevService = new AdminSevService(unitOfWork, mapper);
             AdminPackageService = new AdminPackageService(unitOfWork, mapper);
+            //FreelancerAuthService = new FreelancerAuthService(unitOfWork, mapper, PasswordService, tokenService, configuration);
+            ClientAuthService = new ClientAuthService(unitOfWork, PasswordService, tokenService, mapper, configuration);
             ApplicationSettingService = new ApplicationSettingService(unitOfWork);
             ContactUsService = new ContactUsService(unitOfWork, mapper);
 

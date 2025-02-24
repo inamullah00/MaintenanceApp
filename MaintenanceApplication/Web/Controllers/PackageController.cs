@@ -52,7 +52,6 @@ namespace Maintenance.Web.Controllers
 
         public async Task<IActionResult> Create()
         {
-            await PrepareViewBag();
             return View(new PackageCreateViewModel());
         }
 

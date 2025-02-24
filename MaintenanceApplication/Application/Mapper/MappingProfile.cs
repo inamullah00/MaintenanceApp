@@ -10,6 +10,7 @@ using Maintenance.Application.Dto_s.DashboardDtos.DisputeDtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Dto_s.FreelancerDto_s.FreelancerPackage;
 using Maintenance.Application.Dto_s.UserDto_s;
+using Maintenance.Application.Dto_s.UserDto_s.ClientAuthDtos;
 using Maintenance.Application.Dto_s.UserDto_s.FreelancerAuthDtos;
 using Maintenance.Application.ViewModel;
 using Maintenance.Domain.Entity.ClientEntities;
@@ -26,20 +27,25 @@ namespace Application.Mapper
             CreateMap<ApplicationUser, UserDetailsResponseDto>().ReverseMap();
             CreateMap<UserDetailsResponseDto, ApplicationUser>().ReverseMap();
 
-            #region Admin Freelancer/Company Mapping
+            // Client Registeration Mapping
+
+            CreateMap<Client, ClientRegistrationDto>().ReverseMap();
+            CreateMap<Client, ClientLoginDto>().ReverseMap();
+            CreateMap<Client, ClientLoginResponseDto>().ReverseMap();
+
+
+            // Admin Freelancer/Company Mapping
             CreateMap<CompanyCreateViewModel, Freelancer>().ReverseMap();
             CreateMap<CompanyEditViewModel, Freelancer>().ReverseMap();
-            #endregion
+          
 
-            #region Admin Client Mapping
+            // Admin Client Mapping
             CreateMap<ClientCreateViewModel, Client>().ReverseMap();
-            #endregion
-
-            #region Admin Package Mapping
+            
+            // Admin Package Mapping
             CreateMap<PackageCreateViewModel, Package>().ReverseMap();
             CreateMap<PackageEditViewModel, Package>().ReverseMap();
-            #endregion
-
+            
             CreateMap<Freelancer, FreelancerRegistrationDto>().ReverseMap();
             CreateMap<Freelancer, FreelancerProfileDto>().ReverseMap();
 
@@ -49,8 +55,6 @@ namespace Application.Mapper
             CreateMap<Package, PackageResponseDto>().ReverseMap();
             CreateMap<CreatePackageRequestDto, Package>().ReverseMap();
             CreateMap<UpdatePackageRequestDto, Package>().ReverseMap();
-
-
 
 
             CreateMap<OfferedService, OfferedServiceResponseDto>().ReverseMap();
@@ -71,33 +75,33 @@ namespace Application.Mapper
             CreateMap<CreateOrderRequestDto, Order>().ReverseMap();
             CreateMap<UpdateOrderStatusDto, Order>().ReverseMap();
 
-            #region Account Mapping
+            // Account Mapping
             CreateMap<ApplicationUser, UserProfileDto>().ReverseMap();
             CreateMap<ApplicationUser, UserProfileEditDto>().ReverseMap();
-            #endregion
+            
 
-            #region Dispute Mapping
+            // Dispute Mapping
             CreateMap<Dispute, DisputeResponseDto>().ReverseMap();
             CreateMap<CreateDisputeRequest, Dispute>().ReverseMap();
             CreateMap<UpdateDisputeRequest, Dispute>().ReverseMap();
-            #endregion
+            
 
-            #region Content Mapping
+            // Content Mapping
             CreateMap<Content, ContentResponseDto>().ReverseMap();
             CreateMap<CreateContentRequestDto, Content>().ReverseMap();
             CreateMap<UpdateContentRequestDto, Content>().ReverseMap();
-            #endregion
+            
 
-            #region Content Mapping
+            // Content Mapping
             CreateMap<Feedback, FeedbackResponseDto>().ReverseMap();
             CreateMap<CreateFeedbackRequestDto, Feedback>().ReverseMap();
             CreateMap<UpdateFeedbackRequestDto, Feedback>().ReverseMap();
-            #endregion
+            
 
-            #region Admin Sev Service Mapping
+            // Admin Sev Service Mapping
             CreateMap<ServiceCreateViewModel, Service>().ReverseMap();
             CreateMap<ServiceEditViewModel, Service>().ReverseMap();
-            #endregion
+            
 
 
         }

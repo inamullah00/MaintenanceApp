@@ -3,6 +3,7 @@ using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Services.Admin.OrderSpecification;
 using Maintenance.Application.Services.ServiceManager;
+using Maintenance.Domain.Entity.Dashboard;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -265,6 +266,122 @@ namespace Maintenance.API.Controllers.ClientController
                 });
             }
         }
+        #endregion
+
+        #region Get All Pending Services for Client (Awaiting Bid Acceptance)
+        [HttpGet("client/pending-services")]
+        public async Task<IActionResult> GetAllPendingServices(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching all pending services for client");
+            try
+            {
+                var result = await _serviceManager.OrderService.GetPendingClientServicesAsync(cancellationToken);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching pending services for client");
+                return StatusCode(500, new { Success = false, Message = "Internal Server Error" });
+            }
+        }
+        #endregion
+
+        #region Filter-Freelancer-Orders
+
+        [HttpGet("Filter-Freelancer-Orders")]
+        public async Task<IActionResult> GetClientOrdersByStatus([FromQuery] OrderStatus orderStatus, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Fetching client orders with status: {Status}", orderStatus);
+
+            var result = await _serviceManager.OrderService.GetClientOrdersByStatusAsync(orderStatus, cancellationToken);
+
+            if (result.IsSuccess)
+            {
+                return Ok(new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = true,
+                    Message = result.Message,
+                    Data = result.Value
+                });
+            }
+
+            _logger.LogWarning("No client orders found for status: {Status}", orderStatus);
+            return StatusCode(result.StatusCode, new
+            {
+                StatusCode = result.StatusCode,
+                Success = false,
+                Message = result.Message
+            });
+        }
+        #endregion
+
+        #region No OF Bids
+
+        #region Get Total No of Bids by Freelancers
+
+        [HttpGet("TotalBidsByFreelancers/{OfferedServiceId}:Guid")]
+        public async Task<IActionResult> GetBidsByFreelancer(Guid OfferedServiceId, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("GetBidsByFreelancer called");
+
+            try
+            {
+                //var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(OfferedServiceId, cancellationToken);
+
+                //if (result.IsSuccess)
+                //{
+                //    _logger.LogInformation("Successfully fetched bids ");
+                //    return Ok(new
+                //    {
+                //        StatusCode = result.StatusCode,
+                //        Success = true,
+                //        Message = result.Message,
+                //        Data = result.Value
+                //    });
+                //}
+
+                //_logger.LogWarning("Failed to fetch bids. Message: {Message}", result.Message);
+                //return StatusCode(result.StatusCode, new
+                //{
+                //    StatusCode = result.StatusCode,
+                //    Success = false,
+                //    Message = result.Message
+                //});
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while fetching bids ");
+
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
+                });
+            }
+        }
+
+        #endregion
+
         #endregion
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Ardalis.Specification;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.Common;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using Maintenance.Domain.Entity.FreelancerEntities;
@@ -25,7 +26,7 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<bool> RemoveAsync(Bid offeredService, CancellationToken cancellationToken = default);
         Task<BidResponseDto> GetByIdAsync(ISpecification<Bid> specification , CancellationToken cancellationToken = default);
 
-        Task<List<BidResponseDto>> GetAllAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
+        Task<PaginatedResult<ServiceBidsDto>> GetServiceBids(int PageNumber, int PageSize, ISpecification<Bid>? specification = null, CancellationToken cancellationToken = default);
         Task<List<FilteredFreelancerResponseDto>> GetByFilterAsync(CancellationToken cancellationToken = default, ISpecification<Bid>? specification = null);
         Task<Bid> FindAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
         Task<bool> ExistsAsync(Expression<Func<Bid, bool>> predicate, CancellationToken cancellationToken = default);
@@ -36,7 +37,12 @@ namespace Maintenance.Application.Interfaces.ReposoitoryInterfaces.FreelancerInt
         Task<List<Package>> GetAllPackagesAsync(CancellationToken cancellationToken);
         Task<Package> CreatePackageAsync(Package package, CancellationToken cancellationToken);
         Task<Package> UpdatePackageAsync(Package package, CancellationToken cancellationToken);
-        Task<Package> DeletePackageAsync(Guid id, CancellationToken cancellationToken);
+        Task<Package> DeletePackageAsync(Package package, CancellationToken cancellationToken);
 
+
+        // Freelancer  & Company Details
+
+        Task<FreelancerDetailsDto> GetFreelancerDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken = default);
+        Task<CompanyDetailsDto> GetCompanyDetailsAsync(ISpecification<Freelancer> specification, CancellationToken cancellationToken = default);
     }
 }

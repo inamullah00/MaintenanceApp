@@ -1,4 +1,5 @@
 ﻿using Ardalis.Specification;
+using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.FreelancerEntites;
 using System;
 using System.Collections.Generic;
@@ -10,14 +11,15 @@ namespace Maintenance.Application.Services.Freelance.Specification
 {
     public class BidSearchList : Specification<Bid>
     {
-        public BidSearchList(string? Keyword = "")
+        public BidSearchList(Guid offeredServiceId)
         {
-            if (!string.IsNullOrWhiteSpace(Keyword))
+            if (offeredServiceId != Guid.Empty)
             {
-               _ = Query.Where(bid => bid.Freelancer.FullName.Contains(Keyword) ||
-                                bid.Freelancer.Email.Contains(Keyword));
+                Query.Where(bid => bid.OfferedServiceId == offeredServiceId)
+                        .Include(b => b.Freelancer)
+                        .Include(b => b.BidPackages)
+                        .ThenInclude(bp => bp.Package);
             }
-            _ = Query.OrderBy(x => x.CreatedAt);
         }
     }
 }
