@@ -33,9 +33,9 @@
   <ItemGroup>
     <Folder Include="Extensions\" />
     <Folder Include="Middlewares\" />
-    <Folder Include="wwwroot\UploadedAudios\" />
-    <Folder Include="wwwroot\UploadedFiles\" />
-    <Folder Include="wwwroot\UploadedVideos\" />
+    <Folder Include="wwwroot\Uploads\Client\" />
+    <Folder Include="wwwroot\Uploads\Freelancer\CivilIDs\" />
+    <Folder Include="wwwroot\Uploads\Freelancer\CompanyLicense\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -33,5 +33,13 @@ namespace Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface
         // Check if an OfferedService entity exists based on a predicate
         Task<bool> ExistsAsync(Expression<Func<OfferedService, bool>> predicate, CancellationToken cancellationToken = default);
 
+
+        // Client Address/Location Methods
+
+        Task<ClientAddress> SaveAddressAsync(ClientAddress clientAddress ,CancellationToken cancellationToken=default);
+        Task<ClientAddress?> GetSaveAddressByIdAsync(Guid AddressId, CancellationToken cancellationToken = default);
+        Task<List<ClientAddress>> GetSaveAddressesAsync(Guid clientId ,CancellationToken cancellationToken = default);
+        Task<bool> DeleteSaveAddressAsync(ClientAddress clientAddress, CancellationToken cancellationToken = default);
+        Task<bool> UpdateSaveAddressAsync(ClientAddress clientAddress, CancellationToken cancellationToken = default);
     }
 }

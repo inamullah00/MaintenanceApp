@@ -3,6 +3,7 @@ using Application.Dto_s.ClientDto_s.ClientServiceCategoryDto;
 using Application.Dto_s.UserDto_s;
 using AutoMapper;
 using Domain.Entity.UserEntities;
+using Maintenance.Application.Dto_s.ClientDto_s.AddressDtos;
 using Maintenance.Application.Dto_s.ClientDto_s.FeedbackDto;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.ContentDtos;
@@ -101,8 +102,12 @@ namespace Application.Mapper
             // Admin Sev Service Mapping
             CreateMap<ServiceCreateViewModel, Service>().ReverseMap();
             CreateMap<ServiceEditViewModel, Service>().ReverseMap();
-            
 
+            // Address Mapping 
+
+            CreateMap<ClientAddress, ClientAddressRequestDto>().ReverseMap();
+            CreateMap<ClientAddress, ClientAddressResponseDto>().ReverseMap();
+            CreateMap<ClientAddress, ClientAddressUpdateDto>().ReverseMap();
 
         }
     }

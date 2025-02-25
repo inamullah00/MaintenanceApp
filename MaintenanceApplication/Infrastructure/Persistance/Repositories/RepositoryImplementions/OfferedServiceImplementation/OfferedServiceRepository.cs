@@ -15,6 +15,7 @@ using Maintenance.Domain.Entity.ClientEntities;
 using Maintenance.Domain.Entity.FreelancerEntities;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Ardalis.Specification.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplementions.OfferedServiceImplementation
 {
@@ -185,5 +186,46 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
 
             return requestedServices;
         }
+
+       public async Task<ClientAddress> SaveAddressAsync(ClientAddress clientAddress, CancellationToken cancellationToken)
+        {
+           await _dbContext.ClientAddresses.AddAsync(clientAddress);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return clientAddress;
+        }
+
+           public async Task<bool> DeleteSaveAddressAsync(ClientAddress clientAddress, CancellationToken cancellationToken)
+            {
+            if (clientAddress is null)
+                return false;
+
+            _dbContext.ClientAddresses.Remove(clientAddress);
+           return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false) > 0;
+           
+            }
+
+        public async Task<bool> UpdateSaveAddressAsync(ClientAddress clientAddress, CancellationToken cancellationToken)
+        {
+            _dbContext.ClientAddresses.Update(clientAddress);
+
+            return await _dbContext.SaveChangesAsync(cancellationToken).ConfigureAwait(false) > 0;
+        }
+
+        public async Task<List<ClientAddress>> GetSaveAddressesAsync(Guid clientId ,CancellationToken cancellationToken)
+        {
+            return await _dbContext.ClientAddresses
+              .Where(address => address.ClientId == clientId)
+              .ToListAsync(cancellationToken)
+              .ConfigureAwait(false);
+         }
+
+        public async Task<ClientAddress?> GetSaveAddressByIdAsync(Guid AddressId, CancellationToken cancellationToken)
+        {
+            return await _dbContext.ClientAddresses
+              .Where(address => address.Id == AddressId)
+              .FirstOrDefaultAsync(cancellationToken)
+              .ConfigureAwait(false);
+        }
+
     }
 }

@@ -301,19 +301,15 @@ namespace API.Controllers.ClientController
         }
         #endregion
 
-
-
         #region Client Location/Address Api's
-
-
 
         #region Save-Address
         [HttpPost("Save-Address")]
-        public async Task<IActionResult> SaveAddress([FromBody] ClientAddressRequestDto addressDto)
+        public async Task<IActionResult> SaveAddress([FromBody] ClientAddressRequestDto addressDto,CancellationToken cancellationToken=default)
         {
             try
             {
-                var result = await _serviceManager.OfferedServices.SaveAddressAsync(addressDto);
+                var result = await _serviceManager.OfferedServices.SaveAddressAsync(addressDto,cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -347,11 +343,11 @@ namespace API.Controllers.ClientController
 
         #region Get-Saved-Addresses
         [HttpGet("Get-Saved-Addresses/{clientId}")]
-        public async Task<IActionResult> GetSavedAddresses(Guid clientId)
+        public async Task<IActionResult> GetSavedAddresses(Guid clientId,CancellationToken cancellationToken=default)
         {
             try
             {
-                var result = await _serviceManager.OfferedServices.GetSavedAddressesAsync(clientId);
+                var result = await _serviceManager.OfferedServices.GetSavedAddressesAsync(clientId,cancellationToken);
 
                 if (result.IsSuccess)
                 {
@@ -421,6 +417,53 @@ namespace API.Controllers.ClientController
         #endregion
 
 
+        #region Update-Address
+        [HttpPut("Update-Address/{addressId}")]
+        public async Task<IActionResult> UpdateAddress(Guid addressId, [FromBody] ClientAddressUpdateDto updateDto)
+        {
+            try
+            {
+                if (updateDto == null || addressId == Guid.Empty)
+                {
+                    return BadRequest(new
+                    {
+                        StatusCode = StatusCodes.Status400BadRequest,
+                        Success = false,
+                        Message = "Invalid request data."
+                    });
+                }
+
+                var result = await _serviceManager.OfferedServices.UpdateAddressAsync(addressId, updateDto);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"Internal Server Error: {ex.Message}"
+                });
+            }
+        }
+        #endregion
 
 
         #endregion
