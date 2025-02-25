@@ -43,6 +43,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
         public DbSet<Setting> Settings { get; set; }
         //public DbSet<Payment> Payments { get; set; }
         public DbSet<ContactUs> ContactUs { get; set; }
+        public DbSet<ClientAddress> ClientAddresses { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -68,6 +69,7 @@ namespace Maintenance.Infrastructure.Persistance.Data
             builder.ApplyConfiguration(new PackageConfiguration());
             builder.ApplyConfiguration(new SettingConfiguration());
             builder.ApplyConfiguration(new ContactUsConfiguration());
+            builder.ApplyConfiguration(new ClientAddressConfiguration());
 
             #region Fluent Model
 

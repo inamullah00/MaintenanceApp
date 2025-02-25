@@ -6,6 +6,7 @@ using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Application.Services.Admin.OrderSpecification;
@@ -323,6 +324,19 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             return Result<List<ClientOrderStatusResponseDto>>.Success(clientOrders, SuccessMessages.OrderFetchedSuccessfully, StatusCodes.Status200OK);
 
+        }
+
+       public async Task<Result<List<OrderDateRangeFilterDto>>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken)
+        {
+            var specification = new OrdersByDateRangeSpecification(startDate, endDate);
+            var orders = await _unitOfWork.OrderRepository.GetOrdersByDateRangeAsync(cancellationToken, specification);
+
+            if (orders == null || !orders.Any())
+            {
+                return Result<List<OrderDateRangeFilterDto>>.Failure("No orders found in the given date range", StatusCodes.Status404NotFound);
+            }
+
+            return Result<List<OrderDateRangeFilterDto>>.Success(orders, "Orders retrieved successfully", StatusCodes.Status200OK);
         }
 
         #endregion

@@ -131,12 +131,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               CreatedAt = Bid.CreatedAt,
                               CategoryName = Category.CategoryName,
                               Description = OfferedService.Description,
-                              Location = OfferedService.Location,
                               PreferredTime = OfferedService.PreferredTime,
-                              Building = OfferedService.Building,
-                              Apartment = OfferedService.Apartment,
-                              Floor = OfferedService.Floor,
-                              Street = OfferedService.Street,
 
                           }).FirstOrDefaultAsync(cancellationToken);
         }

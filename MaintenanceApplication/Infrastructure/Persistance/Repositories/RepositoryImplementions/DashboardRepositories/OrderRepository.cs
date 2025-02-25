@@ -2,6 +2,7 @@
 using Ardalis.Specification.EntityFrameworkCore;
 using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Interfaces.ReposoitoryInterfaces.DashboardInterfaces.AdminOrderInterfaces;
 using Maintenance.Domain.Entity.Dashboard;
@@ -54,7 +55,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               ServiceId = service.Id,
                               ServiceTitle = service.Title,
                               ServiceDescription = service.Description,
-                              ServiceLocation = service.Location,
                               ServicePreferredTime = service.PreferredTime,
 
                               Description = orders.Description,
@@ -64,8 +64,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               CreatedAt = orders.CreatedAt,
                               UpdatedAt = orders.UpdatedAt.Value,
 
-                              TotalAmount = orders.TotalAmount,
-                              FreelancerAmount = orders.FreelancerAmount
                           })
                .AsNoTracking()
                .ToListAsync(cancellationToken);
@@ -88,7 +86,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               ServiceId = orders.ServiceId,
                               ServiceTitle = orders.Service.Title,
                               ServiceDescription = orders.Service.Description,
-                              ServiceLocation = orders.Service.Location,
                               ServicePreferredTime = orders.Service.PreferredTime,
 
                               Description = orders.Description,
@@ -98,15 +95,16 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               CreatedAt = orders.CreatedAt,
                               UpdatedAt = orders.UpdatedAt.Value,
 
-                              TotalAmount = orders.TotalAmount,
-                              FreelancerAmount = orders.FreelancerAmount
                           }).AsNoTracking().FirstOrDefaultAsync(cancellationToken);
         }
 
-        public Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken)
+        public async Task<bool> RemoveAsync(Order order, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
-        }
+              _dbContext.Orders.Remove(order);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+            return true;
+
+         }
 
         public async Task<bool> UpdateFieldsAsync(Order order, string[] fieldsToUpdate, CancellationToken cancellationToken)
         {
@@ -160,7 +158,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               ServiceTitle = service.Title,
                               ServiceDescription = service.Description,
                               //ServiceTime = service.PreferredTime,
-                              ServiceAddress = service.Location
+                
                           })
                  .AsNoTracking()
                  .ToListAsync(cancellationToken);
@@ -216,7 +214,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               ServiceTitle = service.Title,
                               ServiceCategory = category.CategoryName,
                               ServiceDescription = service.Description,
-                              ServiceAddress = service.Location,
                               BookingDate = orders.CreatedAt, // Assuming CreatedAt is used for booking
                               ServiceTime = service.PreferredTime, // Using PreferredTime from service
                               BidPrice = orders.TotalAmount.ToString("F2"), // Formatting price properly
@@ -225,6 +222,34 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                               Audio = service.AudioUrls != null && service.AudioUrls.Any() ? service.AudioUrls.FirstOrDefault() : null
                           })
                           .AsNoTracking()
+                          .ToListAsync(cancellationToken);
+        }
+
+        public async Task<List<OrderDateRangeFilterDto>> GetOrdersByDateRangeAsync(CancellationToken cancellationToken, ISpecification<Order>? specification)
+        {
+            var queryResult = SpecificationEvaluator.Default.GetQuery(
+                                    query: _dbContext.Orders.AsQueryable(),
+                                    specification: specification);
+
+            return await (from order in queryResult.AsSplitQuery()
+                          join freelancer in _dbContext.Freelancers.AsNoTracking()
+                          on order.FreelancerId equals freelancer.Id
+
+                          join service in _dbContext.OfferedServices.AsNoTracking()
+                          on order.ServiceId equals service.Id
+
+                          join category in _dbContext.OfferedServiceCategories.AsNoTracking()
+                          on service.CategoryID equals category.Id
+
+                          select new OrderDateRangeFilterDto
+                          {
+                          
+                              ServiceTitle = service.Title,
+                              ServiceCategory = category.CategoryName,
+                              ServiceDescription = service.Description,
+                              //BookingDate = order.CreatedAt,
+                          
+                          })
                           .ToListAsync(cancellationToken);
         }
     }

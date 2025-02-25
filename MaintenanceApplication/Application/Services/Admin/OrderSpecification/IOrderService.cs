@@ -1,6 +1,7 @@
 ﻿using Maintenance.Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Dto_s.ClientDto_s.ClientOrderDtos;
 using Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos;
+using Maintenance.Application.Dto_s.DashboardDtos.Order_Limit_PerformanceReportin_Dtos;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.Dashboard;
@@ -32,5 +33,8 @@ namespace Maintenance.Application.Services.Admin.OrderSpecification
 
         // Retrieves all orders for the client, filtered by their status.
         public Task<Result<List<ClientOrderStatusResponseDto>>> GetClientOrdersByStatusAsync(OrderStatus status, CancellationToken cancellationToken = default);
+
+       public Task<Result<List<OrderDateRangeFilterDto>>> GetOrdersByDateRangeAsync(DateTime startDate, DateTime endDate, CancellationToken cancellationToken);
+
     }
 }

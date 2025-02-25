@@ -28,24 +28,7 @@ namespace Maintenance.Infrastructure.Configurations
                    .IsRequired()  // Description is required
                    .HasMaxLength(1000);  // Optional: Set a maximum length for description
 
-            builder.Property(os => os.Location)
-                   .HasMaxLength(500);  // Optional: Set a maximum length for the location
-
-            builder.Property(os => os.Building)
-                   .HasMaxLength(100);  // Optional: Set a max length for the building
-
-            builder.Property(os => os.Apartment)
-                   .HasMaxLength(100);  // Optional: Set a max length for the apartment
-
-            builder.Property(os => os.Floor)
-                   .HasMaxLength(100);  // Optional: Set a max length for the floor
-
-            builder.Property(os => os.Street)
-                   .HasMaxLength(100);  // Optional: Set a max length for the street
-
-            builder.Property(os => os.SetAsCurrentHomeAddress)
-                   .IsRequired();  // Whether this service is set as the current home address
-
+          
             builder.Property(os => os.CreatedAt)
                    .HasDefaultValueSql("GETDATE()")  // Set the default to the current date/time
                    .IsRequired();  // CreatedAt is required
@@ -77,7 +60,12 @@ namespace Maintenance.Infrastructure.Configurations
             builder.HasOne(os => os.Client)
                    .WithMany()  // One ApplicationUser (Client) can offer multiple services
                    .HasForeignKey(os => os.ClientId);
-                   //.OnDelete(DeleteBehavior.Cascade);  // If a client is deleted, their related services are also deleted
+            //.OnDelete(DeleteBehavior.Cascade);  // If a client is deleted, their related services are also deleted
+
+
+            builder.HasOne(os => os.ClientAddress)
+              .WithMany()
+              .HasForeignKey(os => os.ClientAddressId);
 
         }
     }

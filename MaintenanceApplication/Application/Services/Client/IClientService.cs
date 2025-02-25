@@ -1,4 +1,5 @@
 ﻿using Application.Dto_s.ClientDto_s;
+using Maintenance.Application.Dto_s.ClientDto_s.AddressDtos;
 using Maintenance.Application.Wrapper;
 using System;
 using System.Collections.Generic;
@@ -27,6 +28,12 @@ namespace Maintenance.Application.Services.Client
         Task<Result<List<OfferedServiceResponseDto>>> GetServicesAsync();
 
 
+
+        // Location/Address Methods
+
+        Task<Result<string>> SaveAddressAsync(ClientAddressRequestDto request);
+        Task<Result<List<ClientAddressResponseDto>>> GetSavedAddressesAsync(Guid clientId);
+        Task<Result<string>> DeleteAddressAsync(Guid addressId);
 
     }
 }

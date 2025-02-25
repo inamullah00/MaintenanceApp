@@ -1,5 +1,6 @@
 ﻿using Application.Dto_s.ClientDto_s;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.ClientDto_s.AddressDtos;
 using Maintenance.Application.Dto_s.ClientDto_s.ClientServiceDto;
 using Maintenance.Application.Dto_s.FreelancerDto_s;
 using Maintenance.Application.Services.Client;
@@ -300,5 +301,128 @@ namespace API.Controllers.ClientController
         }
         #endregion
 
+
+
+        #region Client Location/Address Api's
+
+
+
+        #region Save-Address
+        [HttpPost("Save-Address")]
+        public async Task<IActionResult> SaveAddress([FromBody] ClientAddressRequestDto addressDto)
+        {
+            try
+            {
+                var result = await _serviceManager.OfferedServices.SaveAddressAsync(addressDto);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"Internal Server Error: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Get-Saved-Addresses
+        [HttpGet("Get-Saved-Addresses/{clientId}")]
+        public async Task<IActionResult> GetSavedAddresses(Guid clientId)
+        {
+            try
+            {
+                var result = await _serviceManager.OfferedServices.GetSavedAddressesAsync(clientId);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message,
+                        Data = result.Value
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"Internal Server Error: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+        #region Delete-Address
+        [HttpDelete("Delete-Address/{addressId}")]
+        public async Task<IActionResult> DeleteAddress(Guid addressId)
+        {
+            try
+            {
+                var result = await _serviceManager.OfferedServices.DeleteAddressAsync(addressId);
+
+                if (result.IsSuccess)
+                {
+                    return Ok(new
+                    {
+                        StatusCode = result.StatusCode,
+                        Success = true,
+                        Message = result.Message
+                    });
+                }
+
+                return StatusCode(result.StatusCode, new
+                {
+                    StatusCode = result.StatusCode,
+                    Success = false,
+                    Message = result.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new
+                {
+                    StatusCode = StatusCodes.Status500InternalServerError,
+                    Success = false,
+                    Message = $"Internal Server Error: {ex.Message}"
+                });
+            }
+        }
+        #endregion
+
+
+
+
+        #endregion
     }
 }
