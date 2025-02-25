@@ -3,14 +3,13 @@
     ViewBag.ModuleName = _CommonLocalizer["Create"] + _CommonLocalizer["Package"];
     ViewBag.ModuleIcon = "cube";
     var freelancers = ViewBag.Freelancers as List<DropdownDto> ?? new List<DropdownDto>();
-
 }
 
 <div class="row">
     <div class="col-md-12 grid-margin stretch-card">
         <div class="card">
             <div class="card-body">
-                <form asp-action="Create" asp-controller="Package" method="post" class="form-freelancer">
+                <form asp-action="Create" asp-controller="Package" method="post" class="form-package">
                     <div class="row">
                         <div class="col-md-8">
                             <div class="mb-4">
