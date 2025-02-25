@@ -7,6 +7,7 @@ using AutoMapper;
 using Maintenance.Application.Common.Constants;
 using Maintenance.Application.Dto_s.ClientDto_s.AddressDtos;
 using Maintenance.Application.Services.Client;
+using Maintenance.Application.Services.Client.Specification.AddressSpecification;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.ClientEntities;
 using Microsoft.AspNetCore.Http;
@@ -32,7 +33,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             _mapper = mapper;
         }
 
-        public async Task<Result<string>> AddServiceAsync(OfferedServiceRequestDto request)
+        public async Task<Result<string>> AddServiceAsync(OfferedServiceRequestDto request, CancellationToken cancellationToken = default)
         {
             var service = _mapper.Map<OfferedService>(request);
 
@@ -80,7 +81,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
 
-        public async Task<Result<string>> DeleteServiceAsync(Guid serviceId)
+        public async Task<Result<string>> DeleteServiceAsync(Guid serviceId, CancellationToken cancellationToken = default)
         {
             if (serviceId == Guid.Empty)
             {
@@ -107,7 +108,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
 
-        public async Task<Result<OfferedServiceResponseDto>> GetServiceAsync(Guid serviceId)
+        public async Task<Result<OfferedServiceResponseDto>> GetServiceAsync(Guid serviceId, CancellationToken cancellationToken = default)
 
         {
             if (serviceId == Guid.Empty)
@@ -136,7 +137,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
 
-        public async Task<Result<OfferedServiceResponseDto>> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updateRequest)
+        public async Task<Result<OfferedServiceResponseDto>> UpdateServiceAsync(Guid serviceId, OfferedUpdateRequestDto updateRequest, CancellationToken cancellationToken = default)
         {
 
             if (serviceId == Guid.Empty || updateRequest == null)
@@ -168,9 +169,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
 
         #region Client Location/Address
-
-
-       public async Task<Result<string>> SaveAddressAsync(ClientAddressRequestDto request)
+       public async Task<Result<string>> SaveAddressAsync(ClientAddressRequestDto request, CancellationToken cancellationToken = default)
         {
 
             if (request == null || request.ClientId == Guid.Empty)
@@ -180,30 +179,88 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
 
             var address = _mapper.Map<ClientAddress>(request);
 
-            //var entity = await _unitOfWork.ClientAddressRepository.CreateAsync(address);
+            var entity = await _unitOfWork.OfferedServiceRepository.SaveAddressAsync(address,cancellationToken);
 
-            //if (entity == null)
-            //{
-            //    return Result<string>.Failure("Failed to save address", StatusCodes.Status500InternalServerError);
-            //}
+            if (entity == null)
+            {
+                return Result<string>.Failure("Failed to save address", StatusCodes.Status500InternalServerError);
+            }
 
-            //return Result<string>.Success(entity.Id.ToString(), "Address saved successfully", StatusCodes.Status201Created);
+            return Result<string>.Success(entity.Id.ToString(), "Address saved successfully", StatusCodes.Status201Created);
 
-            return null;
+
         }
 
-        public async Task<Result<List<ClientAddressResponseDto>>> GetSavedAddressesAsync(Guid clientId)
+        public async Task<Result<List<ClientAddressResponseDto>>> GetSavedAddressesAsync(Guid clientId, CancellationToken cancellationToken = default)
         {
-            return null;
+
+            if (clientId == Guid.Empty)
+            {
+                return Result<List<ClientAddressResponseDto>>.Failure("Invalid Client ID", StatusCodes.Status400BadRequest);
+            }
+
+            var addresses = await _unitOfWork.OfferedServiceRepository.GetSaveAddressesAsync(clientId,cancellationToken);
+
+            if (addresses == null || addresses.Count == 0)
+            {
+                return Result<List<ClientAddressResponseDto>>.Failure("No saved addresses found", StatusCodes.Status404NotFound);
+            }
+
+            var addressDtos = _mapper.Map<List<ClientAddressResponseDto>>(addresses);
+
+            return Result<List<ClientAddressResponseDto>>.Success(addressDtos, "Addresses retrieved successfully", StatusCodes.Status200OK);
+
         }
 
-        public async Task<Result<string>> DeleteAddressAsync(Guid addressId)
+        public async Task<Result<string>> DeleteAddressAsync(Guid addressId, CancellationToken cancellationToken = default)
         {
 
-            return null;
+            if (addressId == Guid.Empty)
+                return Result<string>.Failure("Invalid Address ID", StatusCodes.Status400BadRequest);
+
+            var address = await _unitOfWork.OfferedServiceRepository
+                .GetSaveAddressByIdAsync(addressId, cancellationToken)
+                .ConfigureAwait(false);
+
+            if (address is null)
+                return Result<string>.Failure("No address found", StatusCodes.Status404NotFound);
+
+            var isDeleted = await _unitOfWork.OfferedServiceRepository
+                .DeleteSaveAddressAsync(address, cancellationToken)
+                .ConfigureAwait(false);
+
+            return isDeleted
+                ? Result<string>.Success("Address deleted successfully", StatusCodes.Status200OK)
+                : Result<string>.Failure("Failed to delete address", StatusCodes.Status500InternalServerError);
+
+
         }
 
         #endregion
+
+
+        public async Task<Result<string>> UpdateAddressAsync(Guid addressId, ClientAddressUpdateDto updateDto,CancellationToken cancellationToken = default)
+        {
+            if (addressId == Guid.Empty)
+                return Result<string>.Failure("Invalid Address ID.", StatusCodes.Status400BadRequest);
+
+            var address = await _unitOfWork.OfferedServiceRepository.GetSaveAddressByIdAsync(addressId,cancellationToken);
+
+            if (address == null)
+                return Result<string>.Failure("Address not found.", StatusCodes.Status404NotFound);
+
+            // Update fields
+           var addressToUpdate = _mapper.Map<ClientAddress>(updateDto);
+
+            var updated = await _unitOfWork.OfferedServiceRepository.UpdateSaveAddressAsync(addressToUpdate,cancellationToken);
+
+            if (!updated)
+                return Result<string>.Failure("Failed to update address.", StatusCodes.Status500InternalServerError);
+     
+
+            return Result<string>.Success( "Address updated successfully.", StatusCodes.Status200OK);
+        }
+
 
 
 
@@ -218,12 +275,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
             }
 
 
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedFiles");
+            var RootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadPath = Path.Combine(RootPath, "Uploads");
+            var ClientUploadPath = Path.Combine(uploadPath, "Client");
 
             // Ensure the directory exists
-            if (!Directory.Exists(uploadPath))
+            if (!Directory.Exists(ClientUploadPath))
             {
-                Directory.CreateDirectory(uploadPath);
+                Directory.CreateDirectory(ClientUploadPath);
             }
 
             var uploadedImageUrls = new List<string>();
@@ -234,7 +293,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 {
                     // Generate a unique file name
                     var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(imageFile.FileName)}";
-                    var fullPath = Path.Combine(uploadPath, fileName);
+                    var fullPath = Path.Combine(ClientUploadPath, fileName);
 
                     // Save the file to the server
                     using (var stream = new FileStream(fullPath, FileMode.Create))
@@ -243,7 +302,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                     }
 
                     // Add the file path to the list
-                    uploadedImageUrls.Add($"/UploadedFiles/{fileName}");
+                    uploadedImageUrls.Add($"/Uploads/Client/{fileName}");
                 }
 
                 return (true, uploadedImageUrls, "Files uploaded successfully.");
@@ -267,13 +326,14 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 return (false, new List<string>(), "No Video uploaded.");
             }
 
-
-            var uploadPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "UploadedVideos");
+            var RootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            var uploadPath = Path.Combine(RootPath, "Uploads");
+            var ClientUploadPath = Path.Combine(uploadPath, "Client");
 
             // Ensure the directory exists
-            if (!Directory.Exists(uploadPath))
+            if (!Directory.Exists(ClientUploadPath))
             {
-                Directory.CreateDirectory(uploadPath);
+                Directory.CreateDirectory(ClientUploadPath);
             }
 
             var uploadedVideoUrls = new List<string>();
@@ -284,7 +344,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                 {
                     // Generate a unique file name
                     var fileName = $"{Guid.NewGuid()}_{Path.GetFileName(videoFile.FileName)}";
-                    var fullPath = Path.Combine(uploadPath, fileName);
+                    var fullPath = Path.Combine(ClientUploadPath, fileName);
 
                     // Save the file to the server
                     using (var stream = new FileStream(fullPath, FileMode.Create))
@@ -293,7 +353,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
                     }
 
                     // Add the file path to the list
-                    uploadedVideoUrls.Add($"/UploadedVideos/{fileName}");
+                    uploadedVideoUrls.Add($"/Uploads/Client/{fileName}");
                 }
 
                 return (true, uploadedVideoUrls, "Videos uploaded successfully.");
