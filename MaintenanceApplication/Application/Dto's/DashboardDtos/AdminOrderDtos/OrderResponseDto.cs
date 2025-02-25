@@ -33,8 +33,6 @@ namespace Maintenance.Application.Dto_s.DashboardDtos.AdminOrderDtos
             public DateTime? CompletedDate { get; set; } // Date and time the order was Completed
             public DateTime UpdatedAt { get; set; } // Last updated time of the order
 
-            // Payment details
-            public decimal TotalAmount { get; set; } // Total amount for the order
-            public decimal FreelancerAmount { get; set; } // Freelancer's earnings
+    
         }
 }

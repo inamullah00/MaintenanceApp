@@ -21,6 +21,8 @@ namespace Maintenance.Domain.Entity.ClientEntities
         public ICollection<Order> ClientOrders { get; set; } // Orders placed by the client
         public ICollection<Feedback> TotalProvidedFeedbacksByClient { get; set; } // Feedback given by Client
         public ICollection<ClientOtp> clientOtps { get; set; }
+        public List<ClientAddress> ClientAddresses { get; set; }
+
 
         public ApplicationUser? ActionBy { get; set; }
 

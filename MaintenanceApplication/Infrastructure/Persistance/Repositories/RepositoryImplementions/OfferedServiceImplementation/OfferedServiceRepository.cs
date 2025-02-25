@@ -65,12 +65,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                              ClientId = service.ClientId,
                                              Title = service.Title,
                                              Description = service.Description,
-                                             Location = service.Location,
                                              PreferredTime = service.PreferredTime,
-                                             Building = service.Building,
-                                             Apartment = service.Apartment,
-                                             Floor = service.Floor,
-                                             Street = service.Street,
                                              SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
                                              CreatedAt = service.CreatedAt,
                                              UpdatedAt = service.UpdatedAt,
@@ -111,12 +106,7 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                    ClientId = service.ClientId,
                    Title = service.Title,
                    Description = service.Description,
-                   Location = service.Location,
                    PreferredTime = service.PreferredTime,
-                   Building = service.Building,
-                   Apartment = service.Apartment,
-                   Floor = service.Floor,
-                   Street = service.Street,
                    SetAsCurrentHomeAddress = service.SetAsCurrentHomeAddress,
                    CreatedAt = service.CreatedAt,
                    UpdatedAt = service.UpdatedAt,
@@ -160,15 +150,10 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
             service.CategoryID = entity.CategoryID;
             service.Title = entity.Title;
             service.Description = entity.Description;
-            service.Location = entity.Location;
             service.VideoUrls = entity.VideoUrls;
             service.ImageUrls = entity.ImageUrls;
             service.AudioUrls = entity.AudioUrls;
             service.PreferredTime = entity.PreferredTime;
-            service.Building = entity.Building;
-            service.Apartment = entity.Apartment;
-            service.Floor = entity.Floor;
-            service.Street = entity.Street;
             service.SetAsCurrentHomeAddress = entity.SetAsCurrentHomeAddress;
             service.UpdatedAt = DateTime.UtcNow;
 
@@ -191,7 +176,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                                TotalNoOfFreelancerApplied = _dbContext.Bids.Count(b => b.OfferedServiceId == service.Id).ToString(),
                                                Title = service.Title,
                                                Description = service.Description,
-                                               Address = service.Location,
                                                ServiceTime = service.PreferredTime.Value,
                                                Images = service.ImageUrls,
                                                Videos = service.VideoUrls,

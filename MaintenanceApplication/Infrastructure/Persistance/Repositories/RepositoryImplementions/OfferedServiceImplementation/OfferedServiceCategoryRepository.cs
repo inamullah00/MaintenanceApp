@@ -77,7 +77,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                         ClientId = s.ClientId,
                                         Title = s.Title,
                                         Description = s.Description,
-                                        Location = s.Location,
                                         CreatedAt = s.CreatedAt,
                                         UpdatedAt = s.UpdatedAt
                                     }).ToList()
@@ -103,7 +102,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.RepositoryImplemen
                                   ClientId = s.ClientId,
                                   Title = s.Title,
                                   Description = s.Description,
-                                  Location = s.Location,
                                   CreatedAt = s.CreatedAt,
                                   UpdatedAt = s.UpdatedAt
                               }).ToList()

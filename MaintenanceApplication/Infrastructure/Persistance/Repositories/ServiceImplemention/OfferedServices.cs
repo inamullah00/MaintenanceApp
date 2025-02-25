@@ -5,6 +5,7 @@ using Application.Interfaces.ReposoitoryInterfaces.OfferedServicInterface;
 using Ardalis.Specification;
 using AutoMapper;
 using Maintenance.Application.Common.Constants;
+using Maintenance.Application.Dto_s.ClientDto_s.AddressDtos;
 using Maintenance.Application.Services.Client;
 using Maintenance.Application.Wrapper;
 using Maintenance.Domain.Entity.ClientEntities;
@@ -166,6 +167,44 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
 
+        #region Client Location/Address
+
+
+       public async Task<Result<string>> SaveAddressAsync(ClientAddressRequestDto request)
+        {
+
+            if (request == null || request.ClientId == Guid.Empty)
+            {
+                return Result<string>.Failure("Invalid address data", StatusCodes.Status400BadRequest);
+            }
+
+            var address = _mapper.Map<ClientAddress>(request);
+
+            //var entity = await _unitOfWork.ClientAddressRepository.CreateAsync(address);
+
+            //if (entity == null)
+            //{
+            //    return Result<string>.Failure("Failed to save address", StatusCodes.Status500InternalServerError);
+            //}
+
+            //return Result<string>.Success(entity.Id.ToString(), "Address saved successfully", StatusCodes.Status201Created);
+
+            return null;
+        }
+
+        public async Task<Result<List<ClientAddressResponseDto>>> GetSavedAddressesAsync(Guid clientId)
+        {
+            return null;
+        }
+
+        public async Task<Result<string>> DeleteAddressAsync(Guid addressId)
+        {
+
+            return null;
+        }
+
+        #endregion
+
 
 
         #region Image Upload
@@ -266,7 +305,6 @@ namespace Maintenance.Infrastructure.Persistance.Repositories.ServiceImplementio
         }
 
         #endregion
-
 
         #region Upload Audio
 

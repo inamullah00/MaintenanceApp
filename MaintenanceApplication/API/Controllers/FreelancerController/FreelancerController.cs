@@ -32,51 +32,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
 
 
-        [HttpGet("Bids/{serviceId:Guid}")]
-        public async Task<IActionResult> GetBidsByService(Guid serviceId, [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10, CancellationToken cancellationToken = default)
-        {
-            _logger.LogInformation("GetBidsByService called for ServiceId: {ServiceId}", serviceId);
-
-            try
-            {
-                var result = await _serviceManager.FreelancerService.GetBidsByFreelancerAsync(serviceId, pageNumber, pageSize, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Successfully fetched {Count} bids for ServiceId: {ServiceId}", result.Value.TotalCount, serviceId);
-
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value
-                    });
-                }
-
-                _logger.LogWarning("No bids found for ServiceId: {ServiceId}. Message: {Message}", serviceId, result.Message);
-
-                return NotFound(new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while fetching bids for ServiceId: {ServiceId}", serviceId);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-
-
         #region Get Bid by Freelancer
         [HttpGet("Bid/{freelancerId:guid}")]
         public async Task<IActionResult> GetBidByFreelancer(Guid freelancerId,CancellationToken cancellationToken)
@@ -303,52 +258,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         }
         #endregion
 
-        #region Filter Freelancers by Bid Pricing and Rating
-        [HttpGet("Freelancers/Filter")]
-        public async Task<IActionResult> FilterFreelancers([FromQuery] FilterFreelancerRequestDto filterRequestDto, CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Received request to filter freelancers with criteria: {@FilterRequestDto}", filterRequestDto);
-
-            try
-            {
-                var result = await _serviceManager.FreelancerService.FilterFreelancersAsync(filterRequestDto, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Successfully retrieved {Count} freelancers matching the criteria.", result.Value.Count);
-
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value // List of filtered freelancers
-                    });
-                }
-
-                _logger.LogWarning("Failed to filter freelancers. Status Code: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
-
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while filtering freelancers.");
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-        #endregion
-
         #region Update Order Status
         [HttpPut("{id:guid}/update-status")]
         public async Task<IActionResult> UpdateOrderStatus(Guid id, [FromBody] UpdateOrderStatusDto updateOrderStatusDto, CancellationToken cancellationToken)
@@ -392,107 +301,6 @@ namespace Maintenance.API.Controllers.FreelancerController
             }
         }
         #endregion
-
-        #region Assigned Order To Freelancer and they start work on
-
-        #region StartWork
-        [HttpPut("Orders/{orderId:guid}/Start")]
-        public async Task<IActionResult> StartWork(Guid orderId, [FromBody] UpdateOrderStatusDto startWorkDTO , CancellationToken cancellationToken)
-        {
-
-            _logger.LogInformation("StartWork endpoint called with OrderId: {OrderId}, Data: {@StartWorkDTO}", orderId, startWorkDTO);
-
-            try
-            {
-                var result = await _serviceManager.OrderService.UpdateOrderStatusAsync(orderId, startWorkDTO, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Order {OrderId} status updated successfully to 'In Progress'.", orderId);
-
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value // Updated order details
-                    });
-                }
-
-                _logger.LogWarning("Failed to update order {OrderId} status. Reason: {Reason}", orderId, result.Message);
-
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while starting work on Order {OrderId}.", orderId);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-
-        #endregion
-
-        #region MarkOrderAsCompleted
-
-        [HttpPut("Orders/{orderId:guid}/Complete")]
-        public async Task<IActionResult> MarkOrderAsCompleted(Guid orderId, [FromBody] CompleteWorkDTORequest completeWorkDTO , CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("MarkOrderAsCompleted endpoint called with OrderId: {OrderId}, Data: {@CompleteWorkDTO}", orderId, completeWorkDTO);
-
-            try
-            {
-                var result = await _serviceManager.OrderService.CompleteWorkAsync(orderId, completeWorkDTO, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    _logger.LogInformation("Order {OrderId} marked as completed successfully.", orderId);
-
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value // Updated order details with completed status
-                    });
-                }
-
-                _logger.LogWarning("Failed to mark order {OrderId} as completed. Reason: {Reason}", orderId, result.Message);
-
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while marking Order {OrderId} as completed.", orderId);
-
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-
-        #endregion
-
-        #endregion
-
 
         #region Freelancer Orders Screens
 
@@ -709,11 +517,10 @@ namespace Maintenance.API.Controllers.FreelancerController
 
         #endregion
 
-
         #region Freelancer Packages Screens Api's
 
         #region Create Package
-        [HttpPost]
+        [HttpPost("Add-Package")]
         public async Task<IActionResult> CreatePackage([FromBody] CreatePackageRequestDto packageRequest , CancellationToken cancellationToken)
         {
             _logger.LogInformation("CreatePackage called with Package: {PackageName}", packageRequest.Name);
@@ -760,7 +567,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Get Package by Id
-        [HttpGet("{id:guid}")]
+        [HttpGet("Get-Package/{id:guid}")]
         public async Task<IActionResult> GetPackageById(Guid id,CancellationToken cancellationToken)
         {
             _logger.LogInformation("GetPackageById called for PackageId: {PackageId}", id);
@@ -806,7 +613,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Update Package
-        [HttpPut("{id:guid}")]
+        [HttpPut("Edit-Package/{id:guid}")]
         public async Task<IActionResult> UpdatePackage(Guid id, [FromBody] Package package , CancellationToken cancellationToken)
         {
             _logger.LogInformation("UpdatePackage called for PackageId: {PackageId}", id);
@@ -852,7 +659,7 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
         #region Delete Package
-        [HttpDelete("{id:guid}")]
+        [HttpDelete("Delete-Package/{id:guid}")]
         public async Task<IActionResult> DeletePackage(Guid id , CancellationToken cancellationToken)
         {
             _logger.LogInformation("DeletePackage called for PackageId: {PackageId}", id);
@@ -898,92 +705,6 @@ namespace Maintenance.API.Controllers.FreelancerController
         #endregion
 
 
-        #endregion
-
-
-        #region Get Freelancer Details
-        [HttpGet("Freelancer/{freelancerId}")]
-        public async Task<IActionResult> GetFreelancerDetails(Guid freelancerId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                _logger.LogInformation("Fetching freelancer details for ID: {FreelancerId}", freelancerId);
-
-                var result = await _serviceManager.FreelancerService.GetFreelancerDetailsAsync(freelancerId, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value
-                    });
-                }
-
-                _logger.LogWarning("Freelancer not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching freelancer details.");
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
-        #endregion
-
-
-        #region Get Company Details
-        [HttpGet("Company/{companyId}")]
-        public async Task<IActionResult> GetCompanyDetails(Guid companyId, CancellationToken cancellationToken)
-        {
-            try
-            {
-                _logger.LogInformation("Fetching company details for ID: {CompanyId}", companyId);
-
-                var result = await _serviceManager.FreelancerService.GetCompanyDetailsAsync(companyId, cancellationToken);
-
-                if (result.IsSuccess)
-                {
-                    return Ok(new
-                    {
-                        StatusCode = result.StatusCode,
-                        Success = true,
-                        Message = result.Message,
-                        Data = result.Value
-                    });
-                }
-
-                _logger.LogWarning("Company not found. StatusCode: {StatusCode}, Message: {Message}", result.StatusCode, result.Message);
-                return StatusCode(result.StatusCode, new
-                {
-                    StatusCode = result.StatusCode,
-                    Success = false,
-                    Message = result.Message
-                });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "An error occurred while fetching company details.");
-                return StatusCode(StatusCodes.Status500InternalServerError, new
-                {
-                    StatusCode = StatusCodes.Status500InternalServerError,
-                    Success = false,
-                    Message = $"{ErrorMessages.InternalServerError}: {ex.Message}"
-                });
-            }
-        }
         #endregion
 
     }

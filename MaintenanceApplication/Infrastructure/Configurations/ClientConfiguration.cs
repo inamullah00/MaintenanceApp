@@ -46,6 +46,11 @@ namespace Maintenance.Infrastructure.Configurations
                    .WithOne(o => o.Client) // Each OTP is linked to one Client
                    .HasForeignKey(o => o.ClientId);
 
+            // One-to-Many relationship with ClientAddress
+            builder.HasMany(c => c.ClientAddresses)
+                   .WithOne(a => a.Client)
+                   .HasForeignKey(a => a.ClientId);
+
 
             // Optional: Adding constraints for unique fields like Email or PhoneNumber
             builder.HasIndex(c => c.Email).IsUnique();  // Email should be unique

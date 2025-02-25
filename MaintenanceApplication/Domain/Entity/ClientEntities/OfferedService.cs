@@ -24,7 +24,6 @@ namespace Maintenance.Domain.Entity.ClientEntities
 
         [Required]
         public string Description { get; set; }
-        public string Location { get; set; }
 
         public List<string>? VideoUrls { get; set; }
         public List<string>? ImageUrls { get; set; } = new();
@@ -32,13 +31,15 @@ namespace Maintenance.Domain.Entity.ClientEntities
 
         public DateTime? PreferredTime { get; set; }
 
-        // Additional Info in Figma
-        public string Building { get; set; }
-        public string Apartment { get; set; }
-        public string Floor { get; set; }
-        public string Street { get; set; }
+        public bool SetAsCurrentHomeAddress { get; set; } // it's Remaining i will refactor it 
 
-        public bool SetAsCurrentHomeAddress { get; set; }
+
+        // Foreign Key for Location
+        public Guid? ClientAddressId { get; set; }
+
+        [ForeignKey(nameof(ClientAddressId))]
+        public ClientAddress ClientAddress { get; set; } // Chosen location
+
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public ICollection<Order> Orders { get; set; }  // List of orders related to this service
         public ICollection<Bid> Bids { get; set; }  // List of Bids related to this service
